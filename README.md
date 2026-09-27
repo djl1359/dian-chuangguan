@@ -23,6 +23,8 @@
 | `电闯关·电工大作战/` | JSON 文件（`data/db.json`） | 零依赖 Node 服务端，开箱即用 |
 | `电闯关·电工大作战-Access版/` | Microsoft Access（`dg_data.accdb`） | 通过 `access.js` + `access_worker.ps1` 读写 |
 
+> 说明：`dg_data.accdb`（Access 数据库文件）约 1.2MB，已纳入本仓库（位于 `电闯关·电工大作战-Access版/data/`）；若本地缺少该文件，首次启动 Access 版服务端会自动初始化数据库结构与种子数据（教师账号 `teacher` / `123456` + 339 题题库）。
+
 ## 快速开始
 
 ### 服务端（Windows）
@@ -41,10 +43,11 @@
 
 - 电脑：浏览器访问 `http://本机IP:8123`
 - 手机：同一局域网内访问 `http://电脑IP:8123`
+- 或使用仓库内 `电闯关-客户端/` 的说明与快捷方式
 
 ### 账号
 
-- 教师：`teacher` / `123456`（可修改；登录后可在设置中修改使用单位，页面标题同步显示）
+- 教师：`teacher` / `123456`（可在设置中修改；登录后可在设置中修改使用单位，页面标题同步显示）
 - 学生：登录页"注册"标签自助注册（忘记密码请联系老师重置）
 
 ## 目录结构
@@ -62,8 +65,8 @@
 ├─ access.js            # Access 读写封装（ACE OLEDB）
 ├─ access_worker.ps1    # Access 工作进程
 └─ data/
-   ├─ dg_data.accdb     # Access 数据库
-   └─ questions.json    # 题库（339 题）
+   ├─ questions.json    # 题库（339 题）
+   └─ dg_data.accdb     # Access 数据库（用户/进度/成绩/日志）
 ```
 
 ## 技术说明
