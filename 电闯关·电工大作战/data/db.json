@@ -1,0 +1,29 @@
+{
+  "users": [
+    {
+      "id": "37443a200f06c56b",
+      "name": "teacher",
+      "salt": "9668710463a0f0e1",
+      "pass": "928cf42193eec5baa17229c7a1060eb2b1d1dc8441754392282845ebd5d89b34",
+      "role": "teacher",
+      "score": 0,
+      "reg": 1790361073164,
+      "lastLogin": 1790371816067,
+      "loginCount": 26,
+      "correct": 0,
+      "total": 0
+    }
+  ],
+  "sessions": {},
+  "progress": {},
+  "wrongs": {},
+  "memoryBest": {},
+  "logs": [],
+  "answerLogs": [],
+  "settings": {
+    "unit": "河北省滦州市职业技术教育中心",
+    "version": "1.0.0.3",
+    "timeAdd": 5,
+    "timeMatchAdd": 10
+  }
+}
