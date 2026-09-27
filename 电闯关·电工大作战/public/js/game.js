@@ -149,7 +149,7 @@
     box.innerHTML = '';
     $('fill-box').style.display = 'none';
     if (!q) return;
-    if (q.type === 'fill') {
+    if (q.type === 'fill' || q.type === 'calc') {
       $('fill-box').style.display = 'flex';
       $('fill-input').value = '';
       $('fill-input').focus();
@@ -230,7 +230,7 @@
     const hint = state.isBoss
       ? '答对电击BOSS（BOSS -1 血），答错 BOSS 回血！'
       : '答对电击消灭故障怪，答错或超时损失一颗心！';
-    $('q-hint').textContent = q.type === 'multi' ? hint + '（多选：点选项勾选后点“确认作答”）' : (q.type === 'fill' ? hint + '（在输入框填写答案）' : (q.type === 'matching' ? hint + '（连线：先点左侧一项，再点右侧对应项配对）' : hint));
+    $('q-hint').textContent = q.type === 'multi' ? hint + '（多选：点选项勾选后点“确认作答”）' : (q.type === 'fill' || q.type === 'calc' ? hint + '（计算/填空题：在输入框填写答案）' : (q.type === 'matching' ? hint + '（连线：先点左侧一项，再点右侧对应项配对）' : hint));
     buildAnswerUI();
     // 每题的敌人刷新
     state.enemies = [];
@@ -263,7 +263,7 @@
       (q.options || []).forEach((o, i) => {
         text += '。' + LETTERS[i] + '，' + String(o).replace(/^[A-D][.．、]\s*/, '');
       });
-    } else if (q.type === 'fill') {
+    } else if (q.type === 'fill' || q.type === 'calc') {
       text += '。请在输入框中填写答案';
     } else if (q.type === 'matching') {
       text += '。请将左右两项连线配对';
@@ -580,7 +580,7 @@
   }
   function drawPedestals() {
     const q = curQ();
-    if (!q || q.type === 'fill') return;
+    if (!q || q.type === 'fill' || q.type === 'calc') return;
     const n = q.options.length;
     const w = Math.min(170, VW / (n + 1) - 20);
     q.options.forEach((o, i) => {
@@ -921,9 +921,9 @@
 
   /* 暴露接口 */
   window.Game = {
-    start(chapter, level, questions, cfg) {
+    start(chapter, level, questions, cfg, pt) {
       // 直接调 start（已在 start 内初始化）
-      start(chapter, level, questions, cfg);
+      start(chapter, level, questions, cfg, pt);
       if (level.id === 'boss') initBoss();
     }
   };

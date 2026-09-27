@@ -90,7 +90,7 @@
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   /* ---------- 关卡启动 ---------- */
-  function start(chapter, level, questions, cfg) {
+  function start(chapter, level, questions, cfg, pt) {
     window._curLevelId = level.id;
     $('screen-game').style.display = 'block';
     resize();
@@ -913,9 +913,9 @@
 
   /* 暴露接口 */
   window.Game = {
-    start(chapter, level, questions, cfg) {
+    start(chapter, level, questions, cfg, pt) {
       // 直接调 start（已在 start 内初始化）
-      start(chapter, level, questions, cfg);
+      start(chapter, level, questions, cfg, pt);
       if (level.id === 'boss') initBoss();
     }
   };

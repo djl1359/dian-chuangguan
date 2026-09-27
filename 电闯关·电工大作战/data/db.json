@@ -8,8 +8,21 @@
       "role": "teacher",
       "score": 0,
       "reg": 1790361073164,
-      "lastLogin": 1790371816067,
-      "loginCount": 26,
+      "lastLogin": 1790519568490,
+      "loginCount": 46,
+      "correct": 0,
+      "total": 0
+    },
+    {
+      "id": "35137e1bbbb41ac3",
+      "name": "闯关测试员",
+      "salt": "3f9737b2d96dabea",
+      "pass": "46d8c337a8ee4851cc9116d91337431661f87bb3f130a2a466c19ac1bf457f84",
+      "role": "student",
+      "score": 0,
+      "reg": 1790505772922,
+      "lastLogin": 1790519191903,
+      "loginCount": 13,
       "correct": 0,
       "total": 0
     }
@@ -22,8 +35,21 @@
   "answerLogs": [],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.0.0.3",
+    "version": "1.0.0.6",
     "timeAdd": 5,
-    "timeMatchAdd": 10
+    "timeMatchAdd": 10,
+    "levelQ": {
+      "1": 6,
+      "2": 8,
+      "3": 10,
+      "boss": 5
+    },
+    "levelTimeBase": {
+      "1": 25,
+      "2": 28,
+      "3": 27,
+      "boss": 27
+    },
+    "gameName": "电闯关·电工大作战"
   }
 }

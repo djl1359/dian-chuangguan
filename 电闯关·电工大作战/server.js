@@ -17,7 +17,7 @@ const crypto = require('crypto');
 const acc = require('./store.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.0.0.5';
+const VERSION = '1.0.0.6';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -79,7 +79,7 @@ function judgeAnswer(qq, entry, choice) {
     sel.sort((x, y) => x - y);
     return want.length === sel.length && want.every((v, i) => v === sel[i]);
   }
-  if (qq.type === 'fill') {
+  if (qq.type === 'fill' || qq.type === 'calc') {
     return typeof choice === 'string' && choice.trim().length > 0 && answerMatch(choice, String(qq.answer));
   }
   if (qq.type === 'matching') {
@@ -353,7 +353,7 @@ const server = http.createServer(async (req, res) => {
       const ta = parseInt(db.settings.timeAdd, 10);
       cfg.time = cfg.time + (isNaN(ta) ? 5 : ta);
       if (!CHAPTERS.find(c => c.id === chapter) || !cfg) return sendJSON(res, 400, { err: '参数错误' });
-      const allowTypes = level === 1 ? ['single', 'judge'] : ['single', 'judge', 'multi', 'fill', 'matching'];
+      const allowTypes = level === 1 ? ['single', 'judge'] : ['single', 'judge', 'multi', 'fill', 'matching', 'calc'];
       const picked = pickQuestions(chapter, cfg.q, a.user.id, allowTypes);
       if (!picked.list.length) return sendJSON(res, 404, { err: '该章节暂无可用题目，请联系老师在题库中添加' });
       return sendJSON(res, 200, { questions: picked.list, cfg, pt: makePaper(a.user.id, picked.entries) });
@@ -786,12 +786,13 @@ const server = http.createServer(async (req, res) => {
         '0,1,judge,可以用湿手触摸开关、插座等电气设备。,正确;错误,B,湿手触摸电气设备极易触电，禁止。,2',
         '0,1,multi,电气设备起火时，正确的做法是？,切断电源;用干粉灭火器灭火;用水直接浇灭;用二氧化碳灭火器灭火,A,B,先断电再用干粉或二氧化碳灭火，不可用水浇电气设备,4',
         '0,1,fill,1A=____mA（填数字）。,,1000,1A=1000mA=10⁶μA。,3',
-        '12,1,matching,请将下列物理量与对应的符号连线。,左:电流|电压;右:I|U,0-0;1-1,电流-I、电压-U。,3'
+        '12,1,matching,请将下列物理量与对应的符号连线。,左:电流|电压;右:I|U,0-0;1-1,电流-I、电压-U。,3',
+        '1,3,calc,某电阻两端电压为12V，通过的电流为0.4A，求该电阻的阻值。,,30,由欧姆定律 R=U/I=12/0.4=30Ω。,3'
       ];
       let csv = 'chapter,section,type,question,options,answer,explain,difficulty\r\n';
       // 模板说明注释行（# 开头，导入时会忽略）
       csv += '# 试题导入模板说明（本行及#开头的行导入时忽略）\r\n';
-      csv += '# chapter:章节号0~12；section:节号1~5；type:single单选/judge判断/multi多选/fill填空/matching连线\r\n';
+      csv += '# chapter:章节号0~12；section:节号1~5；type:single单选/judge判断/multi多选/fill填空/matching连线/calc计算\r\n';
       csv += '# options:单选/判断/多选用分号(;)分隔选项（自动加A./B./C./D.前缀，已带前缀则保留）；连线题用 左:电流|电压;右:I|U\r\n';
       csv += '# answer:单选/判断填字母(A/B/C)；多选填字母逗号分隔(A,B)；填空填答案；连线填配对(0-0;1-1表示左0连右0)\r\n';
       csv += '# difficulty:难度1~5（1易~5难），留空默认3\r\n';
@@ -1090,7 +1091,7 @@ function parseImportJSON(text) {
 /* 关卡自动计时：朗读时间（题干+选项字数 /4 字每秒）+ 答题基础时间 */
 function computeLevelTime(levelQ) {
   const avgChars = {}; // 每关允许题型在题库中的平均题面字符数（含选项）
-  const typesByLevel = { 1: ['single', 'judge'], 2: ['single', 'judge', 'multi', 'fill', 'matching'], 3: ['single', 'judge', 'multi', 'fill', 'matching'], boss: ['single', 'judge', 'multi', 'fill', 'matching'] };
+  const typesByLevel = { 1: ['single', 'judge'], 2: ['single', 'judge', 'multi', 'fill', 'matching', 'calc'], 3: ['single', 'judge', 'multi', 'fill', 'matching', 'calc'], boss: ['single', 'judge', 'multi', 'fill', 'matching', 'calc'] };
   for (const k of ['1', '2', '3', 'boss']) {
     const pool = questions.filter(q => typesByLevel[k].includes(q.type));
     if (!pool.length) { avgChars[k] = 60; continue; }
@@ -1121,7 +1122,7 @@ function computeLevelTime(levelQ) {
 function buildPaper(body) {
   const chs = Array.isArray(body.chapters) ? body.chapters.map(Number).filter(n => CHAPTERS.some(c => c.id === n)) : [];
   const diffs = Array.isArray(body.difficulties) ? body.difficulties.map(Number).filter(n => n >= 1 && n <= 5) : [];
-  const types = Array.isArray(body.types) ? body.types.filter(t => ['single', 'judge', 'multi', 'fill', 'matching'].includes(t)) : [];
+  const types = Array.isArray(body.types) ? body.types.filter(t => ['single', 'judge', 'multi', 'fill', 'matching', 'calc'].includes(t)) : [];
   const mastery = body.mastery === 'weak' ? 'weak' : body.mastery === 'good' ? 'good' : 'all';
   const count = Math.max(1, Math.min(200, parseInt(body.count, 10) || 20));
   let pool = questions.slice();
@@ -1146,15 +1147,14 @@ function buildPaper(body) {
   const picked = shuffle(pool, rand).slice(0, count);
   const chNames = chs.length ? chs.map(n => { const c = CHAPTERS.find(x => x.id === n); return n === 0 ? '导言' : '第' + n + '章 ' + c.name; }).join('、') : '全部章节';
   const title = '电工技术基础与技能 测验卷（' + chNames + (diffs.length ? '·难度' + diffs.join('/') : '') + '）';
-  const groups = [];
-  CHAPTERS.forEach(c => {
-    const qs = picked.filter(q => q.chapter === c.id);
-    if (qs.length) groups.push({ chapter: c.id, name: c.name, questions: qs });
-  });
+  const typeOrder = ['single', 'judge', 'multi', 'fill', 'matching', 'calc'];
+  const typeName = { single: '单选题', judge: '判断题', multi: '多选题', fill: '填空题', matching: '连线题', calc: '计算题' };
+  const groups = typeOrder.filter(t => picked.some(q => q.type === t)).map(t => ({ type: t, name: typeName[t], questions: picked.filter(q => q.type === t) }));
   return { title, groups, total: picked.length, list: picked };
 }
 /* 渲染题干与选项文本（Word 兼容 HTML） */
 function paperOptsHtml(q) {
+  if (q.type === 'fill' || q.type === 'calc') return '';
   if (q.type === 'matching') {
     const o = q.options || {};
     const left = Array.isArray(o.left) ? o.left : [];
@@ -1168,45 +1168,85 @@ function paperOptsHtml(q) {
   return '<p style="margin:2px 0">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]\s*/, '')).join('<br/>') : '') + '</p>';
 }
 /* 生成 Word/WPS 可打印 .doc（Word 兼容 HTML） */
+/* 1.0.0.6 试卷排版：按题型分组、答题空间、计算题已知/求/解/答 */
 function paperToDoc(r, includeAnswer) {
   const escH = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const unit = db.settings.unit || '';
   const gameName = db.settings.gameName || '电闯关·电工大作战';
+  const typeName = { single: '单选题', judge: '判断题', multi: '多选题', fill: '填空题', matching: '连线题', calc: '计算题' };
+  const typeNo = { single: '一', judge: '二', multi: '三', fill: '四', matching: '五', calc: '六' };
+  const typeTip = {
+    single: '（每题只有一个正确答案）',
+    judge: '（判断对错，正确打“√”，错误打“×”）',
+    multi: '（每题有两个或两个以上正确答案，多选、少选、错选均不得分）',
+    fill: '（将正确答案填写在横线上）',
+    matching: '（将左列内容与右列对应的选项用线连接）',
+    calc: '（请按“已知、求、解、答”四步作答，计算过程写在解中）'
+  };
   let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">';
   html += '<head><meta charset="utf-8"><title>' + escH(r.title) + '</title>';
-  html += '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->';
-  html += '<style>body{font-family:"宋体",SimSun,serif;font-size:12pt;line-height:1.8;color:#000} .paper-title{text-align:center;font-size:16pt;font-weight:bold} .paper-sub{text-align:center;font-size:10.5pt;color:#444;margin:6px 0 12px} h3{font-size:12pt;border-bottom:1px solid #999;padding-bottom:2px} .q{margin:10px 0} .ans{color:#333;font-size:10.5pt} .ans b{color:#c00}</style></head>';
+  html += '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->';
+  html += '<style>body{font-family:"宋体",SimSun,serif;font-size:12pt;line-height:1.9;color:#000;margin:0 28px} ' +
+    '.paper-title{text-align:center;font-size:16pt;font-weight:bold;letter-spacing:2px;margin:6px 0} ' +
+    '.paper-sub{text-align:center;font-size:10.5pt;color:#333;margin:4px 0 10px} ' +
+    '.info-table{width:100%;border-collapse:collapse;margin:8px 0 14px} ' +
+    '.info-table td{border:1px solid #000;padding:5px 8px;font-size:11pt;height:26px} ' +
+    '.require{font-size:10.5pt;color:#333;margin:2px 0 10px} ' +
+    'h3{font-size:12.5pt;font-weight:bold;margin:18px 0 6px;page-break-after:avoid} ' +
+    '.q{margin:12px 0;page-break-inside:avoid} ' +
+    '.opts{margin:3px 0 2px 24px;font-size:12pt;line-height:1.9} ' +
+    '.judge-blank{display:inline-block;margin-left:16px} ' +
+    '.fill-blank{display:inline-block;margin-left:14px;border-bottom:1.5px solid #000;width:120px;height:1.4em;vertical-align:bottom} ' +
+    '.calc-frame{margin:8px 0 6px 24px;font-size:12pt;line-height:1.6} ' +
+    '.calc-line{display:block;border-bottom:1px solid #000;height:1.5em;margin:6px 0 2px 2em} ' +
+    '.calc-frame b{font-weight:bold} ' +
+    '.ans{margin-top:4px;color:#222;font-size:10.5pt;border-top:1px dashed #aaa;padding-top:3px} .ans b{color:#c00} ' +
+    '.footer{margin-top:26px;text-align:center;font-size:10.5pt;color:#555}</style></head>';
   html += '<body>';
   html += '<div class="paper-title">' + escH(r.title) + '</div>';
   html += '<div class="paper-sub">' + (unit ? escH(unit) + '　' : '') + escH(gameName) + '　共 ' + r.total + ' 题' + (includeAnswer ? '　（含参考答案）' : '') + '</div>';
+  /* 考生信息栏 */
+  html += '<table class="info-table"><tr><td style="width:14%">姓　名：</td><td style="width:36%">&nbsp;</td><td style="width:14%">班　级：</td><td style="width:36%">&nbsp;</td></tr>' +
+    '<tr><td>学　号：</td><td>&nbsp;</td><td>得　分：</td><td>&nbsp;</td></tr></table>';
+  html += '<p class="require">答题要求：' + r.groups.map(g => typeName[g.type] + ' ' + g.questions.length + ' 题').join('；') + '。请认真审题，书写工整，答完后检查。</p>';
   let no = 0;
   r.groups.forEach(g => {
-    html += '<h3>' + (g.chapter === 0 ? '导言' : '第' + g.chapter + '章') + '　' + escH(g.name) + '（' + g.questions.length + ' 题）</h3>';
+    html += '<h3>' + typeNo[g.type] + '、' + typeName[g.type] + '（共 ' + g.questions.length + ' 题）' + typeTip[g.type] + '</h3>';
     g.questions.forEach(q => {
       no++;
       html += '<div class="q"><b>' + no + '.</b> ' + escH(q.question);
-      if (q.type !== 'fill' && q.type !== 'judge') html += '<br/>' + paperOptsHtml(q);
+      if (q.type === 'single' || q.type === 'multi') {
+        html += '<div class="opts">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]s*/, '')).join('　　') : '') + '</div>';
+      } else if (q.type === 'judge') {
+        html += '<span class="judge-blank">（&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;）</span>';
+      } else if (q.type === 'fill') {
+        html += '<span class="fill-blank"></span>';
+      } else if (q.type === 'matching') {
+        html += paperOptsHtml(q);
+      } else if (q.type === 'calc') {
+        /* 计算题：已知/求/解/答 答题框架 */
+        html += '<div class="calc-frame"><b>已知：</b><span class="calc-line"></span><b>求：</b><span class="calc-line"></span>' +
+          '<b>解：</b><span class="calc-line"></span><span class="calc-line"></span><span class="calc-line"></span>' +
+          '<b>答：</b><span class="calc-line"></span></div>';
+      }
       if (includeAnswer) {
-        html += '<div class="ans">答案：<b>' + (q.type === 'matching' ? '见配对' : escH(q.answer)) + '</b>';
-        if (q.explain) html += '<br/>解析：' + escH(q.explain);
-        html += '</div>';
+        if (q.type === 'matching') {
+          html += '<div class="ans">' + paperOptsHtml(q) + '</div>';
+        } else {
+          html += '<div class="ans">参考答案：<b>' + escH(q.answer) + '</b>' + (q.explain ? '<br/>解析：' + escH(q.explain) : '') + '</div>';
+        }
       }
       html += '</div>';
     });
   });
-  if (includeAnswer) {
-    html += '<p style="margin-top:16px">—— ' + escH(gameName) + ' · ' + (unit || '') + ' 自动组卷（难度标注：' + escH([1, 2, 3, 4, 5].map(n => n + '星').join('/')) + '）——</p>';
-  } else {
-    html += '<p style="margin-top:16px">姓名：__________　班级：__________　得分：__________</p>';
-    html += '<p style="margin-top:8px;color:#666">—— 本卷由 ' + escH(gameName) + ' 自动组卷生成，请老师打印后使用 ——</p>';
-  }
+  html += '<div class="footer">—— ' + escH(gameName) + ' · ' + escH(unit || '') + ' 自动组卷（题型：' + escH(r.groups.map(g => typeName[g.type]).join('、')) + '）——</div>';
   html += '</body></html>';
   return html;
 }
 
 function validateQuestion(b) {
   const chapters = CHAPTERS.map(c => c.id);
-  const types = ['single', 'judge', 'multi', 'fill', 'matching'];
+  const types = ['single', 'judge', 'multi', 'fill', 'matching', 'calc'];
   if (!chapters.includes(Number(b.chapter))) return '章节无效';
   if (!types.includes(b.type)) return '题型无效';
   if (!b.question || !String(b.question).trim()) return '题干不能为空';
@@ -1226,6 +1266,10 @@ function validateQuestion(b) {
   }
   if (b.type === 'fill') {
     if (!b.answer || !String(b.answer).trim()) return '填空答案不能为空';
+    return null;
+  }
+  if (b.type === 'calc') {
+    if (!b.answer || !String(b.answer).trim()) return '计算题答案不能为空（填最终结果数值）';
     return null;
   }
   if (!Array.isArray(b.options) || b.options.length < 2) return '至少需要 2 个选项';

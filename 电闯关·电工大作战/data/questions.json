@@ -5259,5 +5259,38 @@
     "answer": "[[0,2],[1,1],[2,4],[3,0],[4,3],[5,5]]",
     "explain": "角频率-rad/s、频率-Hz、周期-s、磁通-Wb、磁感应强度-T、功率因数无量纲。",
     "difficulty": 3
+  },
+  {
+    "chapter": 1,
+    "section": 3,
+    "type": "calc",
+    "question": "某电阻两端电压为12V，通过的电流为0.4A，求该电阻的阻值是多少欧？",
+    "options": [],
+    "answer": "30",
+    "explain": "由欧姆定律 R=U/I=12/0.4=30Ω。",
+    "difficulty": 3,
+    "id": 340
+  },
+  {
+    "chapter": 2,
+    "section": 1,
+    "type": "calc",
+    "question": "两个电阻R₁=6Ω、R₂=12Ω串联后接到18V电源上，求电路中的电流是多少安？",
+    "options": [],
+    "answer": "1",
+    "explain": "串联总电阻 R=R₁+R₂=6+12=18Ω，I=U/R=18/18=1A。",
+    "difficulty": 3,
+    "id": 341
+  },
+  {
+    "chapter": 2,
+    "section": 2,
+    "type": "calc",
+    "question": "一只额定功率为100W的白炽灯接在220V电源上正常工作，求通过灯丝的电流约为多少安？（保留两位小数）",
+    "options": [],
+    "answer": "0.45",
+    "explain": "I=P/U=100/220≈0.45A。",
+    "difficulty": 4,
+    "id": 342
   }
 ]

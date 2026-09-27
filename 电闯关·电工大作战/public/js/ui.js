@@ -64,7 +64,7 @@
     if (score >= 500) return '初级电工';
     return '新手电工';
   }
-  const TYPE_NAME = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线' };
+  const TYPE_NAME = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线', calc: '计算' };
 
   /* 填空答案归一化判定（含纯数字容差 ±1%） */
   function normText(s) {
@@ -797,7 +797,7 @@ async function loadChapterAnalysis(ch) {
   /* 题目表单（新增/编辑） */
   function questionForm(q) {
     const chapters = S.chapters.map(c => '<option value="' + c.id + '"' + (q && q.chapter === c.id ? ' selected' : '') + '>第' + (c.id === 0 ? '0' : c.id) + '章 ' + c.name + '</option>').join('');
-    const typeOpts = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线' };
+    const typeOpts = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线', calc: '计算' };
     const typeSel = Object.keys(typeOpts).map(t => '<option value="' + t + '"' + (q && q.type === t ? ' selected' : '') + '>' + typeOpts[t] + '</option>').join('');
     const fillRow = q && q.type === 'fill' ? '' : '';
     openModal(
@@ -811,7 +811,7 @@ async function loadChapterAnalysis(ch) {
       '<label style="font-size:12px;color:var(--dim)">连线题·左列（每行一项）</label><textarea id="qf-m-left" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.left || []).join('\n') : '') + '</textarea>' +
       '<label style="font-size:12px;color:var(--dim);margin-top:6px">右列（每行一项，数量与左列一致）</label><textarea id="qf-m-right" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.right || []).join('\n') : '') + '</textarea>' +
       '<label style="font-size:12px;color:var(--dim);margin-top:6px">配对（每行一对：左序号-右序号，从0开始，如 0-0、1-3）</label><textarea id="qf-m-pairs" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' ? String(q.answer).replace(/\[\[/g, '').replace(/\]\]/g, '').split('],[').map(s => s.replace(',', '-')).join('\n') : '') + '</textarea></div>' +
-      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">答案（单选/判断填字母如 A；多选填 A,C；填空直接填答案文本；连线题在下方配对区填写）</label><input id="qf-answer" type="text" value="' + esc(q ? q.answer : '') + '"></div>' +
+      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">答案（单选/判断填字母如 A；多选填 A,C；填空/计算填答案文本，计算题填最终结果数值如 30；连线题在下方配对区填写）</label><input id="qf-answer" type="text" value="' + esc(q ? q.answer : '') + '"></div>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">难度等级（1 最易 ~ 5 最难）</label><select id="qf-diff" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' + [1,2,3,4,5].map(n => '<option value="' + n + '"' + ((q ? q.difficulty : 3) === n ? ' selected' : '') + '>' + n + ' 星' + (n === 1 ? '（易）' : n === 5 ? '（难）' : '') + '</option>').join('') + '</select></div>' +'<div class="form-row"><label style="font-size:12px;color:var(--dim)">解析（可选）</label><input id="qf-explain" type="text" value="' + esc(q ? q.explain : '') + '"></div>' +
       '<div class="msg" id="qf-msg"></div>' +
       '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="qf-save">保存</button></div>');
@@ -839,7 +839,7 @@ async function loadChapterAnalysis(ch) {
       if (bad || pairs.length !== left.length) { $('qf-msg').textContent = '配对须覆盖全部行且格式为 左序号-右序号'; return; }
       answer = JSON.stringify(pairs.map(pr => [pr[0], pr[1]]));
     } else {
-      options = type === 'fill' ? [] : $('qf-options').value.split('\n').map(s => s.trim()).filter(Boolean);
+      options = (type === 'fill' || type === 'calc') ? [] : $('qf-options').value.split('\n').map(s => s.trim()).filter(Boolean);
     }
     const data = {
       chapter: parseInt($('qf-chapter').value, 10),
@@ -853,7 +853,7 @@ async function loadChapterAnalysis(ch) {
     };
     const msg = $('qf-msg');
     if (!data.question) { msg.textContent = '题干不能为空'; return; }
-    if (type !== 'fill' && type !== 'matching' && options.length < 2) { msg.textContent = '选项至少 2 个'; return; }
+    if (type !== 'fill' && type !== 'calc' && type !== 'matching' && options.length < 2) { msg.textContent = '选项至少 2 个'; return; }
     if (!data.answer) { msg.textContent = '答案不能为空'; return; }
     try {
       if (q) await API.qUpdate(q.id, data);
@@ -1305,7 +1305,7 @@ async function loadChapterAnalysis(ch) {
       const P = S.paper;
       const chChips = S.chapters.map(c => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-ch" value="' + c.id + '"' + (P.chapters.includes(c.id) ? ' checked' : '') + '> 第' + (c.id === 0 ? '0' : c.id) + '章 ' + esc(c.name) + '</label>').join('');
       const diffChips = [1, 2, 3, 4, 5].map(n => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-diff" value="' + n + '"' + (P.diffs.includes(n) ? ' checked' : '') + '> ' + n + ' 星</label>').join('');
-      const typeChips = [['single', '单选'], ['judge', '判断'], ['multi', '多选'], ['fill', '填空'], ['matching', '连线']].map(t => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-type" value="' + t[0] + '"' + (P.types.includes(t[0]) ? ' checked' : '') + '> ' + t[1] + '</label>').join('');
+      const typeChips = [['single', '单选'], ['judge', '判断'], ['multi', '多选'], ['fill', '填空'], ['matching', '连线'], ['calc', '计算']].map(t => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-type" value="' + t[0] + '"' + (P.types.includes(t[0]) ? ' checked' : '') + '> ' + t[1] + '</label>').join('');
       box.innerHTML = '<h3 style="margin-bottom:10px">📄 自动组卷（按章节/难度/题型/掌握情况，可导出 Word 打印）</h3>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">选择章节（不选 = 全部章节）</label><br>' + chChips + '</div>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">难度等级（不选 = 全部难度）</label><br>' + diffChips + '</div>' +
@@ -1335,7 +1335,7 @@ async function loadChapterAnalysis(ch) {
           S.paperTitle = r.title; S.paperGroups = r.groups; S.paperTotal = r.total;
           const ex = $('p-export'); if (ex) ex.disabled = false;
           pv.innerHTML = '<b style="color:var(--accent2)">' + esc(r.title) + '</b>　共 ' + r.total + ' 题<br>' +
-            r.groups.map(g => '<div style="margin:6px 0"><b>第' + (g.chapter === 0 ? '0' : g.chapter) + '章 ' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
+            r.groups.map(g => '<div style="margin:6px 0"><b>' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
               g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + esc(q.question) + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
             '<div style="margin-top:8px;color:var(--dim)">导出 Word 后可在 WPS/Word 中打开打印。</div>';
         } catch (e) { pv.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
