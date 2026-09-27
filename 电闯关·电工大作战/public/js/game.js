@@ -90,7 +90,7 @@
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   /* ---------- 关卡启动 ---------- */
-  function start(chapter, level, questions, cfg) {
+  function start(chapter, level, questions, cfg, pt) {
     window._curLevelId = level.id;
     $('screen-game').style.display = 'block';
     resize();
@@ -101,7 +101,7 @@
     if (vbtn2) { vbtn2.textContent = window.__voiceMuted ? '🔇' : '🔊'; vbtn2.onclick = toggleVoice; }
     syncVoiceBtns();
     state = {
-      chapter, level, questions, cfg,
+      chapter, level, questions, cfg, pt: pt || '',
       qi: 0,                 // 当前题序号
       hearts: 3, maxHearts: 3,
       score: 0, apiGain: 0,
@@ -156,7 +156,11 @@
       return;
     }
     if (q.type === 'matching') {
-      window.UIM.buildMatchUI(box, q, (correct) => { applyAnswer(correct); });
+      window.UIM.buildMatchUI(box, q, (userPairs) => {
+        if (!state || state.phase !== 'play' || state.over || state.graded) return;
+        state.graded = true;
+        submitAnswer(userPairs);
+      });
       return;
     }
     q.options.forEach((o, i) => {
@@ -290,28 +294,33 @@
     return id === 1 ? 0.42 : (id === 2 ? 0.62 : (state.isBoss ? 0.6 : 0.82));
   }
 
-  /* ---------- 作答判定 ---------- */
+  /* ---------- 作答判定（1.0.0.4：提交 choice 由服务端判分） ---------- */
+  /* 提交答案：choice = 选项下标/下标数组/填空文本/连线配对，null 表示超时或放弃 */
+  function submitAnswer(choice) {
+    const q = curQ();
+    if (!q) { applyAnswer(false); return; }
+    API.answer({
+      pt: state.pt, qid: q.id, choice,
+      combo: state.combo + 1, tLeft: Math.max(0, state.time)
+    }).then(r => {
+      applyAnswer(!!r.correct);
+    }).catch(() => {
+      // 网络异常等：按答错处理，保证游戏可继续
+      applyAnswer(false);
+    });
+  }
   function grade(pick) {
     if (!state || state.phase !== 'play' || state.over || state.graded) return;
     const q = curQ();
     state.graded = true;
-    if (q.type === 'matching') { applyAnswer(false); return; }
-    let correct = false;
-    if (q.type === 'multi') {
-      const ans = (q.answerIdx || []).slice().sort();
-      const sel = (pick || []).slice().sort();
-      correct = ans.length === sel.length && ans.every((v, i) => v === sel[i]);
-    } else {
-      correct = q.answerIdx === pick;
-    }
-    applyAnswer(correct);
+    if (q.type === 'matching') { submitAnswer(null); return; }
+    submitAnswer(q.type === 'multi' ? (pick || []).slice() : pick);
   }
   function submitFill() {
     const q = curQ();
     if (!q || state.graded || state.over) return;
     state.graded = true;
-    const correct = window.Norm.answerMatch($('fill-input').value, q.answer);
-    applyAnswer(correct);
+    submitAnswer($('fill-input').value);
   }
   function applyAnswer(correct) {
     const q = curQ();
@@ -349,8 +358,7 @@
         state.boss.hp = Math.min(state.cfg.q, state.boss.hp + 1);
       }
     }
-    // 上报服务端
-    API.answer({ qid: q.id, chapter: q.chapter, correct, score: delta }).catch(() => {});
+    // 上报已在 submitAnswer 中完成（服务端判分）
     if (!state.over && state.hearts > 0) setTimeout(nextQuestion, correct ? 900 : 1200);
     else if (!state.over && state.hearts <= 0) { /* 等 loseHeart 的 endLevel */ }
   }
@@ -435,7 +443,7 @@
     if (s.time <= 0 && !s.graded) {
       s.time = 0;
       state.graded = true;
-      applyAnswer(false);
+      submitAnswer(null);   // 超时：服务端判为答错
     }
     /* 玩家 */
     const p = s.player;

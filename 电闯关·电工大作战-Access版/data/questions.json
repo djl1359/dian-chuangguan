@@ -12,7 +12,8 @@
     ],
     "answer": "A",
     "explain": "我国和欧洲多数国家工频为50Hz，美国等为60Hz。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 2,
@@ -25,7 +26,8 @@
     ],
     "answer": "A",
     "explain": "我国规定安全电压额定值为42V、36V、24V、12V、6V，一般场所取36V以下。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 3,
@@ -40,7 +42,8 @@
     ],
     "answer": "B",
     "explain": "先切断电源或用绝缘物使触电者脱离电源，严禁用手直接拉拽。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 4,
@@ -53,7 +56,8 @@
     ],
     "answer": "B",
     "explain": "湿手导电性增强，容易触电，严禁用湿手触摸电气设备。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 5,
@@ -68,7 +72,8 @@
     ],
     "answer": "C",
     "explain": "电气火灾必须先断电，用水或泡沫灭火器可能导电伤人，应使用干粉或二氧化碳灭火器。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 6,
@@ -83,7 +88,8 @@
     ],
     "answer": "C",
     "explain": "危险程度越高的场所安全电压越低，特别危险场所应使用12V以下安全电压。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 7,
@@ -96,7 +102,8 @@
     ],
     "answer": "B",
     "explain": "电工作业必须穿戴绝缘防护用品，这是基本安全要求。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 8,
@@ -111,7 +118,8 @@
     ],
     "answer": "C",
     "explain": "三孔插座上孔接保护接地线（PE），左零右火。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 9,
@@ -124,7 +132,8 @@
     ],
     "answer": "A",
     "explain": "移动式、手持式电气设备使用环境复杂，必须装漏电保护器保障安全。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 10,
@@ -139,7 +148,8 @@
     ],
     "answer": "B",
     "explain": "我国单相照明用电为220V（相电压），三相线电压为380V。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 11,
@@ -154,7 +164,8 @@
     ],
     "answer": "A",
     "explain": "电路由电源（供电）、负载（耗电）、导线（输电）、开关（控制）四部分组成。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 12,
@@ -169,7 +180,8 @@
     ],
     "answer": "B",
     "explain": "电流方向规定为正电荷定向移动方向，与电子实际移动方向相反。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 13,
@@ -184,7 +196,8 @@
     ],
     "answer": "B",
     "explain": "电流单位是安培A，1A=10³mA=10⁶μA。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 14,
@@ -197,7 +210,8 @@
     ],
     "answer": "A",
     "explain": "毫安是千分之一安，1mA=10⁻³A。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 15,
@@ -212,7 +226,8 @@
     ],
     "answer": "B",
     "explain": "1A=10⁶μA，微是10⁻⁶。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 16,
@@ -227,7 +242,8 @@
     ],
     "answer": "B",
     "explain": "电阻单位是欧姆Ω，常用还有kΩ、MΩ。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 17,
@@ -242,7 +258,8 @@
     ],
     "answer": "D",
     "explain": "电阻由材料、长度、横截面积和温度决定，与电压电流无关。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 18,
@@ -257,7 +274,8 @@
     ],
     "answer": "B",
     "explain": "电阻定律R=ρL/S，ρ为电阻率，L为长度，S为横截面积。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 19,
@@ -272,7 +290,8 @@
     ],
     "answer": "A",
     "explain": "金属导体温度升高，电子热运动加剧、碰撞增多，电阻增大。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 20,
@@ -287,7 +306,8 @@
     ],
     "answer": "A",
     "explain": "部分电路欧姆定律：I=U/R，电流与电压成正比、与电阻成反比。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 21,
@@ -302,7 +322,8 @@
     ],
     "answer": "B",
     "explain": "R=U/I=10/2=5Ω。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 22,
@@ -317,7 +338,8 @@
     ],
     "answer": "B",
     "explain": "电流定义式I=Q/t，为单位时间通过导体横截面的电荷量。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 23,
@@ -332,7 +354,8 @@
     ],
     "answer": "B",
     "explain": "电能国际单位是焦耳J，千瓦时是常用单位（1度=1kW·h）。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 24,
@@ -347,7 +370,8 @@
     ],
     "answer": "B",
     "explain": "1kW·h=1000W×3600s=3.6×10⁶J。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 25,
@@ -362,7 +386,8 @@
     ],
     "answer": "B",
     "explain": "电功率单位是瓦特W，1kW=1000W。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 26,
@@ -377,7 +402,8 @@
     ],
     "answer": "B",
     "explain": "电功率P=UI，即电压与电流的乘积；也可写为P=I²R=U²/R。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 27,
@@ -392,7 +418,8 @@
     ],
     "answer": "A",
     "explain": "I=P/U=100/220≈0.45A。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 28,
@@ -405,7 +432,8 @@
     ],
     "answer": "A",
     "explain": "电能W=Pt，也等于UIt。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 29,
@@ -418,7 +446,8 @@
     ],
     "answer": "A",
     "explain": "电流做功是电能转化为热能、光能、机械能等的过程。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 30,
@@ -433,7 +462,8 @@
     ],
     "answer": "C",
     "explain": "橡胶、塑料、玻璃等是绝缘体；铜是导体，盐水是导体，石墨是导体。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 31,
@@ -448,7 +478,8 @@
     ],
     "answer": "B",
     "explain": "硅（Si）、锗（Ge）是最常用的半导体材料。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 32,
@@ -463,7 +494,8 @@
     ],
     "answer": "C",
     "explain": "持续电流需要两个条件：有电源提供电压，且电路闭合形成通路。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 33,
@@ -478,7 +510,8 @@
     ],
     "answer": "B",
     "explain": "电压单位是伏特V，1kV=10³V。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 34,
@@ -491,7 +524,8 @@
     ],
     "answer": "A",
     "explain": "发电机把机械能转化为电能，电池把化学能转化为电能。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 35,
@@ -506,7 +540,8 @@
     ],
     "answer": "B",
     "explain": "负载是消耗电能的元件，如灯泡、电动机等。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 36,
@@ -521,7 +556,8 @@
     ],
     "answer": "A",
     "explain": "W=UIt=10×0.5×10=50J。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 37,
@@ -536,7 +572,8 @@
     ],
     "answer": "A",
     "explain": "P=UI=6×0.2=1.2W。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 38,
@@ -549,7 +586,8 @@
     ],
     "answer": "A",
     "explain": "电压方向即电位降方向，从高电位指向低电位。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 39,
@@ -564,7 +602,8 @@
     ],
     "answer": "B",
     "explain": "金属导体靠自由电子导电。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 40,
@@ -579,7 +618,8 @@
     ],
     "answer": "B",
     "explain": "电位是相对量，指该点与参考点之间的电压。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 281,
@@ -594,7 +634,8 @@
     ],
     "answer": "A,B,C,D",
     "explain": "电路由电源、负载、导线（中间环节）、开关（控制）四部分组成。",
-    "section": 1
+    "section": 1,
+    "difficulty": 4
   },
   {
     "id": 282,
@@ -609,7 +650,8 @@
     ],
     "answer": "A,B,D",
     "explain": "铜、铝、石墨是导体；橡胶是绝缘体。",
-    "section": 1
+    "section": 1,
+    "difficulty": 4
   },
   {
     "id": 283,
@@ -624,7 +666,8 @@
     ],
     "answer": "A,B,C,D",
     "explain": "电功W=UIt=Pt=I²Rt=U²t/R，四式等价。",
-    "section": 4
+    "section": 4,
+    "difficulty": 4
   },
   {
     "id": 301,
@@ -634,7 +677,8 @@
     "options": [],
     "answer": "1000",
     "explain": "1A=1000mA=10⁶μA。",
-    "section": 2
+    "section": 2,
+    "difficulty": 3
   },
   {
     "id": 302,
@@ -644,7 +688,8 @@
     "options": [],
     "answer": "U/R",
     "explain": "I=U/R，电流等于电压除以电阻。",
-    "section": 3
+    "section": 3,
+    "difficulty": 3
   },
   {
     "id": 41,
@@ -659,7 +704,8 @@
     ],
     "answer": "A",
     "explain": "闭合电路欧姆定律：I=E/(R+r)，E为电动势，R为外电阻，r为内阻。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 42,
@@ -674,7 +720,8 @@
     ],
     "answer": "A",
     "explain": "I=E/(R+r)=6/(5+1)=1A。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 43,
@@ -689,7 +736,8 @@
     ],
     "answer": "A",
     "explain": "路端电压U=E-Ir，外电路电压等于电动势减去内阻压降。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 44,
@@ -702,7 +750,8 @@
     ],
     "answer": "A",
     "explain": "短路时R=0，I=E/r很大，路端电压U=E-Ir≈0。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 45,
@@ -715,7 +764,8 @@
     ],
     "answer": "A",
     "explain": "断路时I=0，U=E-Ir=E。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 46,
@@ -730,7 +780,8 @@
     ],
     "answer": "C",
     "explain": "串联总电阻R=R1+R2=30Ω。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 47,
@@ -745,7 +796,8 @@
     ],
     "answer": "A",
     "explain": "串联电路电流处处相等，电压按电阻分配，总电阻等于各电阻之和。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 48,
@@ -760,7 +812,8 @@
     ],
     "answer": "A",
     "explain": "串联分压与电阻成正比：U1:U2=R1:R2。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 49,
@@ -775,7 +828,8 @@
     ],
     "answer": "C",
     "explain": "并联总电阻R=R1R2/(R1+R2)=100/20=5Ω；两相等电阻并联为R/2。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 50,
@@ -790,7 +844,8 @@
     ],
     "answer": "B",
     "explain": "并联电路各支路两端电压相等，总电流等于各支路电流之和。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 51,
@@ -803,7 +858,8 @@
     ],
     "answer": "A",
     "explain": "并联分流与电阻成反比，电阻小则电流大。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 52,
@@ -818,7 +874,8 @@
     ],
     "answer": "C",
     "explain": "n个相等电阻并联：R总=R/n=30/3=10Ω。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 53,
@@ -833,7 +890,8 @@
     ],
     "answer": "C",
     "explain": "混联电路需先识别串并联关系，逐级化简为等效电阻。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 54,
@@ -848,7 +906,8 @@
     ],
     "answer": "C",
     "explain": "万用表测电阻用欧姆档（Ω档）。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 55,
@@ -861,7 +920,8 @@
     ],
     "answer": "A",
     "explain": "每换一个欧姆倍率档，内阻都不同，需重新调零才能保证准确。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 56,
@@ -876,7 +936,8 @@
     ],
     "answer": "B",
     "explain": "电流表串联在电路中，内阻越小对电路影响越小。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 57,
@@ -891,7 +952,8 @@
     ],
     "answer": "B",
     "explain": "电压表并联在电路中，内阻越大分流越小，测量越准。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 58,
@@ -904,7 +966,8 @@
     ],
     "answer": "A",
     "explain": "测量电流要串联，测量电压要并联，接反会烧表。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 59,
@@ -919,7 +982,8 @@
     ],
     "answer": "A",
     "explain": "伏安法测电阻分电流表内接法和外接法两种。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 60,
@@ -932,7 +996,8 @@
     ],
     "answer": "A",
     "explain": "外接法电压表分流影响小电阻测量误差小；大电阻宜用内接法。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 61,
@@ -947,7 +1012,8 @@
     ],
     "answer": "B",
     "explain": "通常选电源负极或公共接地点为零电位参考点。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 62,
@@ -962,7 +1028,8 @@
     ],
     "answer": "B",
     "explain": "I=E/(R+r)=12/6=2A，U=E-Ir=12-2×2=8V。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 63,
@@ -977,7 +1044,8 @@
     ],
     "answer": "B",
     "explain": "R1∥R2=6×12/(6+12)=4Ω，再串R3：4+4=8Ω。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 64,
@@ -990,7 +1058,8 @@
     ],
     "answer": "A",
     "explain": "串联分压、限流；并联分流，是电路设计的常用手段。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 65,
@@ -1005,7 +1074,8 @@
     ],
     "answer": "B",
     "explain": "用毕应置于最高电压档或OFF档，防止误测烧表。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 66,
@@ -1020,7 +1090,8 @@
     ],
     "answer": "B",
     "explain": "测电流必须串联接入被测支路。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 67,
@@ -1033,7 +1104,8 @@
     ],
     "answer": "A",
     "explain": "欧姆表刻度右密左疏，表针偏转越大电阻越小。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 68,
@@ -1048,7 +1120,8 @@
     ],
     "answer": "A",
     "explain": "I=U/R=4/8=0.5A。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 69,
@@ -1063,7 +1136,8 @@
     ],
     "answer": "A",
     "explain": "R增大→I减小→内阻压降Ir减小→路端电压U=E-Ir增大。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 70,
@@ -1076,7 +1150,8 @@
     ],
     "answer": "A",
     "explain": "并联越多分流支路越多，总电阻越小，且小于其中最小的一个。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 71,
@@ -1091,7 +1166,8 @@
     ],
     "answer": "A",
     "explain": "并联电压相等：U=2×3=6V，I2=U/R2=6/6=1A（分流与电阻成反比）。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 72,
@@ -1106,7 +1182,8 @@
     ],
     "answer": "B",
     "explain": "串联分压与电阻成正比，两相等电阻各分一半：12/2=6V。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 73,
@@ -1119,7 +1196,8 @@
     ],
     "answer": "A",
     "explain": "带电测量会损坏万用表，且读数不准，必须断电并断开与其他元件的连接。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 74,
@@ -1134,7 +1212,8 @@
     ],
     "answer": "B",
     "explain": "R一定时，I与U成正比；U一定时，I与R成反比。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 75,
@@ -1149,7 +1228,8 @@
     ],
     "answer": "B",
     "explain": "R=U²/P=220²/100=484Ω。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 284,
@@ -1164,7 +1244,8 @@
     ],
     "answer": "A,B,C",
     "explain": "串联电流相等、总电阻相加、分压与电阻成正比；总电阻最大而非最小。",
-    "section": 2
+    "section": 2,
+    "difficulty": 4
   },
   {
     "id": 285,
@@ -1179,7 +1260,8 @@
     ],
     "answer": "A,B,C",
     "explain": "并联电压相等、总电流相加、分流与电阻成反比；总电阻比任一支路都小。",
-    "section": 2
+    "section": 2,
+    "difficulty": 4
   },
   {
     "id": 286,
@@ -1194,7 +1276,8 @@
     ],
     "answer": "A,B,C",
     "explain": "双手捏金属部分会使人体电阻并联，测量不准。",
-    "section": 3
+    "section": 3,
+    "difficulty": 4
   },
   {
     "id": 303,
@@ -1204,7 +1287,8 @@
     "options": [],
     "answer": "R1+R2",
     "explain": "串联总电阻等于各电阻之和。",
-    "section": 2
+    "section": 2,
+    "difficulty": 3
   },
   {
     "id": 304,
@@ -1214,7 +1298,8 @@
     "options": [],
     "answer": "1000",
     "explain": "1kΩ=10³Ω=1000Ω。",
-    "section": 2
+    "section": 2,
+    "difficulty": 3
   },
   {
     "id": 76,
@@ -1229,7 +1314,8 @@
     ],
     "answer": "A",
     "explain": "KCL：任一节点电流的代数和为零，即流入=流出，依据是电荷守恒。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 77,
@@ -1244,7 +1330,8 @@
     ],
     "answer": "B",
     "explain": "KVL：沿回路绕行一周，电压升等于电压降，代数和为零，依据是能量守恒。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 78,
@@ -1259,7 +1346,8 @@
     ],
     "answer": "B",
     "explain": "节点是三条及以上支路的汇合点，是KCL的应用对象。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 79,
@@ -1272,7 +1360,8 @@
     ],
     "answer": "A",
     "explain": "支路电流法对(n-1)个节点列KCL方程，对(b-n+1)个独立回路列KVL方程。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 80,
@@ -1287,7 +1376,8 @@
     ],
     "answer": "B",
     "explain": "支路电流法需要b个独立方程：n-1个KCL方程+（b-n+1）个KVL方程。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 81,
@@ -1302,7 +1392,8 @@
     ],
     "answer": "B",
     "explain": "叠加定理只适用于线性电路，非线性电路不能叠加。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 82,
@@ -1315,7 +1406,8 @@
     ],
     "answer": "A",
     "explain": "电压源不作用视为短路、电流源不作用视为开路，但均保留各自内阻。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 83,
@@ -1330,7 +1422,8 @@
     ],
     "answer": "B",
     "explain": "戴维宁等效电路=理想电压源（开路电压Uoc）串联等效内阻R0。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 84,
@@ -1345,7 +1438,8 @@
     ],
     "answer": "B",
     "explain": "除源（电压源短路、电流源开路）后，从输出端口看入的等效电阻即为R0。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 85,
@@ -1358,7 +1452,8 @@
     ],
     "answer": "A",
     "explain": "实际电压源（E串r）可等效为实际电流源（Is=E/r并r），对外电路等效。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 86,
@@ -1373,7 +1468,8 @@
     ],
     "answer": "B",
     "explain": "理想电压源内阻为零，端电压恒定，不随负载变化。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 87,
@@ -1388,7 +1484,8 @@
     ],
     "answer": "A",
     "explain": "理想电流源输出电流恒定，不随负载变化。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 88,
@@ -1403,7 +1500,8 @@
     ],
     "answer": "A",
     "explain": "Is=E/r，并联电阻仍为r。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 89,
@@ -1416,7 +1514,8 @@
     ],
     "answer": "A",
     "explain": "实际电压源的伏安特性就是E-Ir，可等效为理想电压源串联内阻。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 90,
@@ -1429,7 +1528,8 @@
     ],
     "answer": "A",
     "explain": "实际电流源可等效为理想电流源并联内阻。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 91,
@@ -1444,7 +1544,8 @@
     ],
     "answer": "B",
     "explain": "独立方程总数等于支路数b=3。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 92,
@@ -1459,7 +1560,8 @@
     ],
     "answer": "A",
     "explain": "流入=流出：2+3=4+I，I=1A。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 93,
@@ -1474,7 +1576,8 @@
     ],
     "answer": "B",
     "explain": "各电源单独作用的分量按方向代数相加（叠加）。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 94,
@@ -1487,7 +1590,8 @@
     ],
     "answer": "A",
     "explain": "KCL、KVL是电路的基本定律，适用范围比叠加定理更广。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 95,
@@ -1502,7 +1606,8 @@
     ],
     "answer": "B",
     "explain": "短路时电压源两端电压为零（理想电压源不允许短路，实际会因电流无穷而烧毁）。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 96,
@@ -1517,7 +1622,8 @@
     ],
     "answer": "A",
     "explain": "Is=E/r=12/2=6A。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 97,
@@ -1530,7 +1636,8 @@
     ],
     "answer": "A",
     "explain": "等效变换针对外部电路而言，内部功率、能量关系不同。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 98,
@@ -1545,7 +1652,8 @@
     ],
     "answer": "B",
     "explain": "二端网络（一端口网络）只有两个引出端与外电路相连。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 99,
@@ -1560,7 +1668,8 @@
     ],
     "answer": "A",
     "explain": "戴维宁定理把复杂网络化简，专门用于求解某一支路的电压电流。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 100,
@@ -1573,7 +1682,8 @@
     ],
     "answer": "A",
     "explain": "节点电压法对(n-1)个独立节点列KCL方程，求解节点电压。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 287,
@@ -1588,7 +1698,8 @@
     ],
     "answer": "A,B,C",
     "explain": "楞次定律用于判断感应电流方向，属于电磁感应内容。",
-    "section": 3
+    "section": 3,
+    "difficulty": 4
   },
   {
     "id": 101,
@@ -1603,7 +1714,8 @@
     ],
     "answer": "B",
     "explain": "电容定义式C=Q/U，单位电压下储存的电荷量。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 102,
@@ -1618,7 +1730,8 @@
     ],
     "answer": "B",
     "explain": "电容单位是法拉F，常用μF、pF，1F=10⁶μF=10¹²pF。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 103,
@@ -1633,7 +1746,8 @@
     ],
     "answer": "C",
     "explain": "1μF=10⁶pF。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 104,
@@ -1648,7 +1762,8 @@
     ],
     "answer": "A",
     "explain": "平行板电容C=εS/(4πkd)，与极板面积成正比，与极板距离成反比。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 105,
@@ -1661,7 +1776,8 @@
     ],
     "answer": "A",
     "explain": "介质不同介电常数ε不同，电容随之改变。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 106,
@@ -1676,7 +1792,8 @@
     ],
     "answer": "B",
     "explain": "并联电容相加：C=C1+C2=10μF。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 107,
@@ -1691,7 +1808,8 @@
     ],
     "answer": "B",
     "explain": "串联：1/C=1/4+1/6=5/12，C=12/5=2.4μF。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 108,
@@ -1704,7 +1822,8 @@
     ],
     "answer": "A",
     "explain": "串联分压，各电容承受电压降低，整体耐压提高。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 109,
@@ -1717,7 +1836,8 @@
     ],
     "answer": "A",
     "explain": "并联各电容电压相同，耐压取最小值。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 110,
@@ -1732,7 +1852,8 @@
     ],
     "answer": "A",
     "explain": "充电后极板间建立电场，储存电场能W=CU²/2。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 111,
@@ -1745,7 +1866,8 @@
     ],
     "answer": "A",
     "explain": "电容对直流相当于开路，对交流呈现容抗XC=1/(ωC)，频率越高越易通过。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 112,
@@ -1760,7 +1882,8 @@
     ],
     "answer": "A",
     "explain": "充电开始电流最大，随电压升高电流按指数规律减小至零。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 113,
@@ -1773,7 +1896,8 @@
     ],
     "answer": "A",
     "explain": "稳态时电容相当于开路，电压等于电源电压。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 114,
@@ -1788,7 +1912,8 @@
     ],
     "answer": "B",
     "explain": "放电电流方向与充电相反，电容释放储存的电荷。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 115,
@@ -1803,7 +1928,8 @@
     ],
     "answer": "A",
     "explain": "Q=CU=10×10⁻⁶×100=1×10⁻³C。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 116,
@@ -1818,7 +1944,8 @@
     ],
     "answer": "A",
     "explain": "电场能W=CU²/2=QU/2。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 117,
@@ -1831,7 +1958,8 @@
     ],
     "answer": "A",
     "explain": "温度、湿度都会影响电容器性能与寿命。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 118,
@@ -1846,7 +1974,8 @@
     ],
     "answer": "B",
     "explain": "电解电容有极性，接反会击穿损坏甚至爆炸。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 119,
@@ -1859,7 +1988,8 @@
     ],
     "answer": "A",
     "explain": "电容储能W=CU²/2不能突变，故电压不能突变（换路定律）。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 120,
@@ -1874,7 +2004,8 @@
     ],
     "answer": "C",
     "explain": "n个相等电容串联：C=C0/n=6/3=2μF。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 288,
@@ -1889,7 +2020,8 @@
     ],
     "answer": "A,B,C",
     "explain": "电容电压不能突变，D错误。",
-    "section": 2
+    "section": 2,
+    "difficulty": 4
   },
   {
     "id": 121,
@@ -1904,7 +2036,8 @@
     ],
     "answer": "B",
     "explain": "奥斯特实验发现通电导线周围存在磁场，揭示了电与磁的联系。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 122,
@@ -1919,7 +2052,8 @@
     ],
     "answer": "B",
     "explain": "安培定则（右手螺旋定则）判断电流磁场方向：拇指指电流方向，四指环绕为磁场方向。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 123,
@@ -1934,7 +2068,8 @@
     ],
     "answer": "B",
     "explain": "磁感应强度单位是特斯拉T，1T=1Wb/m²。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 124,
@@ -1949,7 +2084,8 @@
     ],
     "answer": "B",
     "explain": "磁通单位是韦伯Wb，Φ=BS。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 125,
@@ -1964,7 +2100,8 @@
     ],
     "answer": "B",
     "explain": "Φ=BS（B垂直于面积S时），单位韦伯Wb。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 126,
@@ -1979,7 +2116,8 @@
     ],
     "answer": "A",
     "explain": "磁导率描述介质导磁能力，单位H/m；真空磁导率μ0=4π×10⁻⁷H/m。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 127,
@@ -1992,7 +2130,8 @@
     ],
     "answer": "A",
     "explain": "安培力方向由左手定则判断：磁感线穿手心，四指指电流，拇指指受力方向。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 128,
@@ -2007,7 +2146,8 @@
     ],
     "answer": "B",
     "explain": "F=BILsinθ，θ为电流方向与磁场方向的夹角；垂直时最大，平行时为零。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 129,
@@ -2020,7 +2160,8 @@
     ],
     "answer": "A",
     "explain": "sinθ=0，F=BILsinθ=0。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 130,
@@ -2035,7 +2176,8 @@
     ],
     "answer": "A",
     "explain": "力、电流、磁场用左手定则；电动势、运动、磁场用右手定则。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 131,
@@ -2050,7 +2192,8 @@
     ],
     "answer": "A",
     "explain": "铁、钴、镍等铁磁性物质在磁场中会被磁化而显出磁性。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 132,
@@ -2063,7 +2206,8 @@
     ],
     "answer": "A",
     "explain": "磁感线外部由N到S，内部由S到N，形成闭合曲线。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 133,
@@ -2078,7 +2222,8 @@
     ],
     "answer": "C",
     "explain": "磁感应强度是矢量，既表示强弱也表示方向。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 134,
@@ -2091,7 +2236,8 @@
     ],
     "answer": "A",
     "explain": "磁路分析类似电路：磁通Φ、磁动势F=NI、磁阻Rm。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 135,
@@ -2106,7 +2252,8 @@
     ],
     "answer": "D",
     "explain": "磁阻Rm=l/(μS)，与长度、截面积、磁导率有关，与电流无关。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 136,
@@ -2121,7 +2268,8 @@
     ],
     "answer": "A",
     "explain": "右手四指沿电流环绕方向弯曲，拇指指向即为环形电流磁场N极。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 137,
@@ -2134,7 +2282,8 @@
     ],
     "answer": "A",
     "explain": "磁感线越密，B越大，磁场越强。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 138,
@@ -2149,7 +2298,8 @@
     ],
     "answer": "A",
     "explain": "同向电流相互吸引，反向电流相互排斥。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 139,
@@ -2164,7 +2314,8 @@
     ],
     "answer": "A",
     "explain": "B=Φ/S，1T=1Wb/m²。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 140,
@@ -2177,7 +2328,8 @@
     ],
     "answer": "A",
     "explain": "硬磁材料磁化后剩磁不易消失，适合做永磁体；软磁材料易磁化也易退磁，适合做铁芯。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 289,
@@ -2192,7 +2344,8 @@
     ],
     "answer": "A,B,C,D",
     "explain": "F=BILsinθ，与B、I、L、θ都有关。",
-    "section": 2
+    "section": 2,
+    "difficulty": 4
   },
   {
     "id": 305,
@@ -2202,7 +2355,8 @@
     "options": [],
     "answer": "特斯拉",
     "explain": "磁感应强度单位是特斯拉（T）。",
-    "section": 1
+    "section": 1,
+    "difficulty": 3
   },
   {
     "id": 141,
@@ -2217,7 +2371,8 @@
     ],
     "answer": "B",
     "explain": "法拉第发现：变化的磁场可以在导体中产生感应电动势。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 142,
@@ -2230,7 +2385,8 @@
     ],
     "answer": "A",
     "explain": "闭合回路磁通变化→产生感应电动势→形成感应电流。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 143,
@@ -2245,7 +2401,8 @@
     ],
     "answer": "B",
     "explain": "楞次定律：感应电流的磁场总是阻碍引起感应电流的磁通变化。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 144,
@@ -2260,7 +2417,8 @@
     ],
     "answer": "A",
     "explain": "感应电流总是阻碍磁通变化，符合能量守恒。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 145,
@@ -2275,7 +2433,8 @@
     ],
     "answer": "B",
     "explain": "切割磁感线的动生电动势用右手定则判断方向。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 146,
@@ -2290,7 +2449,8 @@
     ],
     "answer": "A",
     "explain": "E=BLv（B、L、v三者垂直时）。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 147,
@@ -2305,7 +2465,8 @@
     ],
     "answer": "B",
     "explain": "E=nΔΦ/Δt，与磁通变化率成正比，磁通变化越快电动势越大。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 148,
@@ -2320,7 +2481,8 @@
     ],
     "answer": "A",
     "explain": "n为线圈匝数，匝数越多感应电动势越大。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 149,
@@ -2335,7 +2497,8 @@
     ],
     "answer": "A",
     "explain": "自感电动势eL=L·Δi/Δt，与电流变化率成正比。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 150,
@@ -2350,7 +2513,8 @@
     ],
     "answer": "B",
     "explain": "自感系数（电感）单位是亨利H，1H=10³mH=10⁶μH。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 151,
@@ -2363,7 +2527,8 @@
     ],
     "answer": "A",
     "explain": "电感对直流相当于短路（纯电阻），对交流呈现感抗XL=ωL。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 152,
@@ -2376,7 +2541,8 @@
     ],
     "answer": "A",
     "explain": "电感储能W=Li²/2不能突变，故电流不能突变（换路定律）。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 153,
@@ -2391,7 +2557,8 @@
     ],
     "answer": "B",
     "explain": "互感：一线圈电流变化引起另一线圈磁通变化，从而产生感应电动势。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 154,
@@ -2406,7 +2573,8 @@
     ],
     "answer": "B",
     "explain": "原边电流变化通过互感在副边产生感应电动势，实现变压。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 155,
@@ -2419,7 +2587,8 @@
     ],
     "answer": "A",
     "explain": "涡流会引起损耗和发热，但也用于电磁感应加热等。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 156,
@@ -2434,7 +2603,8 @@
     ],
     "answer": "A",
     "explain": "片状绝缘硅钢片切断涡流回路，显著减小涡流损耗。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 157,
@@ -2447,7 +2617,8 @@
     ],
     "answer": "A",
     "explain": "高磁导率外壳为磁场提供低磁阻通路，起到屏蔽作用。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 158,
@@ -2462,7 +2633,8 @@
     ],
     "answer": "A",
     "explain": "启动器断开瞬间，镇流器电流突变产生很高的自感电动势加在灯管两端。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 159,
@@ -2477,7 +2649,8 @@
     ],
     "answer": "A",
     "explain": "E=nΔΦ/Δt，变化越快电动势越大。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 160,
@@ -2490,7 +2663,8 @@
     ],
     "answer": "A",
     "explain": "E=BLv，v越大E越大。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 161,
@@ -2505,7 +2679,8 @@
     ],
     "answer": "B",
     "explain": "ΔΦ=0，则E=nΔΦ/Δt=0。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 162,
@@ -2518,7 +2693,8 @@
     ],
     "answer": "A",
     "explain": "这是楞次定律的核心内容：增反减同。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 163,
@@ -2533,7 +2709,8 @@
     ],
     "answer": "B",
     "explain": "自感电动势阻碍电流的变化：电流增大时反向，电流减小时同向。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 164,
@@ -2546,7 +2723,8 @@
     ],
     "answer": "A",
     "explain": "铁芯耦合磁通最大，互感系数最大。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 165,
@@ -2561,7 +2739,8 @@
     ],
     "answer": "A",
     "explain": "右手定则：磁感线穿手心、拇指指运动方向、四指指感应电流方向。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 290,
@@ -2576,7 +2755,8 @@
     ],
     "answer": "A,B,C",
     "explain": "磁通变化（含自感）和切割磁感线都能产生感应电动势，与电阻无关。",
-    "section": 1
+    "section": 1,
+    "difficulty": 4
   },
   {
     "id": 291,
@@ -2591,7 +2771,8 @@
     ],
     "answer": "A,B,C",
     "explain": "直流电路通断瞬间同样存在自感，D错误。",
-    "section": 3
+    "section": 3,
+    "difficulty": 4
   },
   {
     "id": 306,
@@ -2601,7 +2782,8 @@
     "options": [],
     "answer": "亨利",
     "explain": "自感系数（电感）单位是亨利（H）。",
-    "section": 3
+    "section": 3,
+    "difficulty": 3
   },
   {
     "id": 166,
@@ -2616,7 +2798,8 @@
     ],
     "answer": "A",
     "explain": "发电机中线圈匀速转动切割磁感线，产生按正弦规律变化的电动势。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 167,
@@ -2631,7 +2814,8 @@
     ],
     "answer": "B",
     "explain": "T=1/f，周期与频率互为倒数。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 168,
@@ -2646,7 +2830,8 @@
     ],
     "answer": "B",
     "explain": "T=1/f=1/50=0.02s。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 169,
@@ -2661,7 +2846,8 @@
     ],
     "answer": "A",
     "explain": "ω=2πf=2π/T，单位rad/s。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 170,
@@ -2676,7 +2862,8 @@
     ],
     "answer": "A",
     "explain": "三要素：最大值（幅值）、角频率（频率）、初相位，确定一个正弦量。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 171,
@@ -2691,7 +2878,8 @@
     ],
     "answer": "B",
     "explain": "U=Um/√2≈0.707Um，Um≈1.414U。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 172,
@@ -2706,7 +2894,8 @@
     ],
     "answer": "B",
     "explain": "Um=√2×220≈311V。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 173,
@@ -2721,7 +2910,8 @@
     ],
     "answer": "A",
     "explain": "φ是t=0时刻的相位，称为初相位（初相角）。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 174,
@@ -2736,7 +2926,8 @@
     ],
     "answer": "A",
     "explain": "同频率正弦量的相位差等于初相位之差，恒定不变。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 175,
@@ -2749,7 +2940,8 @@
     ],
     "answer": "A",
     "explain": "相位差=φ1-φ2，与时间无关，恒定。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 176,
@@ -2764,7 +2956,8 @@
     ],
     "answer": "D",
     "explain": "正弦量常用解析式、波形图、相量图表示，没有表格法。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 177,
@@ -2777,7 +2970,8 @@
     ],
     "answer": "A",
     "explain": "有效值就是从热效应等效定义的：与等值直流电发热相同。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 178,
@@ -2792,7 +2986,8 @@
     ],
     "answer": "A",
     "explain": "ω=2πf=2×3.14×50≈314rad/s。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 179,
@@ -2807,7 +3002,8 @@
     ],
     "answer": "B",
     "explain": "一周期内电流经过零点两次，方向改变两次。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 180,
@@ -2820,7 +3016,8 @@
     ],
     "answer": "A",
     "explain": "瞬时值i=Imsin(ωt+φ)，按正弦规律变化。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 181,
@@ -2835,7 +3032,8 @@
     ],
     "answer": "A",
     "explain": "最大值即幅值Um=311V。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 182,
@@ -2850,7 +3048,8 @@
     ],
     "answer": "B",
     "explain": "U=Um/√2=311/1.414≈220V。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 183,
@@ -2865,7 +3064,8 @@
     ],
     "answer": "A",
     "explain": "半波平均值=2Um/π≈0.637Um；0.707Um是有效值系数。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 184,
@@ -2878,7 +3078,8 @@
     ],
     "answer": "A",
     "explain": "相位(ωt+φ)随时间变化，初相位φ恒定。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 185,
@@ -2893,7 +3094,8 @@
     ],
     "answer": "B",
     "explain": "线圈平面平行磁感线时磁通为零，但切割速度最大，感应电动势最大。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 186,
@@ -2908,7 +3110,8 @@
     ],
     "answer": "A",
     "explain": "I=P/U，额定电压相同，功率越大电流越大。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 187,
@@ -2921,7 +3124,8 @@
     ],
     "answer": "A",
     "explain": "常规交流仪表指示的都是有效值。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 188,
@@ -2936,7 +3140,8 @@
     ],
     "answer": "A",
     "explain": "一个周期内相位变化2π（360°）。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 189,
@@ -2951,7 +3156,8 @@
     ],
     "answer": "A",
     "explain": "相位差=30°-(-30°)=60°，u1超前u2 60°。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 190,
@@ -2964,7 +3170,8 @@
     ],
     "answer": "A",
     "explain": "波形图直观反映瞬时值随时间（角度）的变化规律。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 292,
@@ -2979,7 +3186,8 @@
     ],
     "answer": "A,B,C,D",
     "explain": "最大值、有效值、频率、初相位等都是表征正弦量的物理量。",
-    "section": 2
+    "section": 2,
+    "difficulty": 4
   },
   {
     "id": 293,
@@ -2994,7 +3202,8 @@
     ],
     "answer": "A,B,C",
     "explain": "正弦量用解析式、波形图、相量图表示，无表格法。",
-    "section": 2
+    "section": 2,
+    "difficulty": 4
   },
   {
     "id": 307,
@@ -3004,7 +3213,8 @@
     "options": [],
     "answer": "50",
     "explain": "我国工频f=50Hz。",
-    "section": 2
+    "section": 2,
+    "difficulty": 3
   },
   {
     "id": 308,
@@ -3014,7 +3224,8 @@
     "options": [],
     "answer": "311",
     "explain": "Um=√2×220≈311V。",
-    "section": 3
+    "section": 3,
+    "difficulty": 3
   },
   {
     "id": 191,
@@ -3029,7 +3240,8 @@
     ],
     "answer": "B",
     "explain": "纯电阻电路电压电流同相位，φ=0。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 192,
@@ -3044,7 +3256,8 @@
     ],
     "answer": "B",
     "explain": "纯电感电路电流滞后电压90°，即电压超前电流90°。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 193,
@@ -3059,7 +3272,8 @@
     ],
     "answer": "C",
     "explain": "纯电容电路电流超前电压90°。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 194,
@@ -3074,7 +3288,8 @@
     ],
     "answer": "A",
     "explain": "XL=ωL=2πfL，单位欧姆Ω。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 195,
@@ -3089,7 +3304,8 @@
     ],
     "answer": "C",
     "explain": "XC=1/(ωC)=1/(2πfC)。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 196,
@@ -3104,7 +3320,8 @@
     ],
     "answer": "A",
     "explain": "XL=2πfL，频率越高感抗越大。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 197,
@@ -3119,7 +3336,8 @@
     ],
     "answer": "B",
     "explain": "XC=1/(2πfC)，频率越高容抗越小。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 198,
@@ -3134,7 +3352,8 @@
     ],
     "answer": "A",
     "explain": "纯电阻电路cosφ=1，P=UIcosφ=UI=I²R=U²/R。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 199,
@@ -3147,7 +3366,8 @@
     ],
     "answer": "A",
     "explain": "L、C储存能量并周期性交换，平均有功功率为零。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 200,
@@ -3162,7 +3382,8 @@
     ],
     "answer": "A",
     "explain": "QL=I²XL=UIsinφ=UI（纯电感sinφ=1）。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 201,
@@ -3177,7 +3398,8 @@
     ],
     "answer": "B",
     "explain": "Z=√(R²+XL²)，R、XL、Z构成阻抗三角形。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 202,
@@ -3192,7 +3414,8 @@
     ],
     "answer": "B",
     "explain": "Z=√(R²+(XL-XC)²)。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 203,
@@ -3207,7 +3430,8 @@
     ],
     "answer": "B",
     "explain": "XL=XC时发生串联谐振，电路呈纯阻性。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 204,
@@ -3222,7 +3446,8 @@
     ],
     "answer": "A",
     "explain": "cosφ=P/S，有功功率与视在功率之比。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 205,
@@ -3237,7 +3462,8 @@
     ],
     "answer": "B",
     "explain": "P、Q、S构成功率三角形：S=√(P²+Q²)。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 206,
@@ -3252,7 +3478,8 @@
     ],
     "answer": "B",
     "explain": "有功功率单位是瓦特W；无功功率单位是乏var；视在功率单位是伏安VA。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 207,
@@ -3267,7 +3494,8 @@
     ],
     "answer": "B",
     "explain": "无功功率单位是乏（var）。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 208,
@@ -3282,7 +3510,8 @@
     ],
     "answer": "C",
     "explain": "视在功率单位是伏安（VA）。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 209,
@@ -3295,7 +3524,8 @@
     ],
     "answer": "A",
     "explain": "cosφ提高后，同样的有功功率下线路电流减小，损耗降低。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 210,
@@ -3310,7 +3540,8 @@
     ],
     "answer": "A",
     "explain": "并联电容利用容性无功补偿感性无功，是常用方法。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 211,
@@ -3325,7 +3556,8 @@
     ],
     "answer": "B",
     "explain": "I=Im/√2=5/1.414≈3.54A。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 212,
@@ -3340,7 +3572,8 @@
     ],
     "answer": "A",
     "explain": "XL=2πfL=2×3.14×50×0.1≈31.4Ω。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 213,
@@ -3353,7 +3586,8 @@
     ],
     "answer": "A",
     "explain": "XC=1/(2πfC)，频率越高容抗越小，越易通过。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 214,
@@ -3368,7 +3602,8 @@
     ],
     "answer": "B",
     "explain": "UR、UL、U构成电压三角形，U=√(UR²+UL²)。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 215,
@@ -3383,7 +3618,8 @@
     ],
     "answer": "B",
     "explain": "Z=√(R²+XL²)=√(36+64)=10Ω。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 216,
@@ -3396,7 +3632,8 @@
     ],
     "answer": "A",
     "explain": "电阻上电压电流同相，相位差为零。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 217,
@@ -3411,7 +3648,8 @@
     ],
     "answer": "A",
     "explain": "直流频率f=0，感抗XL=0，电感相当于短路，只呈现线圈自身电阻。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 218,
@@ -3426,7 +3664,8 @@
     ],
     "answer": "B",
     "explain": "直流频率为0，容抗无穷大，电容相当于开路。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 219,
@@ -3439,7 +3678,8 @@
     ],
     "answer": "A",
     "explain": "cosφ低说明Q相对P大，无功分量多。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 220,
@@ -3454,7 +3694,8 @@
     ],
     "answer": "A",
     "explain": "tanφ=XL/R=3/4=0.75，φ≈37°。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 294,
@@ -3469,7 +3710,8 @@
     ],
     "answer": "A,B,C",
     "explain": "交流电路功率分有功、无功、视在三类；额定功率是设备铭牌参数。",
-    "section": 3
+    "section": 3,
+    "difficulty": 4
   },
   {
     "id": 295,
@@ -3484,7 +3726,8 @@
     ],
     "answer": "A,B,C",
     "explain": "提高cosφ能降低无功电流、减小损耗、提高利用率，不是增加能耗。",
-    "section": 3
+    "section": 3,
+    "difficulty": 4
   },
   {
     "id": 309,
@@ -3494,7 +3737,8 @@
     "options": [],
     "answer": "314",
     "explain": "ω=2πf≈314rad/s。",
-    "section": 2
+    "section": 2,
+    "difficulty": 3
   },
   {
     "id": 310,
@@ -3504,7 +3748,8 @@
     "options": [],
     "answer": "P/S",
     "explain": "cosφ=P/S，有功功率与视在功率之比。",
-    "section": 3
+    "section": 3,
+    "difficulty": 3
   },
   {
     "id": 221,
@@ -3519,7 +3764,8 @@
     ],
     "answer": "B",
     "explain": "XL=XC时电抗为零，电路呈纯阻性，发生串联谐振。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 222,
@@ -3534,7 +3780,8 @@
     ],
     "answer": "A",
     "explain": "f0=1/(2π√LC)，谐振频率只与L、C有关。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 223,
@@ -3549,7 +3796,8 @@
     ],
     "answer": "B",
     "explain": "谐振时Z=√(R²+(XL-XC)²)=R，阻抗最小。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 224,
@@ -3564,7 +3812,8 @@
     ],
     "answer": "B",
     "explain": "阻抗最小，电压一定时电流最大（I=U/R）。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 225,
@@ -3579,7 +3828,8 @@
     ],
     "answer": "C",
     "explain": "XL=XC互相抵消，电路只呈现电阻R，纯阻性。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 226,
@@ -3594,7 +3844,8 @@
     ],
     "answer": "B",
     "explain": "串联谐振时L、C两端出现高电压（QU），故称电压谐振。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 227,
@@ -3609,7 +3860,8 @@
     ],
     "answer": "A",
     "explain": "Q=XL/R=ω0L/R，Q值越大选择性越好。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 228,
@@ -3622,7 +3874,8 @@
     ],
     "answer": "A",
     "explain": "UC=QU，Q值大时电容电压是电源电压的Q倍，注意元件耐压。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 229,
@@ -3637,7 +3890,8 @@
     ],
     "answer": "A",
     "explain": "并联谐振时等效阻抗最大，近似为L/(CR)。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 230,
@@ -3652,7 +3906,8 @@
     ],
     "answer": "B",
     "explain": "并联谐振阻抗最大，总电流最小。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 231,
@@ -3665,7 +3920,8 @@
     ],
     "answer": "A",
     "explain": "并联谐振时L、C支路电流远大于总电流，故称电流谐振。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 232,
@@ -3680,7 +3936,8 @@
     ],
     "answer": "A",
     "explain": "谐振电路具有选频特性，广泛用于收音机、通信等。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 233,
@@ -3693,7 +3950,8 @@
     ],
     "answer": "A",
     "explain": "调节电容使电路对某频率谐振，该频率信号最强，实现选台。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 234,
@@ -3708,7 +3966,8 @@
     ],
     "answer": "A",
     "explain": "f0=1/(2π√LC)=1/(2π√(10⁻²×10⁻⁷))≈5.03kHz。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 235,
@@ -3721,7 +3980,8 @@
     ],
     "answer": "A",
     "explain": "f0=1/(2π√LC)不含R；但R影响Q值和选择性。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 296,
@@ -3736,7 +3996,8 @@
     ],
     "answer": "A,B,C",
     "explain": "串联谐振时UC=QU，可能远大于电源电压，D错误。",
-    "section": 1
+    "section": 1,
+    "difficulty": 4
   },
   {
     "id": 236,
@@ -3751,7 +4012,8 @@
     ],
     "answer": "C",
     "explain": "三相电动势相位互差120°，构成三相对称电源。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 237,
@@ -3766,7 +4028,8 @@
     ],
     "answer": "B",
     "explain": "星形连接：UL=√3Up，且线电压超前对应相电压30°。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 238,
@@ -3781,7 +4044,8 @@
     ],
     "answer": "B",
     "explain": "线电压380V，相电压220V（380=√3×220）。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 239,
@@ -3796,7 +4060,8 @@
     ],
     "answer": "B",
     "explain": "相电压220V，是相线与中性线之间的电压。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 240,
@@ -3811,7 +4076,8 @@
     ],
     "answer": "B",
     "explain": "三角形连接：线电压等于相电压。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 241,
@@ -3826,7 +4092,8 @@
     ],
     "answer": "A",
     "explain": "星形连接线电流等于相电流。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 242,
@@ -3841,7 +4108,8 @@
     ],
     "answer": "B",
     "explain": "三角形连接：线电流是相电流的√3倍。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 243,
@@ -3856,7 +4124,8 @@
     ],
     "answer": "B",
     "explain": "三相总功率P=√3ULILcosφ=3UpIpcosφ，通用形式为√3ULILcosφ。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 244,
@@ -3871,7 +4140,8 @@
     ],
     "answer": "A",
     "explain": "负载不对称时，中性线使各相电压保持对称；断零线会造成相电压失衡。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 245,
@@ -3884,7 +4154,8 @@
     ],
     "answer": "A",
     "explain": "不对称负载断中性线会使负载轻的相电压升高、重的相电压降低。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 246,
@@ -3899,7 +4170,8 @@
     ],
     "answer": "A",
     "explain": "保护接零（TN系统）把外壳接保护零线，故障时短路使保护动作。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 247,
@@ -3914,7 +4186,8 @@
     ],
     "answer": "B",
     "explain": "保护接地（TT系统）把外壳通过接地装置与大地连接。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 248,
@@ -3927,7 +4200,8 @@
     ],
     "answer": "A",
     "explain": "混用会使接地设备外壳带危险电压，严禁混用。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 249,
@@ -3942,7 +4216,8 @@
     ],
     "answer": "A",
     "explain": "漏电保护器检测剩余电流，超过动作值即跳闸断电，防止人身触电。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 250,
@@ -3957,7 +4232,8 @@
     ],
     "answer": "B",
     "explain": "变压比U1/U2=N1/N2，匝数多的一侧电压高。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 251,
@@ -3972,7 +4248,8 @@
     ],
     "answer": "B",
     "explain": "变流比I1/I2=N2/N1，电压高的一侧电流小。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 252,
@@ -3985,7 +4262,8 @@
     ],
     "answer": "A",
     "explain": "理想变压器不损耗能量，S1=S2，U1I1=U2I2。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 253,
@@ -4000,7 +4278,8 @@
     ],
     "answer": "A",
     "explain": "U2=U1×N2/N1=220×100/1000=22V。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 254,
@@ -4015,7 +4294,8 @@
     ],
     "answer": "A",
     "explain": "变压器可变压变流，但不能变功率、变频率。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 255,
@@ -4028,7 +4308,8 @@
     ],
     "answer": "A",
     "explain": "对调任意两相相序改变，旋转磁场反转，电机反转。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 256,
@@ -4043,7 +4324,8 @@
     ],
     "answer": "B",
     "explain": "中性线断开会造成相电压失衡，严禁在中性线上装熔断器。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 257,
@@ -4058,7 +4340,8 @@
     ],
     "answer": "B",
     "explain": "星形380V时每相220V，三角形接法接220V电源使每相仍为220V。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 258,
@@ -4071,7 +4354,8 @@
     ],
     "answer": "A",
     "explain": "对称时三相电流大小相等、相位差120°，相量和为零。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 259,
@@ -4086,7 +4370,8 @@
     ],
     "answer": "A",
     "explain": "相序是三相达到最大值的先后次序，正序为U-V-W。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 260,
@@ -4101,7 +4386,8 @@
     ],
     "answer": "B",
     "explain": "开关接相线，保证断电后灯头不带电，安全。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 261,
@@ -4114,7 +4400,8 @@
     ],
     "answer": "A",
     "explain": "手触笔尾金属体才能形成回路，笔内氖管发光显示带电。",
-    "section": 4
+    "section": 4,
+    "difficulty": 2
   },
   {
     "id": 262,
@@ -4129,7 +4416,8 @@
     ],
     "answer": "A",
     "explain": "正序U-V-W（A-B-C），反序U-W-V。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 263,
@@ -4144,7 +4432,8 @@
     ],
     "answer": "A",
     "explain": "硅钢片含硅、片间绝缘，减小涡流损耗；软磁材料减小磁滞损耗。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 264,
@@ -4157,7 +4446,8 @@
     ],
     "answer": "A",
     "explain": "IL=√3Ip，且线电流滞后对应相电流30°。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 265,
@@ -4172,7 +4462,8 @@
     ],
     "answer": "B",
     "explain": "三相总功率P=3P相=30kW。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 297,
@@ -4187,7 +4478,8 @@
     ],
     "answer": "A,B,C",
     "explain": "三相四线制=3相线+1中性线；加保护零线则为三相五线制。",
-    "section": 1
+    "section": 1,
+    "difficulty": 4
   },
   {
     "id": 298,
@@ -4202,7 +4494,8 @@
     ],
     "answer": "A,B,C,D",
     "explain": "四项均为常用的电气安全防护措施。",
-    "section": 4
+    "section": 4,
+    "difficulty": 4
   },
   {
     "id": 299,
@@ -4217,7 +4510,8 @@
     ],
     "answer": "A,B,C",
     "explain": "变压器能变压变流、隔离电路，但不能改变频率。",
-    "section": 3
+    "section": 3,
+    "difficulty": 4
   },
   {
     "id": 311,
@@ -4227,7 +4521,8 @@
     "options": [],
     "answer": "1.7",
     "explain": "UL=√3Up≈1.732Up，约1.7倍。",
-    "section": 1
+    "section": 1,
+    "difficulty": 3
   },
   {
     "id": 312,
@@ -4237,7 +4532,8 @@
     "options": [],
     "answer": "380",
     "explain": "线电压380V，相电压220V。",
-    "section": 1
+    "section": 1,
+    "difficulty": 3
   },
   {
     "id": 313,
@@ -4247,7 +4543,8 @@
     "options": [],
     "answer": "220",
     "explain": "我国单相照明电压220V。",
-    "section": 1
+    "section": 1,
+    "difficulty": 3
   },
   {
     "id": 266,
@@ -4262,7 +4559,8 @@
     ],
     "answer": "A",
     "explain": "电容储能WC=CU²/2不能突变，故uC不能突变。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 267,
@@ -4277,7 +4575,8 @@
     ],
     "answer": "B",
     "explain": "电感储能WL=Li²/2不能突变，故iL不能突变。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 268,
@@ -4292,7 +4591,8 @@
     ],
     "answer": "A",
     "explain": "τ=RC，单位秒s，决定充放电快慢。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 269,
@@ -4307,7 +4607,8 @@
     ],
     "answer": "B",
     "explain": "τ=L/R，单位秒s。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 270,
@@ -4320,7 +4621,8 @@
     ],
     "answer": "A",
     "explain": "t=3τ时达95%，t=5τ时达99.3%，工程上认为稳态。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 271,
@@ -4335,7 +4637,8 @@
     ],
     "answer": "A",
     "explain": "uC=E(1-e^(-t/τ))，按指数规律上升。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 272,
@@ -4350,7 +4653,8 @@
     ],
     "answer": "B",
     "explain": "换路瞬间uC不能突变，初始值为0。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 273,
@@ -4365,7 +4669,8 @@
     ],
     "answer": "A",
     "explain": "稳态时电容相当于开路，uC=E。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 274,
@@ -4378,7 +4683,8 @@
     ],
     "answer": "A",
     "explain": "能量不能突变→uC、iL不能突变，这是换路定律的物理本质。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 275,
@@ -4393,7 +4699,8 @@
     ],
     "answer": "A",
     "explain": "τ=RC=10×10³×100×10⁻⁶=1s。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 276,
@@ -4406,7 +4713,8 @@
     ],
     "answer": "A",
     "explain": "τ越大充放电越慢，瞬态过程越长。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 277,
@@ -4421,7 +4729,8 @@
     ],
     "answer": "A",
     "explain": "uC=E·e^(-t/τ)，按指数规律衰减至零。",
-    "section": 2
+    "section": 2,
+    "difficulty": 2
   },
   {
     "id": 278,
@@ -4436,7 +4745,8 @@
     ],
     "answer": "B",
     "explain": "i=I(1-e^(-t/τ))，按指数规律上升至稳态值。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 279,
@@ -4449,7 +4759,8 @@
     ],
     "answer": "A",
     "explain": "电路换路后经过瞬态过程（过渡过程）到达新的稳态。",
-    "section": 3
+    "section": 3,
+    "difficulty": 2
   },
   {
     "id": 280,
@@ -4464,7 +4775,8 @@
     ],
     "answer": "A",
     "explain": "初始值是换路后瞬间（t=0⁺）各量的值，由换路定律确定。",
-    "section": 1
+    "section": 1,
+    "difficulty": 2
   },
   {
     "id": 300,
@@ -4479,7 +4791,8 @@
     ],
     "answer": "A,B",
     "explain": "τ=RC，只与R、C有关，与电压电流无关。",
-    "section": 2
+    "section": 2,
+    "difficulty": 4
   },
   {
     "id": 314,
@@ -4489,7 +4802,8 @@
     "options": [],
     "answer": "RC",
     "explain": "τ=RC，单位秒。",
-    "section": 2
+    "section": 2,
+    "difficulty": 3
   },
   {
     "id": 315,
@@ -4499,7 +4813,8 @@
     "options": [],
     "answer": "5",
     "explain": "t=5τ时充放电达99.3%，工程上视为结束。",
-    "section": 2
+    "section": 2,
+    "difficulty": 3
   },
   {
     "id": 316,
@@ -4514,7 +4829,8 @@
       "P"
     ],
     "answer": "A",
-    "explain": "电流符号为 I，单位为安培(A)。"
+    "explain": "电流符号为 I，单位为安培(A)。",
+    "difficulty": 2
   },
   {
     "id": 317,
@@ -4529,7 +4845,8 @@
       "电功率"
     ],
     "answer": "B",
-    "explain": "电压符号为 U，单位为伏特(V)。"
+    "explain": "电压符号为 U，单位为伏特(V)。",
+    "difficulty": 2
   },
   {
     "id": 318,
@@ -4544,7 +4861,8 @@
       "B"
     ],
     "answer": "A",
-    "explain": "电阻符号为 R，单位为欧姆(Ω)。"
+    "explain": "电阻符号为 R，单位为欧姆(Ω)。",
+    "difficulty": 2
   },
   {
     "id": 319,
@@ -4559,7 +4877,8 @@
       "F"
     ],
     "answer": "B",
-    "explain": "磁感应强度符号为 B，单位为特斯拉(T)。"
+    "explain": "磁感应强度符号为 B，单位为特斯拉(T)。",
+    "difficulty": 2
   },
   {
     "id": 320,
@@ -4574,7 +4893,8 @@
       "容抗"
     ],
     "answer": "A",
-    "explain": "磁通符号为 Φ，单位为韦伯(Wb)。"
+    "explain": "磁通符号为 Φ，单位为韦伯(Wb)。",
+    "difficulty": 2
   },
   {
     "id": 321,
@@ -4589,7 +4909,8 @@
       "ω"
     ],
     "answer": "A",
-    "explain": "功率因数符号为 cosφ，cosφ=P/S。"
+    "explain": "功率因数符号为 cosφ，cosφ=P/S。",
+    "difficulty": 2
   },
   {
     "id": 322,
@@ -4616,7 +4937,8 @@
       ]
     },
     "answer": "[[0,4],[1,2],[2,5],[3,0],[4,1],[5,3]]",
-    "explain": "电流-I、电压-U、电阻-R、电功率-P、电能-W、电容-C。"
+    "explain": "电流-I、电压-U、电阻-R、电功率-P、电能-W、电容-C。",
+    "difficulty": 3
   },
   {
     "id": 323,
@@ -4643,7 +4965,8 @@
       ]
     },
     "answer": "[[0,4],[1,2],[2,3],[3,5],[4,0],[5,1]]",
-    "explain": "电感-L、频率-f、周期-T、角频率-ω、磁感应强度-B、磁通-Φ。"
+    "explain": "电感-L、频率-f、周期-T、角频率-ω、磁感应强度-B、磁通-Φ。",
+    "difficulty": 3
   },
   {
     "id": 324,
@@ -4670,7 +4993,8 @@
       ]
     },
     "answer": "[[0,2],[1,5],[2,4],[3,0],[4,1],[5,3]]",
-    "explain": "感抗-XL、容抗-XC、有功功率-P、无功功率-Q、视在功率-S、功率因数-cosφ。"
+    "explain": "感抗-XL、容抗-XC、有功功率-P、无功功率-Q、视在功率-S、功率因数-cosφ。",
+    "difficulty": 3
   },
   {
     "id": 325,
@@ -4685,7 +5009,8 @@
       "瓦特(W)"
     ],
     "answer": "A",
-    "explain": "电流单位安培(A)，1A=10³mA=10⁶μA。"
+    "explain": "电流单位安培(A)，1A=10³mA=10⁶μA。",
+    "difficulty": 2
   },
   {
     "id": 326,
@@ -4700,7 +5025,8 @@
       "瓦特(W)"
     ],
     "answer": "B",
-    "explain": "电压单位伏特(V)，1kV=10³V。"
+    "explain": "电压单位伏特(V)，1kV=10³V。",
+    "difficulty": 2
   },
   {
     "id": 327,
@@ -4715,7 +5041,8 @@
       "韦伯(Wb)"
     ],
     "answer": "A",
-    "explain": "电容单位法拉(F)，1F=10⁶μF=10¹²pF。"
+    "explain": "电容单位法拉(F)，1F=10⁶μF=10¹²pF。",
+    "difficulty": 2
   },
   {
     "id": 328,
@@ -4730,7 +5057,8 @@
       "乏(var)"
     ],
     "answer": "A",
-    "explain": "频率单位赫兹(Hz)，工频 50Hz。"
+    "explain": "频率单位赫兹(Hz)，工频 50Hz。",
+    "difficulty": 2
   },
   {
     "id": 329,
@@ -4745,7 +5073,8 @@
       "10V"
     ],
     "answer": "A",
-    "explain": "1kV=10³V=1000V。"
+    "explain": "1kV=10³V=1000V。",
+    "difficulty": 2
   },
   {
     "id": 330,
@@ -4760,7 +5089,8 @@
       "10⁵mA"
     ],
     "answer": "A",
-    "explain": "1A=10³mA=1000mA。"
+    "explain": "1A=10³mA=1000mA。",
+    "difficulty": 2
   },
   {
     "id": 331,
@@ -4773,7 +5103,8 @@
       "错误"
     ],
     "answer": "A",
-    "explain": "1MΩ=10³kΩ=10⁶Ω，正确。"
+    "explain": "1MΩ=10³kΩ=10⁶Ω，正确。",
+    "difficulty": 2
   },
   {
     "id": 332,
@@ -4786,7 +5117,8 @@
       "错误"
     ],
     "answer": "A",
-    "explain": "1F=10⁶μF=10¹²pF，正确。"
+    "explain": "1F=10⁶μF=10¹²pF，正确。",
+    "difficulty": 2
   },
   {
     "id": 333,
@@ -4799,7 +5131,8 @@
       "错误"
     ],
     "answer": "A",
-    "explain": "工频 50Hz，周期 T=0.02s，正确。"
+    "explain": "工频 50Hz，周期 T=0.02s，正确。",
+    "difficulty": 2
   },
   {
     "id": 334,
@@ -4812,7 +5145,8 @@
       "错误"
     ],
     "answer": "A",
-    "explain": "ω=2πf≈314rad/s（f=50Hz），正确。"
+    "explain": "ω=2πf≈314rad/s（f=50Hz），正确。",
+    "difficulty": 2
   },
   {
     "id": 335,
@@ -4825,7 +5159,8 @@
       "错误"
     ],
     "answer": "A",
-    "explain": "1kW·h=3.6×10⁶J，正确。"
+    "explain": "1kW·h=3.6×10⁶J，正确。",
+    "difficulty": 2
   },
   {
     "id": 336,
@@ -4838,7 +5173,8 @@
       "错误"
     ],
     "answer": "B",
-    "explain": "错误。2πfL 是感抗 XL，容抗 XC=1/(2πfC)。"
+    "explain": "错误。2πfL 是感抗 XL，容抗 XC=1/(2πfC)。",
+    "difficulty": 2
   },
   {
     "id": 337,
@@ -4865,7 +5201,8 @@
       ]
     },
     "answer": "[[0,1],[1,5],[2,3],[3,0],[4,2],[5,4]]",
-    "explain": "电流-A、电压-V、电阻-Ω、电容-F、电感-H、频率-Hz。"
+    "explain": "电流-A、电压-V、电阻-Ω、电容-F、电感-H、频率-Hz。",
+    "difficulty": 3
   },
   {
     "id": 338,
@@ -4892,7 +5229,8 @@
       ]
     },
     "answer": "[[0,3],[1,0],[2,4],[3,1],[4,5],[5,2]]",
-    "explain": "磁感应强度-T、磁通-Wb、有功功率-W、无功功率-var、视在功率-VA、周期-s。"
+    "explain": "磁感应强度-T、磁通-Wb、有功功率-W、无功功率-var、视在功率-VA、周期-s。",
+    "difficulty": 3
   },
   {
     "id": 339,
@@ -4919,6 +5257,7 @@
       ]
     },
     "answer": "[[0,2],[1,1],[2,4],[3,0],[4,3],[5,5]]",
-    "explain": "角频率-rad/s、频率-Hz、周期-s、磁通-Wb、磁感应强度-T、功率因数无量纲。"
+    "explain": "角频率-rad/s、频率-Hz、周期-s、磁通-Wb、磁感应强度-T、功率因数无量纲。",
+    "difficulty": 3
   }
 ]

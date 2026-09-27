@@ -1,6 +1,6 @@
 /* ===== 界面与流程控制 ===== */
 (function () {
-  const S = { me: null, chapters: [], levels: [], curChapter: null, memoryQuiz: null, unit: '' };
+  const S = { me: null, chapters: [], levels: [], curChapter: null, memoryQuiz: null, unit: '', gameName: '电闯关·电工大作战', qSel: {}, paper: { chapters: [], diffs: [], types: [], mastery: 'all', count: 20, includeAnswer: false } };
   /* 分页状态：学生/题库/成绩分析/日志 */
   const PG = {
     students: { page: 1, size: 20, kw: '', sort: 'name', grade: '' },
@@ -32,11 +32,8 @@
     const pages = Math.max(1, Math.ceil(total / cfg.size));
     let nums = '';
     const from = Math.max(1, cfg.page - 2), to = Math.min(pages, cfg.page + 2);
-    for (let i = from; i <= to; i++) nums += '<button class="pg-btn' + (i === cfg.page ? ' on' : '') + '" onclick="' + onChange + '(' + i + ')">' + i + '</button>';
-    if (to < pages) nums += '<span class="pg-ell">…</span><button class="pg-btn" onclick="' + onChange + '(' + pages + ')">' + pages + '</button>';
-    return '<div class="pager">' +
-      '<button class="pg-btn"' + (cfg.page <= 1 ? ' disabled' : '') + ' onclick="' + onChange + '(' + (cfg.page - 1) + ')">‹ 上一页</button>' + nums +
-      '<button class="pg-btn"' + (cfg.page >= pages ? ' disabled' : '') + ' onclick="' + onChange + '(' + (cfg.page + 1) + ')">下一页 ›</button>' +
+    for (let i = from; i <= to; i++) nums += '<button class="pg-btn' + (i === cfg.page ? ' active' : '') + '" onclick="' + onChange + '(' + i + ')">' + i + '</button>';
+    return '<div class="pager">共 ' + total + ' 条 · <button class="pg-btn" onclick="' + onChange + '(' + (cfg.page - 1) + ')">上一页</button>' + nums + '<button class="pg-btn" onclick="' + onChange + '(' + (cfg.page + 1) + ')">下一页</button>' +
       '　每页 <select class="pg-size" onchange="UIM.pgSize(\'' + onChange + '\',this.value)">' +
       [10, 20, 30, 50, 100].map(n => '<option value="' + n + '"' + (cfg.size === n ? ' selected' : '') + '>' + n + '</option>').join('') +
       '<option value="custom"' + (![10, 20, 30, 50, 100].includes(cfg.size) ? ' selected' : '') + '>自定义</option></select>条</div>';
@@ -116,6 +113,10 @@
       }
       showScreen('screen-menu');
       toast('欢迎回来，' + S.me.name + '！');
+      // 1.0.0.4：默认弱密码提醒
+      if (!isReg && r.weakPass) {
+        setTimeout(() => toast('⚠️ 当前为默认密码，建议尽快修改' + (S.me.role === 'teacher' ? '（教师端→账号设置）' : '') + '！', 4000), 1200);
+      }
     } catch (e) {
       msg.textContent = e.message; msg.className = 'msg err';
     }
@@ -200,7 +201,7 @@
     toast('正在抽取题目…');
     try {
       const r = await API.questions(ch.id, lv.id);
-      Game.start(ch, lv, r.questions, r.cfg);
+      Game.start(ch, lv, r.questions, r.cfg, r.pt);
     } catch (e) {
       toast(e.message);
       showScreen('screen-chapter');
@@ -286,17 +287,30 @@
     return '<div class="q-card">' + body + '</div>';
   }
 
-  /* 错题重练 */
-  let practiceList = [], practiceIdx = 0;
+  /* 错题重练（1.0.0.4：判分走服务端，答案不下发） */
+  let practiceList = [], practiceIdx = 0, practicePt = '';
   async function startPractice() {
     $('practice-card').style.display = 'flex';
     try {
       const r = await API.wrongPractice();
       practiceList = r.list || [];
+      practicePt = r.pt || '';
       practiceIdx = 0;
       if (!practiceList.length) { $('p-msg').textContent = '没有错题可练'; return; }
       showPracticeQ();
     } catch (e) { $('p-msg').textContent = e.message; }
+  }
+  function practiceReport(res) {
+    const q = practiceList[practiceIdx];
+    API.answer({ pt: practicePt, qid: q.id, choice: res.choice, mode: 'practice' }).then(r => {
+      practiceMark(r.correct, r.answer);
+    }).catch(() => { practiceMark(false, null); });
+  }
+  function practiceMark(correct, answerText) {
+    const q = practiceList[practiceIdx];
+    if (correct) { $('p-msg').innerHTML = '<span style="color:var(--ok)">✅ 答对！' + (q.explain ? ' ' + esc(q.explain) : '') + '</span>'; }
+    else { $('p-msg').innerHTML = '<span style="color:var(--danger)">❌ 答错' + (answerText ? '，正确答案：' + esc(answerText) : '') + (q.explain ? '，解析：' + esc(q.explain) : '') + '</span>'; }
+    $('p-next').dataset.done = '1';
   }
   function showPracticeQ() {
     const q = practiceList[practiceIdx];
@@ -304,13 +318,7 @@
     $('p-msg').textContent = '';
     const optBox = $('p-options'), fillBox = $('p-fill');
     optBox.innerHTML = ''; fillBox.style.display = 'none';
-    if (q.type === 'matching') { buildMatchUI(optBox, q, (correct) => {
-      $('p-msg').innerHTML = correct
-        ? '<span style="color:var(--ok)">✅ 答对！' + (q.explain ? ' ' + esc(q.explain) : '') + '</span>'
-        : '<span style="color:var(--danger)">❌ 答错' + (q.explain ? '，解析：' + esc(q.explain) : '') + '</span>';
-      API.answer({ qid: q.id, chapter: q.chapter, correct, score: correct ? 50 : 0 }).catch(() => {});
-      $('p-next').dataset.done = '1';
-    }); return; }
+    if (q.type === 'matching') { buildMatchUI(optBox, q, (userPairs) => { practiceReport({ choice: userPairs }); }); return; }
     if (q.type === 'fill') {
       fillBox.style.display = 'flex';
       $('p-fill-input').value = '';
@@ -322,28 +330,21 @@
       b.textContent = o;
       b.dataset.idx = i;
       b.onclick = () => {
-        const correct = q.type === 'multi'
-          ? (q.answerIdx || []).includes(i)
-          : q.answerIdx === i;
-        b.className = 'opt-btn ' + (correct ? 'right' : 'wrong');
-        API.answer({ qid: q.id, chapter: q.chapter, correct, score: correct ? 50 : 0 }).catch(() => {});
-        if (correct) { $('p-msg').innerHTML = '<span style="color:var(--ok)">✅ 答对！' + (q.explain ? ' ' + esc(q.explain) : '') + '</span>'; }
-        else { $('p-msg').innerHTML = '<span style="color:var(--danger)">❌ 答错' + (q.explain ? '，解析：' + esc(q.explain) : '') + '</span>'; }
+        API.answer({ pt: practicePt, qid: q.id, choice: i, mode: 'practice' }).then(r => {
+          b.className = 'opt-btn ' + (r.correct ? 'right' : 'wrong');
+          practiceMark(r.correct, r.answer);
+        }).catch(() => {
+          b.className = 'opt-btn wrong';
+          practiceMark(false, null);
+        });
         b.disabled = true;
         b.parentNode.querySelectorAll('.opt-btn').forEach(x => { if (x.dataset.idx !== String(i)) x.disabled = true; });
-        $('p-next').dataset.done = '1';
       };
       optBox.appendChild(b);
     });
   }
   $('p-fill-submit').onclick = () => {
-    const q = practiceList[practiceIdx];
-    const correct = Norm.answerMatch($('p-fill-input').value, q.answer);
-    API.answer({ qid: q.id, chapter: q.chapter, correct, score: correct ? 50 : 0 }).catch(() => {});
-    $('p-msg').innerHTML = correct
-      ? '<span style="color:var(--ok)">✅ 答对！' + (q.explain ? ' ' + esc(q.explain) : '') + '</span>'
-      : '<span style="color:var(--danger)">❌ 正确答案：' + esc(q.answer) + (q.explain ? '，' + esc(q.explain) : '') + '</span>';
-    $('p-next').dataset.done = '1';
+    practiceReport({ choice: $('p-fill-input').value });
   };
   $('p-next').onclick = () => {
     if ($('p-next').dataset.done !== '1' && practiceList.length) { toast('请先回答本题'); return; }
@@ -487,9 +488,9 @@
         '<option value="ch"' + (qsort === 'ch' ? ' selected' : '') + '>按章节</option></select>' +
         '<span class="cnt">题库共 ' + r.total + ' 题，当前显示第 ' + ((PG.questions.page - 1) * PG.questions.size + 1) + '~' + ((PG.questions.page - 1) * PG.questions.size + pp.rows.length) + ' 条</span></div>' +
         pagerHtml(list.length, PG.questions, 'UIM.gotoQuestions') +
-        '<table class="data-table"><tr><th>ID</th><th>章</th><th>节</th><th>题型</th><th>题干</th><th>答案</th><th>操作</th></tr>' +
+        '<table class="data-table"><tr><th style="width:28px"><input type="checkbox" id="qsel-all" onclick="UIM.qSelAll(this)"></th><th>ID</th><th>章</th><th>节</th><th>题型</th><th>题干</th><th>难度</th><th>答案</th><th>操作</th></tr>' +
         pp.rows.map(q =>
-          '<tr><td>' + q.id + '</td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + TYPE_NAME[q.type] + '</td><td style="max-width:240px">' + esc(q.question) + '</td><td>' + (q.type === 'matching' ? '配对' : esc(String(q.answer))) + '</td>' +
+          '<tr><td style="width:28px"><input type="checkbox" data-qid="' + q.id + '"' + (S.qSel[q.id] ? ' checked' : '') + ' onchange="UIM.qSelOne(' + q.id + ',this)"></td><td>' + q.id + '</td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + TYPE_NAME[q.type] + '</td><td style="max-width:200px">' + esc(q.question) + '</td><td>' + UIM.diffStar(q.difficulty) + '</td><td>' + (q.type === 'matching' ? '配对' : esc(String(q.answer))) + '</td>' +
           '<td><div class="actions-row"><button class="btn small" onclick="UIM.editQ(' + q.id + ')">编辑</button><button class="btn small danger" onclick="UIM.delQ(' + q.id + ')">删除</button></div></td></tr>').join('') + '</table>';
     } catch (e) { p.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
   }
@@ -549,7 +550,11 @@
       renderAnaMode();
     } catch (e) { p.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
   }
-
+    
+  
+  
+  
+  
   function renderAnaMode() {
     const stuId = S.anaStu;
     const tq = $('ana-title-q');
@@ -574,13 +579,13 @@
         '<div class="stat-card"><div class="v">' + r.user.correct + '/' + r.user.total + '</div><div class="k">答对/总数</div></div>' +
         '<div class="stat-card"><div class="v">' + r.user.acc + '%</div><div class="k">正确率</div></div>' +
         '<div class="stat-card"><div class="v">' + r.grade + '</div><div class="k">等级</div></div>' +
-        '<div class="stat-card"><div class="v">' + stars + ' ⭐</div><div class="k">星星</div></div>' +
+        '<div class="stat-card"><div class="v">' + stars + ' &#11088;</div><div class="k">星星</div></div>' +
         '</div>';
       // 章节情况（各章获得星星）
       html += '<table class="data-table" style="margin-top:14px"><tr><th>章节</th><th>获得星星</th><th>答对/总数</th><th>正确率</th></tr>' +
         r.chapterStars.map(c => {
           const chd = mu && mu.chapters.find(x => x.chapter === c.chapter);
-          return '<tr><td>第' + (c.chapter === 0 ? '0' : c.chapter) + '章 ' + esc(c.name) + '</td><td>' + (c.stars || 0) + ' ★</td><td>' + (chd && chd.answered ? chd.correct + '/' + chd.answered : '—') + '</td><td>' + (chd && chd.answered ? chd.acc + '%' : '—') + '</td></tr>';
+          return '<tr><td>第' + (c.chapter === 0 ? '0' : c.chapter) + '章 ' + esc(c.name) + '</td><td>' + (c.stars || 0) + ' &#9733;</td><td>' + (chd && chd.answered ? chd.correct + '/' + chd.answered : '—') + '</td><td>' + (chd && chd.answered ? chd.acc + '%' : '—') + '</td></tr>';
         }).join('') + '</table>';
       // 章节答题明细（章→节→题，直接列出）
       if (mu && mu.chapters.length) {
@@ -588,7 +593,7 @@
           const secHtml = ch.sections.map(s =>
             '<div style="margin:6px 0 0 12px"><b>' + esc(s.name) + '</b>：答对 ' + s.correct + '/' + s.answered + '（' + (s.answered ? Math.round(s.correct / s.answered * 100) : 0) + '%）</div>' +
             s.questions.map(q => {
-              const mark = q.answered ? (q.ok === q.answered ? '✅' : (q.ok > 0 ? '⚠️ 部分' : '❌')) : '—';
+              const mark = q.answered ? (q.ok === q.answered ? '&#9989;' : (q.ok > 0 ? '&#9888;&#65039; 部分' : '&#10060;')) : '—';
               return '<div style="margin:2px 0 2px 24px;font-size:12px">' + mark + ' #' + q.id + ' ' + esc(q.question) + '（答对 ' + q.ok + '/' + q.answered + '）</div>';
             }).join('')
           ).join('');
@@ -598,7 +603,7 @@
       p.innerHTML = html;
     } catch (e) { p.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
   }
-  async function loadChapterAnalysis(ch) {
+async function loadChapterAnalysis(ch) {
     const box = $('ana-chapter');
     box.innerHTML = '<div class="empty-tip">加载中…</div>';
     try {
@@ -794,6 +799,7 @@
     const chapters = S.chapters.map(c => '<option value="' + c.id + '"' + (q && q.chapter === c.id ? ' selected' : '') + '>第' + (c.id === 0 ? '0' : c.id) + '章 ' + c.name + '</option>').join('');
     const typeOpts = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线' };
     const typeSel = Object.keys(typeOpts).map(t => '<option value="' + t + '"' + (q && q.type === t ? ' selected' : '') + '>' + typeOpts[t] + '</option>').join('');
+    const fillRow = q && q.type === 'fill' ? '' : '';
     openModal(
       '<h3 style="margin-bottom:12px">' + (q ? '编辑题目 #' + q.id : '新增题目') + '</h3>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">所属章节</label><select id="qf-chapter" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' + chapters + '</select></div>' +
@@ -806,7 +812,7 @@
       '<label style="font-size:12px;color:var(--dim);margin-top:6px">右列（每行一项，数量与左列一致）</label><textarea id="qf-m-right" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.right || []).join('\n') : '') + '</textarea>' +
       '<label style="font-size:12px;color:var(--dim);margin-top:6px">配对（每行一对：左序号-右序号，从0开始，如 0-0、1-3）</label><textarea id="qf-m-pairs" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' ? String(q.answer).replace(/\[\[/g, '').replace(/\]\]/g, '').split('],[').map(s => s.replace(',', '-')).join('\n') : '') + '</textarea></div>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">答案（单选/判断填字母如 A；多选填 A,C；填空直接填答案文本；连线题在下方配对区填写）</label><input id="qf-answer" type="text" value="' + esc(q ? q.answer : '') + '"></div>' +
-      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">解析（可选）</label><input id="qf-explain" type="text" value="' + esc(q ? q.explain : '') + '"></div>' +
+      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">难度等级（1 最易 ~ 5 最难）</label><select id="qf-diff" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' + [1,2,3,4,5].map(n => '<option value="' + n + '"' + ((q ? q.difficulty : 3) === n ? ' selected' : '') + '>' + n + ' 星' + (n === 1 ? '（易）' : n === 5 ? '（难）' : '') + '</option>').join('') + '</select></div>' +'<div class="form-row"><label style="font-size:12px;color:var(--dim)">解析（可选）</label><input id="qf-explain" type="text" value="' + esc(q ? q.explain : '') + '"></div>' +
       '<div class="msg" id="qf-msg"></div>' +
       '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="qf-save">保存</button></div>');
     const syncForm = () => {
@@ -842,7 +848,8 @@
       question: $('qf-question').value.trim(),
       options,
       answer,
-      explain: $('qf-explain').value.trim()
+      explain: $('qf-explain').value.trim(),
+      difficulty: parseInt($('qf-diff').value, 10) || 3
     };
     const msg = $('qf-msg');
     if (!data.question) { msg.textContent = '题干不能为空'; return; }
@@ -889,12 +896,16 @@
         if (b.dataset.tab === 'questions') loadQuestions();
         if (b.dataset.tab === 'analysis') loadAnalysis();
         if (b.dataset.tab === 'logs') loadLogs();
+        if (b.dataset.tab === 'paper') UIM.renderPaperTab();
       };
     });
     // 题库筛选
     $('q-filter-btn').onclick = loadQuestions;
     $('q-filter-kw').onkeydown = (e) => { if (e.key === 'Enter') loadQuestions(); };
     $('q-add-btn').onclick = () => questionForm(null);
+    const qtb = $('q-template-btn'); if (qtb) qtb.onclick = () => UIM.qTemplateDownload();
+    const qib = $('q-import-btn'); if (qib) qib.onclick = () => UIM.openImportModal();
+    const qbb = $('q-batchdel-btn'); if (qbb) qbb.onclick = () => UIM.qBatchDeleteAct();
     // 成绩分析选学生
     $('ana-student-select').onchange = (e) => {
       const v = e.target.value;
@@ -934,7 +945,10 @@
       const av = $('app-version');
       if (av && meta.version) av.textContent = meta.version;
       if (meta.unit) {
-        document.title = meta.unit + ' · 电闯关·电工大作战';
+        S.gameName = meta.gameName || '电闯关·电工大作战';
+        document.title = (meta.unit ? meta.unit + ' · ' : '') + S.gameName;
+        const gt = document.querySelector('.game-title');
+        if (gt) gt.textContent = S.gameName;
         const ut = $('unit-title');
         if (ut) ut.textContent = meta.unit;
         const ul = $('unit-login');
@@ -997,16 +1011,8 @@
     });
     container.querySelector('#match-ok').onclick = () => {
       if (pairs.some(p => p === undefined)) { toastMsg && toastMsg('请完成全部连线'); return; }
-      let okPairs = [];
-      try { okPairs = JSON.parse(q.answer || '[]'); } catch (e) { okPairs = []; }
-      const userPairs = pairs.map((r, l) => [l, r]);
-      let correct = okPairs.length === userPairs.length;
-      if (correct) {
-        const map = {};
-        okPairs.forEach(pr => { map[pr[0]] = pr[1]; });
-        userPairs.forEach(pr => { if (map[pr[0]] !== pr[1]) correct = false; });
-      }
-      onSubmit(correct);
+      // 1.0.0.4：答案不下发，把配对交给调用方提交服务端判分
+      onSubmit(pairs.map((r, l) => [l, r]));
     };
     paint();
   }
@@ -1108,43 +1114,68 @@
     },
     openTimeModal() {
       const st = S.settings || {};
-      openModal('<h3 style="margin-bottom:12px">⏱️ 闯关时间设置</h3>' +
-        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">普通题加时（秒，每题在原有关卡时间基础上增加）</label><input id="tm-add" type="number" min="0" max="60" value="' + (st.timeAdd != null ? st.timeAdd : 5) + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+      const lq = (typeof st.levelQ === 'string' ? (function(){ try { return JSON.parse(st.levelQ) || {}; } catch(e){ return {}; } })() : (st.levelQ || {}));
+      const ltb = (typeof st.levelTimeBase === 'string' ? (function(){ try { return JSON.parse(st.levelTimeBase) || {}; } catch(e){ return {}; } })() : (st.levelTimeBase || {}));
+      const lvNames = { 1: '入门测试', 2: '技能进阶', 3: '实战演练', boss: '章节霸主' };
+      const lvKeys = ['1', '2', '3', 'boss'];
+      openModal('<h3 style="margin-bottom:12px">⏱️ 闯关时间与题目数量设置</h3>' +
+        '<div style="font-size:12px;color:var(--dim);margin-bottom:10px">设置每关题目数量后，系统按（朗读时间 + 答题时间）自动计算每关每题时长；朗读按 4 字/秒估算题面字数。</div>' +
+        lvKeys.map(k => '<div class="form-row"><label style="font-size:12px;color:var(--dim)">' + lvNames[k] + ' · 题目数量（1~30）</label><input id="lq-' + k + '" type="number" min="1" max="30" value="' + (lq[k] != null ? lq[k] : (k === '1' ? 6 : k === '2' ? 8 : k === '3' ? 10 : 5)) + '" style="width:calc(50% - 8px);padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"><span style="margin-left:8px;font-size:12px;color:var(--accent2)" id="lqt-' + k + '">自动计时: ' + (ltb[k] != null ? ltb[k] : 0) + '秒/题</span></div>').join('') +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">普通题加时（秒，在自动计时基础上增加）</label><input id="tm-add" type="number" min="0" max="60" value="' + (st.timeAdd != null ? st.timeAdd : 5) + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">连线题额外加时（秒，在普通题基础上再增加）</label><input id="tm-match" type="number" min="0" max="60" value="' + (st.timeMatchAdd != null ? st.timeMatchAdd : 10) + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
         '<div class="msg" id="tm-msg"></div>' +
-        '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="tm-save">保存</button></div>');
+        '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="tm-save">保存并自动计时</button></div>');
+      // 输入题数实时请求自动计时预览
+      lvKeys.forEach(k => {
+        const inp = $('lq-' + k);
+        if (!inp) return;
+        inp.onchange = async () => {
+          const lq2 = {};
+          lvKeys.forEach(k2 => { lq2[k2] = parseInt($('lq-' + k2).value, 10) || 0; });
+          try {
+            const r = await API.levelAutoTime(lq2);
+            if (r && r.levelTimeBase) lvKeys.forEach(k2 => { const el = $('lqt-' + k2); if (el) el.textContent = '自动计时: ' + r.levelTimeBase[k2] + '秒/题'; });
+          } catch (e) { /* 忽略预览失败 */ }
+        };
+      });
       $('tm-save').onclick = async () => {
         const ta = parseInt($('tm-add').value, 10);
         const tm = parseInt($('tm-match').value, 10);
         if (isNaN(ta) || ta < 0 || ta > 60) { $('tm-msg').textContent = '普通题加时范围 0~60 秒'; return; }
         if (isNaN(tm) || tm < 0 || tm > 60) { $('tm-msg').textContent = '连线题加时范围 0~60 秒'; return; }
+        const lq2 = {};
+        lvKeys.forEach(k => { const v = parseInt($('lq-' + k).value, 10); if (isNaN(v) || v < 1 || v > 30) { $('tm-msg').textContent = '每关题目数量范围 1~30'; throw null; } lq2[k] = v; });
         try {
-          await API.setSettings({ timeAdd: ta, timeMatchAdd: tm });
-          S.settings.timeAdd = ta; S.settings.timeMatchAdd = tm;
-          window.GAME_SETTINGS = S.settings;
+          await API.setSettings({ timeAdd: ta, timeMatchAdd: tm, levelQ: lq2 });
+          const st2 = (await API.settings()).settings;
+          S.settings = st2;
+          window.GAME_SETTINGS = st2;
           closeModal();
-          toast('闯关时间已更新');
-        } catch (e) { $('tm-msg').textContent = e.message; }
+          toast('闯关时间与题目数量已更新（自动计时）');
+        } catch (e) { if (e) $('tm-msg').textContent = e.message; }
       };
     },
     openUnitModal() {
-      openModal('<h3 style="margin-bottom:12px">使用单位设置</h3>' +
-        '<div class="form-row"><input id="um-unit" type="text" value="' + esc(S.unit || '') + '" placeholder="输入使用单位名称" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+      openModal('<h3 style="margin-bottom:12px">⚙️ 系统设置</h3>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">游戏名称（页面标题与首页显示，20字以内）</label><input id="um-game" type="text" value="' + esc(S.gameName || '电闯关·电工大作战') + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">使用单位（页面标题显示，40字以内）</label><input id="um-unit" type="text" value="' + esc(S.unit || '') + '" placeholder="输入使用单位名称" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
         '<div class="msg" id="um-msg"></div>' +
         '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="um-save">保存</button></div>');
       $('um-save').onclick = async () => {
         const unit = $('um-unit').value.trim();
+        const gameName = $('um-game').value.trim();
         if (!unit) { $('um-msg').textContent = '单位名称不能为空'; return; }
+        if (!gameName) { $('um-msg').textContent = '游戏名称不能为空'; return; }
         try {
-          await API.setUnit(unit);
-          S.unit = unit;
+          await API.setSettings({ unit, gameName });
+          S.unit = unit; S.gameName = gameName;
           closeModal();
-          toast('使用单位已更新，页面标题将同步显示');
+          toast('系统设置已保存，页面标题将同步显示');
           location.reload();
         } catch (e) { $('um-msg').textContent = e.message; }
       };
     },
-
+    
     async toggleSec(ch, sec, cardEl) {
       const parent = cardEl.parentNode;
       const exist = parent.querySelector('.sec-detail');
@@ -1221,6 +1252,105 @@
       if (!confirm('确定删除题目 #' + id + '？')) return;
       try { await API.qDelete(id); toast('已删除'); loadQuestions(); }
       catch (e) { toast(e.message); }
+    },
+    /* ---- 1.0.0.5 题库管理扩展 ---- */
+    diffStar(d) {
+      const n = parseInt(d, 10) || 3;
+      return '<span title="难度 ' + n + ' 星" style="color:' + (n >= 4 ? '#ff5a5a' : n >= 3 ? '#ff9f1a' : '#3bff8f') + '">' + '★'.repeat(n) + '☆'.repeat(5 - n) + '</span>';
+    },
+    qSelAll(ck) {
+      document.querySelectorAll('#question-list input[data-qid]').forEach(c => { c.checked = ck.checked; if (ck.checked) S.qSel[parseInt(c.dataset.qid, 10)] = true; else delete S.qSel[parseInt(c.dataset.qid, 10)]; });
+    },
+    qSelOne(id, ck) { if (ck.checked) S.qSel[id] = true; else delete S.qSel[id]; },
+    async qTemplateDownload() {
+      try {
+        const blob = await API.download('/api/questions/template', 'GET', null);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = '题库导入模板.csv'; a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+        toast('模板已导出，可用 WPS/Excel 编辑后导入');
+      } catch (e) { toast(e.message); }
+    },
+    openImportModal() {
+      openModal('<h3 style="margin-bottom:12px">📤 导入试题</h3>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">格式</label><select id="imp-format" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"><option value="csv">CSV（推荐，与导出的模板一致）</option><option value="json">JSON</option></select></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">粘贴试题内容（查重：与题库完全相同的题干会保留原题、跳过导入）</label><textarea id="imp-content" rows="10" placeholder="可先在 WPS/Excel 里按模板编辑后复制到此处…" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></textarea></div>' +
+        '<div class="msg" id="imp-msg"></div>' +
+        '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="imp-save">开始导入</button></div>');
+      $('imp-save').onclick = async () => {
+        const content = $('imp-content').value;
+        if (!content.trim()) { $('imp-msg').textContent = '请粘贴导入内容'; return; }
+        try {
+          const r = await API.qImport($('imp-format').value, content);
+          $('imp-msg').innerHTML = '<b style="color:var(--ok)">导入完成：新增 ' + r.added + ' 道</b>，重复跳过 ' + r.exists + ' 道，无效 ' + r.failed + ' 道' + (r.problems && r.problems.length ? '<br><span style="color:var(--danger)">' + esc(r.problems.join('<br>')) + '</span>' : '');
+          loadQuestions();
+        } catch (e) { $('imp-msg').textContent = e.message; }
+      };
+    },
+    async qBatchDeleteAct() {
+      const ids = Object.keys(S.qSel).map(Number);
+      if (!ids.length) { toast('请先勾选要删除的题目'); return; }
+      if (!confirm('确定批量删除选中的 ' + ids.length + ' 道题目？删除后不可恢复！')) return;
+      try {
+        const r = await API.qBatchDelete(ids);
+        S.qSel = {};
+        toast('已删除 ' + r.removed + ' 道题目');
+        loadQuestions();
+      } catch (e) { toast(e.message); }
+    },
+    /* ---- 1.0.0.5 组卷打印 ---- */
+    renderPaperTab() {
+      const box = $('paper-box');
+      if (!box) return;
+      const P = S.paper;
+      const chChips = S.chapters.map(c => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-ch" value="' + c.id + '"' + (P.chapters.includes(c.id) ? ' checked' : '') + '> 第' + (c.id === 0 ? '0' : c.id) + '章 ' + esc(c.name) + '</label>').join('');
+      const diffChips = [1, 2, 3, 4, 5].map(n => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-diff" value="' + n + '"' + (P.diffs.includes(n) ? ' checked' : '') + '> ' + n + ' 星</label>').join('');
+      const typeChips = [['single', '单选'], ['judge', '判断'], ['multi', '多选'], ['fill', '填空'], ['matching', '连线']].map(t => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-type" value="' + t[0] + '"' + (P.types.includes(t[0]) ? ' checked' : '') + '> ' + t[1] + '</label>').join('');
+      box.innerHTML = '<h3 style="margin-bottom:10px">📄 自动组卷（按章节/难度/题型/掌握情况，可导出 Word 打印）</h3>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">选择章节（不选 = 全部章节）</label><br>' + chChips + '</div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">难度等级（不选 = 全部难度）</label><br>' + diffChips + '</div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题型（不选 = 全部题型）</label><br>' + typeChips + '</div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">按学生掌握情况筛选</label><select id="p-mastery" style="width:60%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' +
+        '<option value="all"' + (P.mastery === 'all' ? ' selected' : '') + '>不筛选（全部题目）</option>' +
+        '<option value="weak"' + (P.mastery === 'weak' ? ' selected' : '') + '>薄弱题（全班正确率 &lt;60%）</option>' +
+        '<option value="good"' + (P.mastery === 'good' ? ' selected' : '') + '>掌握较好（全班正确率 ≥60%）</option></select></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">出题数量（1~200）</label><input id="p-count" type="number" min="1" max="200" value="' + P.count + '" style="width:120px;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div class="form-row"><label style="display:inline-flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" id="p-ans"> 试卷含参考答案与解析（不打勾 = 纯试题卷，供学生作答）</label></div>' +
+        '<div class="result-btns" style="margin:10px 0"><button class="btn primary" id="p-build">🎯 生成试卷</button><button class="btn" id="p-export" disabled>📥 导出 Word/WPS 打印</button></div>' +
+        '<div id="p-preview" style="font-size:13px;line-height:1.9"></div>';
+      const collect = () => {
+        P.chapters = [...document.querySelectorAll('.p-ch:checked')].map(x => parseInt(x.value, 10));
+        P.diffs = [...document.querySelectorAll('.p-diff:checked')].map(x => parseInt(x.value, 10));
+        P.types = [...document.querySelectorAll('.p-type:checked')].map(x => x.value);
+        P.mastery = $('p-mastery').value;
+        P.count = parseInt($('p-count').value, 10) || 20;
+        P.includeAnswer = $('p-ans').checked;
+      };
+      $('p-build').onclick = async () => {
+        collect();
+        const pv = $('p-preview');
+        pv.innerHTML = '<div class="empty-tip">组卷中…</div>';
+        try {
+          const r = await API.paperGenerate({ chapters: P.chapters, difficulties: P.diffs, types: P.types, mastery: P.mastery, count: P.count });
+          S.paperTitle = r.title; S.paperGroups = r.groups; S.paperTotal = r.total;
+          const ex = $('p-export'); if (ex) ex.disabled = false;
+          pv.innerHTML = '<b style="color:var(--accent2)">' + esc(r.title) + '</b>　共 ' + r.total + ' 题<br>' +
+            r.groups.map(g => '<div style="margin:6px 0"><b>第' + (g.chapter === 0 ? '0' : g.chapter) + '章 ' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
+              g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + esc(q.question) + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
+            '<div style="margin-top:8px;color:var(--dim)">导出 Word 后可在 WPS/Word 中打开打印。</div>';
+        } catch (e) { pv.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
+      };
+      $('p-export').onclick = async () => {
+        collect();
+        try {
+          const blob = await API.download('/api/paper/export', 'POST', { chapters: P.chapters, difficulties: P.diffs, types: P.types, mastery: P.mastery, count: P.count, includeAnswer: P.includeAnswer });
+          const a = document.createElement('a');
+          const fname = (S.unit ? S.unit + '-' : '') + (S.paperTitle || '组卷') + (P.includeAnswer ? '-答案版' : '') + '.doc';
+          a.href = URL.createObjectURL(blob); a.download = fname; a.click();
+          setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+          toast('试卷已导出，可用 Word/WPS 打开打印');
+        } catch (e) { toast(e.message); }
+      };
     }
   };
   window.UIM = UIM;

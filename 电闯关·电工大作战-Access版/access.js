@@ -65,8 +65,17 @@ function callWorker(mode, sql, outFile, dbPath) {
         try { fs.unlinkSync(sqlFile); } catch (e) { /* 忽略 */ }
         let res = null;
         try { res = JSON.parse(fs.readFileSync(outFile, 'utf8')); } catch (e) { /* 忽略 */ }
+        // 1.0.0.4：结果读取后即删除临时输出文件，避免 data 目录积累 .acc_tmp 残留
+        try { fs.unlinkSync(outFile); } catch (e) { /* 忽略 */ }
         if (res && res.ok) return resolve(res);
         const msg = (res && res.err) ? res.err : (err ? err.message : '未知错误');
+        // 1.0.0.4：数据库被短暂占用（如杀毒扫描/刚复制/重启过快）时自动重试
+        if (/已在使用中|已在使用中|already in use|in use/i.test(msg)) {
+          setTimeout(() => {
+            callWorker(mode, sql, outFile, dbPath).then(resolve, reject);
+          }, 800);
+          return;
+        }
         reject(new Error('Access操作失败: ' + msg));
       });
   });
@@ -100,7 +109,7 @@ const DDL = [
   "CREATE TABLE memoryBest (userId TEXT(32), best LONG)",
   "CREATE TABLE logs (id COUNTER, t TEXT(20), op TEXT(200), who TEXT(50), name TEXT(50), reason TEXT(200))",
   "CREATE TABLE answer_logs (id COUNTER, t TEXT(20), userId TEXT(32), name TEXT(50), qid LONG, chapter LONG, [section] LONG, correct LONG)",
-  "CREATE TABLE questions (id LONG, chapter LONG, [section] LONG, type TEXT(10), question MEMO, options MEMO, answer MEMO, explain MEMO)",
+  "CREATE TABLE questions (id LONG, chapter LONG, [section] LONG, type TEXT(10), question MEMO, options MEMO, answer MEMO, explain MEMO, difficulty LONG)",
   "CREATE TABLE settings (id COUNTER, k TEXT(50), v MEMO)"
 ];
 
@@ -115,9 +124,9 @@ function buildTemplate() {
   });
 }
 function insertQuestionSQL(qq) {
-  return "INSERT INTO questions (id,chapter,[section],type,question,options,answer,explain) VALUES (" +
+  return "INSERT INTO questions (id,chapter,[section],type,question,options,answer,explain,difficulty) VALUES (" +
     esc(qq.id) + ',' + esc(qq.chapter) + ',' + esc(qq.section || 1) + ',' + esc(qq.type) + ',' + esc(qq.question) + ',' +
-    esc(JSON.stringify(qq.options || [])) + ',' + esc(qq.answer) + ',' + esc(qq.explain || '') + ')';
+    esc(JSON.stringify(qq.options || [])) + ',' + esc(qq.answer) + ',' + esc(qq.explain || '') + ',' + esc(qq.difficulty || 3) + ')';
 }
 function insertTeacherSQL() {
   const s = uid();
@@ -153,24 +162,53 @@ async function ensureDb() {
 }
 
 /* 确保教师账号存在 */
+/* 1.0.0.5：旧库 questions 表无 difficulty 列时补列（已存在则忽略） */
+async function ensureQuestionDiff() {
+  try {
+    const f = tmpFile();
+    await callWorker('exec', ['ALTER TABLE questions ADD COLUMN difficulty LONG'], f);
+  } catch (e) { /* 列已存在等，忽略 */ }
+  // 1.0.0.5：旧库题目无难度标注时按题型自动填充默认值（single/judge=2、fill/matching=3、multi=4）
+  try {
+    const rows = await q("SELECT id, type FROM questions WHERE difficulty IS NULL OR difficulty <= 0");
+    if (rows.length) {
+      const upd = [];
+      for (const r of rows) {
+        const d = r.type === 'single' || r.type === 'judge' ? 2 : (r.type === 'multi' ? 4 : 3);
+        upd.push("UPDATE questions SET difficulty = " + d + " WHERE id = " + esc(r.id));
+      }
+      await run(upd);
+    }
+  } catch (e) { /* 表结构异常时忽略，查询接口按 null→3 兜底 */ }
+}
+
 async function ensureTeacher() {
   const rows = await q("SELECT id FROM users WHERE name='teacher' AND role='teacher'");
   if (!rows.length) await run([insertTeacherSQL()]);
 }
 
-/* 全量载入内存（启动时一次） */
+/* 1.0.0.4：清扫历史运行残留的临时文件（旧版本不清理，data 目录会越积越多） */
+function sweepTempFiles() {
+  try {
+    for (const f of fs.readdirSync(DATA_DIR)) {
+      if (f.startsWith('.acc_tmp_') || f.startsWith('.acc_sql_')) {
+        try { fs.unlinkSync(path.join(DATA_DIR, f)); } catch (e) { /* 被占用则跳过 */ }
+      }
+    }
+  } catch (e) { /* 目录不存在等，忽略 */ }
+}
+
+/* 全量载入内存（启动时一次；1.0.0.4：串行查询，降低并发打开 Access 的锁冲突） */
 async function loadAll() {
-  const [users, sessions, progress, wrongs, mems, logs, questions, ansLogs, settings] = await Promise.all([
-    q('SELECT * FROM users'),
-    q('SELECT * FROM sessions'),
-    q('SELECT * FROM progress'),
-    q('SELECT userId, qid, cnt, good, lastTime FROM wrongs'),
-    q('SELECT * FROM memoryBest'),
-    q('SELECT id, t, op, who, name, reason FROM logs ORDER BY id'),
-    q('SELECT * FROM questions ORDER BY id'),
-    q('SELECT t, userId, name, qid, chapter, [section], correct FROM answer_logs ORDER BY id'),
-    q('SELECT k, v FROM settings')
-  ]);
+  const users = await q('SELECT * FROM users');
+  const sessions = await q('SELECT * FROM sessions');
+  const progress = await q('SELECT * FROM progress');
+  const wrongs = await q('SELECT userId, qid, cnt, good, lastTime FROM wrongs');
+  const mems = await q('SELECT * FROM memoryBest');
+  const logs = await q('SELECT id, t, op, who, name, reason FROM logs ORDER BY id');
+  const questions = await q('SELECT * FROM questions ORDER BY id');
+  const ansLogs = await q('SELECT t, userId, name, qid, chapter, [section], correct FROM answer_logs ORDER BY id');
+  const settings = await q('SELECT k, v FROM settings');
   state.users = users.map(u => ({
     id: u.id, name: u.name, salt: u.salt, pass: u.pass, role: u.role, score: u.score || 0,
     reg: parseInt(u.reg, 10) || 0, lastLogin: parseInt(u.lastLogin, 10) || 0,
@@ -198,7 +236,7 @@ async function loadAll() {
   state.questions = questions.map(x => {
     let opts = [];
     try { opts = JSON.parse(x.options || '[]'); } catch (e) { opts = []; }
-    return { id: x.id, chapter: x.chapter, section: x.section || 1, type: x.type, question: x.question, options: opts, answer: x.answer, explain: x.explain || '' };
+    return { id: x.id, chapter: x.chapter, section: x.section || 1, type: x.type, question: x.question, options: opts, answer: x.answer, explain: x.explain || '', difficulty: x.difficulty == null ? 3 : x.difficulty };
   });
 }
 
@@ -258,7 +296,7 @@ function batchInsertQuestions(arr) {
 }
 function updateQuestion(qq) {
   return run(["UPDATE questions SET chapter=" + esc(qq.chapter) + ",[section]=" + esc(qq.section || 1) + ",type=" + esc(qq.type) + ",question=" + esc(qq.question) +
-    ",options=" + esc(JSON.stringify(qq.options || [])) + ",answer=" + esc(qq.answer) + ",explain=" + esc(qq.explain || '') + " WHERE id=" + esc(qq.id)]);
+    ",options=" + esc(JSON.stringify(qq.options || [])) + ",answer=" + esc(qq.answer) + ",difficulty=" + esc(qq.difficulty || 3) + ",explain=" + esc(qq.explain || '') + " WHERE id=" + esc(qq.id)]);
 }
 function deleteQuestion(id) {
   return run(["DELETE FROM questions WHERE id=" + esc(id)]);
@@ -266,9 +304,22 @@ function deleteQuestion(id) {
 
 /* 启动初始化入口 */
 async function init() {
+  sweepTempFiles();
   await ensureDb();
+  await ensureQuestionDiff();
   await loadAll();
   await ensureTeacher();
+  // 1.0.0.4：确保使用说明中承诺的测试账号存在（闯关测试员 / 1234，教师可删除）
+  const tester = await q("SELECT id,name,salt,pass,role,score,reg,lastLogin,loginCount,correct,total FROM users WHERE name='闯关测试员' AND role='student'");
+  if (!tester.length) {
+    const id = uid(), s = uid(), now = nowStr();
+    await run(["INSERT INTO users (id,name,salt,pass,role,score,reg,lastLogin,loginCount,correct,total) VALUES (" +
+      esc(id) + ",'闯关测试员'," + esc(s) + ',' + esc(sha256(s + '1234')) + ",'student',0," + esc(now) + ",0,0,0,0)"]);
+    // 同步进内存，避免首次启动后需重启才能登录
+    state.users.push({ id, name: '闯关测试员', salt: s, pass: sha256(s + '1234'), role: 'student', score: 0, reg: Date.now(), lastLogin: 0, loginCount: 0, correct: 0, total: 0 });
+  } else {
+    // 兼容：已在库中但内存缺载（loadAll 已载入，无需处理）
+  }
 }
 
 module.exports = {

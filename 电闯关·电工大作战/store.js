@@ -87,9 +87,17 @@ async function init() {
     state.users.push({ id: uid(), name: 'teacher', salt: tSalt, pass: sha256(tSalt + '123456'), role: 'teacher', score: 0, reg: Date.now(), lastLogin: 0, loginCount: 0, correct: 0, total: 0 });
     await saveDB();
   }
+  // 1.0.0.4：确保使用说明中承诺的测试账号存在（闯关测试员 / 1234，教师可删除）
+  if (!state.users.some(u => u.name === '闯关测试员' && u.role === 'student')) {
+    const sSalt = uid();
+    state.users.push({ id: uid(), name: '闯关测试员', salt: sSalt, pass: sha256(sSalt + '1234'), role: 'student', score: 0, reg: Date.now(), lastLogin: 0, loginCount: 0, correct: 0, total: 0 });
+    await saveDB();
+  }
 }
 
-/* ---------------- 业务增量落盘（与 access.js 同签名） ---------------- */
+/* ---------------- 业务增量落盘（与 access.js 同签名） ----------------
+ * 说明：JSON 版由 server.js 先改内存 state，这里负责把内存全量落盘；
+ * 需要额外数据库语义的操作（如删除用户连带清会话）在此补齐。 */
 
 function insertUser(u) { return saveDB(); }
 function updateUser(u) { return saveDB(); }

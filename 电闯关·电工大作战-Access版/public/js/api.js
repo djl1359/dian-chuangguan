@@ -54,6 +54,26 @@
     qAdd: (data) => API.req('POST', '/api/questions/admin', data),
     qUpdate: (id, data) => API.req('PUT', '/api/questions/admin/' + id, data),
     qDelete: (id) => API.req('DELETE', '/api/questions/admin/' + id),
+    /* 1.0.0.5：题库模板导出/试题导入/批量删除 */
+    qImport: (format, content) => API.req('POST', '/api/questions/import', { format, content }),
+    qBatchDelete: (ids) => API.req('POST', '/api/questions/admin/batch-delete', { ids }),
+    /* 1.0.0.5：二进制文件下载（模板 CSV / 组卷 doc） */
+    async download(url, method, body) {
+      const headers = {};
+      if (this.token) headers['X-Token'] = this.token;
+      if (body) headers['Content-Type'] = 'application/json';
+      const res = await fetch(this.base + url, { method, headers, body: body ? JSON.stringify(body) : undefined });
+      if (!res.ok) {
+        let d = {};
+        try { d = await res.json(); } catch (e) { /* ignore */ }
+        throw new Error(d.err || ('下载失败 ' + res.status));
+      }
+      return res.blob();
+    },
+    /* 1.0.0.5：关卡题目数量自动计时 */
+    levelAutoTime: (q) => API.req('POST', '/api/levels/auto-time', q),
+    /* 1.0.0.5：组卷生成 */
+    paperGenerate: (opts) => API.req('POST', '/api/paper/generate', opts),
     logs: () => API.req('GET', '/api/logs'),
     classAnalysis: () => API.req('GET', '/api/analysis/class'),
     studentAnalysis: (id) => API.req('GET', '/api/analysis/student?id=' + encodeURIComponent(id)),
