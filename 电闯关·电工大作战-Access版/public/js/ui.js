@@ -757,12 +757,17 @@ async function loadChapterAnalysis(ch) {
       S.masteryList = r.list; // 缓存全班掌握数据（点击单元格直接出明细）
       const gF = PG.analysis.grade;
       const kwName = (PG.analysis.kw || '').trim();
+      const kwFound = kwName ? r.list.some(u => u.name === kwName) : false;
+      let gradeShown = 0;
       r.list.forEach(u => {
         const ua = u.acc;
         const ug = ua == null ? '差' : (ua >= 90 ? '优' : ua >= 75 ? '良' : ua >= 60 ? '中' : '差');
-        const isKw = kwName && u.name === kwName; // 查找框锁定学生 → 高亮其行
-        const rowStyle = isKw ? ' style="background:rgba(80,200,120,.14)"' : (gF ? (ug === gF ? ' style="background:rgba(80,200,120,.14)"' : ' style="opacity:.35"') : '');
-        html += '<tr' + rowStyle + '><td style="text-align:left;font-weight:700">' + esc(u.name) + ((isKw || (gF && ug === gF)) ? ' ⭐' : '') + '</td>';
+        const isKw = kwName && u.name === kwName;
+        if (kwName && !isKw) return; // 查找框锁定学生：表格只显示该生一行，隐藏其他行
+        if (gF && ug !== gF) return; // 等次筛选：表格只显示选中（优/良/中/差）等次的学生行
+        gradeShown++;
+        const rowStyle = isKw ? ' style="background:rgba(80,200,120,.14)"' : (gF ? ' style="background:rgba(80,200,120,.14)"' : '');
+        html += '<tr' + rowStyle + '><td style="text-align:left;font-weight:700">' + esc(u.name) + ((isKw || gF) ? ' ⭐' : '') + '</td>';
         S.chapters.forEach(c => {
           const chd = u.chapters.find(x => x.chapter === c.id);
           if (!chd || !chd.answered) { html += '<td style="color:var(--dim)">—</td>'; return; }
@@ -773,6 +778,8 @@ async function loadChapterAnalysis(ch) {
         html += '</tr>';
       });
       html += '</table>';
+      if (kwName && !kwFound) html += '<div class="empty-tip" style="margin-top:6px">未找到学生「' + esc(kwName) + '」的掌握数据</div>';
+      else if (gF && !gradeShown) html += '<div class="empty-tip" style="margin-top:6px">当前筛选（' + esc(gF) + '等）下暂无学生掌握数据</div>';
       html += '<div id="mastery-detail-zone"></div>'; // 全班模式章节掌握明细（同个人模式结构）
       box.innerHTML = html;
     } catch (e) { box.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }

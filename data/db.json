@@ -6,12 +6,12 @@
       "salt": "9668710463a0f0e1",
       "pass": "928cf42193eec5baa17229c7a1060eb2b1d1dc8441754392282845ebd5d89b34",
       "role": "teacher",
-      "score": 24707,
+      "score": 34217,
       "reg": 1790361073164,
-      "lastLogin": 1790726601314,
-      "loginCount": 49,
-      "correct": 74,
-      "total": 75
+      "lastLogin": 1790736614357,
+      "loginCount": 55,
+      "correct": 110,
+      "total": 118
     },
     {
       "id": "35137e1bbbb41ac3",
@@ -25,12 +25,32 @@
       "loginCount": 13,
       "correct": 0,
       "total": 0
+    },
+    {
+      "id": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "salt": "ac5b22840d43a16c",
+      "pass": "76f4866ae1eb980e73944ef774e1eb4ee9a0266fc4a518a85cd536932bf36194",
+      "role": "student",
+      "score": 10513,
+      "reg": 1790734992354,
+      "lastLogin": 0,
+      "loginCount": 0,
+      "correct": 35,
+      "total": 43
     }
   ],
   "sessions": {
     "58125cddfa1a93a3f97bc9d00c1c5c93": "37443a200f06c56b",
     "ab2564dbc01d13ad8f5f52eee170e1bd": "37443a200f06c56b",
-    "1acf2449fe75c7ff3c1b706d16f4ef7b": "37443a200f06c56b"
+    "1acf2449fe75c7ff3c1b706d16f4ef7b": "37443a200f06c56b",
+    "65bf8c2c55031d5ff5e29c01a9ba1952": "37443a200f06c56b",
+    "464322cb77b795fe964c5fd71abc536b": "37443a200f06c56b",
+    "c109ad338582c7a65ebd33b0c772ebaa": "da96ab4ffc27c2ef",
+    "630a7fc9e1b7c79783918a7243400a75": "37443a200f06c56b",
+    "71774090f00b0a645da7207a36cdac68": "37443a200f06c56b",
+    "a6c457e2a82edb6b541f9809d6c80b7d": "37443a200f06c56b",
+    "7e48b8b843d90b900d6373a0cb0823c8": "37443a200f06c56b"
   },
   "progress": {
     "37443a200f06c56b": {
@@ -39,6 +59,20 @@
         "lv2": 3,
         "lv3": 3,
         "boss": 3
+      },
+      "1": {
+        "lv1": 3,
+        "lv2": 3,
+        "lv3": 2,
+        "boss": 2
+      }
+    },
+    "da96ab4ffc27c2ef": {
+      "0": {
+        "lv1": 3,
+        "lv2": 3,
+        "lv3": 3,
+        "boss": 1
       }
     }
   },
@@ -49,12 +83,56 @@
         "chapter": 0,
         "count": 1,
         "last": 1790726676296,
+        "good": 1
+      },
+      {
+        "qid": 22,
+        "chapter": 1,
+        "count": 2,
+        "last": 1790734837568,
         "good": 0
+      },
+      {
+        "qid": 27,
+        "chapter": 1,
+        "count": 2,
+        "last": 1790734813305,
+        "good": 0
+      },
+      {
+        "qid": 13,
+        "chapter": 1,
+        "count": 1,
+        "last": 1790734543594,
+        "good": 0
+      },
+      {
+        "qid": 16,
+        "chapter": 1,
+        "count": 1,
+        "last": 1790734544990,
+        "good": 1
+      },
+      {
+        "qid": 32,
+        "chapter": 1,
+        "count": 1,
+        "last": 1790734547475,
+        "good": 1
       }
-    ]
+    ],
+    "da96ab4ffc27c2ef": []
   },
   "memoryBest": {},
-  "logs": [],
+  "logs": [
+    {
+      "t": 1790735126375,
+      "op": "加分+100",
+      "name": "zhangsan",
+      "by": "teacher",
+      "reason": "ceshi"
+    }
+  ],
   "answerLogs": [
     {
       "t": 1790725838372,
@@ -730,11 +808,785 @@
       "chapter": 0,
       "section": 1,
       "correct": true
+    },
+    {
+      "t": 1790734193653,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734198825,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734218348,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734238411,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734251476,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734267728,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 29,
+      "chapter": 1,
+      "section": 4,
+      "correct": true
+    },
+    {
+      "t": 1790734272828,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 16,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
+    },
+    {
+      "t": 1790734277371,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 14,
+      "chapter": 1,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734284428,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 26,
+      "chapter": 1,
+      "section": 4,
+      "correct": true
+    },
+    {
+      "t": 1790734293113,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 28,
+      "chapter": 1,
+      "section": 4,
+      "correct": true
+    },
+    {
+      "t": 1790734300204,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 30,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734307706,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 22,
+      "chapter": 1,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734314446,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 11,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734328190,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 35,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734338043,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 21,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
+    },
+    {
+      "t": 1790734356206,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 282,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734372423,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 36,
+      "chapter": 1,
+      "section": 4,
+      "correct": true
+    },
+    {
+      "t": 1790734379974,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 281,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734387343,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 15,
+      "chapter": 1,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734392963,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 33,
+      "chapter": 1,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734397573,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 22,
+      "chapter": 1,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1790734413116,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 302,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
+    },
+    {
+      "t": 1790734419396,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 34,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734426897,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 39,
+      "chapter": 1,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734437654,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 30,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734443003,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 29,
+      "chapter": 1,
+      "section": 4,
+      "correct": true
+    },
+    {
+      "t": 1790734450634,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 36,
+      "chapter": 1,
+      "section": 4,
+      "correct": true
+    },
+    {
+      "t": 1790734458567,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 14,
+      "chapter": 1,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734464434,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 38,
+      "chapter": 1,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734477284,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 20,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
+    },
+    {
+      "t": 1790734485525,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 19,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
+    },
+    {
+      "t": 1790734493833,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 27,
+      "chapter": 1,
+      "section": 4,
+      "correct": false
+    },
+    {
+      "t": 1790734512850,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 283,
+      "chapter": 1,
+      "section": 4,
+      "correct": true
+    },
+    {
+      "t": 1790734517583,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 34,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790734543591,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 13,
+      "chapter": 1,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1790734544987,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 16,
+      "chapter": 1,
+      "section": 3,
+      "correct": false
+    },
+    {
+      "t": 1790734546361,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 18,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
+    },
+    {
+      "t": 1790734547472,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 32,
+      "chapter": 1,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1790734805662,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 16,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
+    },
+    {
+      "t": 1790734813303,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 27,
+      "chapter": 1,
+      "section": 4,
+      "correct": false
+    },
+    {
+      "t": 1790734837565,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 22,
+      "chapter": 1,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1790734859087,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790734873397,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 32,
+      "chapter": 1,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735002392,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735003896,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1790735005525,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735006940,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735008449,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1790735010284,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735013865,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1790735015886,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1790735018015,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1790735098514,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1790735101031,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1790735102460,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735143914,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735146928,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1790735151963,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735157116,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735160477,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735163122,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735166419,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735169571,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735175308,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735181725,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735184218,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735187105,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735189491,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735192882,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735195418,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735199297,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735203908,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735207370,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735211044,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735214314,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735219274,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735223281,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735227115,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735230307,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735234084,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735236065,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735243844,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735248535,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735269563,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790735287695,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790735300169,
+      "userId": "da96ab4ffc27c2ef",
+      "name": "zhangsan",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
     }
   ],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.2.0.0",
+    "version": "1.2.0.1",
     "timeAdd": 5,
     "timeMatchAdd": 10,
     "levelQ": {
