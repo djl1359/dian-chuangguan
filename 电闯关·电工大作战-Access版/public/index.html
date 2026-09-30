@@ -52,6 +52,7 @@
       <button class="menu-card" id="btn-goto-wrong"><span class="mc-icon">📕</span><span class="mc-title">错题本</span><span class="mc-desc" id="menu-wrong-count">重练易错知识点</span></button>
       <button class="menu-card" id="btn-goto-memory"><span class="mc-icon">🧠</span><span class="mc-title">物理量识记</span><span class="mc-desc">符号·单位·换算·关系自测</span></button>
       <button class="menu-card" id="btn-goto-rank"><span class="mc-icon">🏆</span><span class="mc-title">排行榜</span><span class="mc-desc">积分段位大比拼</span></button>
+      <button class="menu-card" id="btn-goto-exam"><span class="mc-icon">📝</span><span class="mc-title">网上考试</span><span class="mc-desc">答题卡拍照上传 · 自动阅卷</span></button>
       <button class="menu-card teacher-only" id="btn-goto-teacher" style="display:none"><span class="mc-icon">🛠️</span><span class="mc-title">教师管理</span><span class="mc-desc">学生·题库·成绩分析</span></button>
     </div>
     <div class="stats-bar">
@@ -157,6 +158,16 @@
     <div class="panel" id="rank-list"></div>
   </div>
 
+  <!-- ============ 网上考试（学生端） ============ -->
+  <div class="screen" id="screen-exam" style="display:none">
+    <header class="topbar">
+      <button class="btn ghost" id="btn-exam-back">← 返回</button>
+      <div class="title-center">网上考试</div>
+      <div class="top-right"><span class="chip" id="exam-stu-tip">📤 拍照上传</span></div>
+    </header>
+    <div class="panel" id="exam-student-box"></div>
+  </div>
+
   <!-- ============ 错题本 ============ -->
   <div class="screen" id="screen-wrong" style="display:none">
     <header class="topbar">
@@ -207,6 +218,7 @@
       <button class="tab-btn" data-tab="questions">题库管理</button>
       <button class="tab-btn" data-tab="analysis">成绩分析</button>
       <button class="tab-btn" data-tab="paper">📄 组卷打印</button>
+      <button class="tab-btn" data-tab="exam">📝 阅卷考试</button>
       <button class="tab-btn" data-tab="logs">操作日志</button>
     </div>
     <div class="tabs-body">
@@ -252,6 +264,10 @@
       <div class="tab-body" id="tab-paper" style="display:none">
         <div class="panel" id="paper-box"></div>
       </div>
+      <!-- 阅卷考试（西红柿阅卷） -->
+      <div class="tab-body" id="tab-exam" style="display:none">
+        <div class="panel" id="exam-box"></div>
+      </div>
       <!-- 操作日志 -->
       <div class="tab-body" id="tab-logs" style="display:none">
         <div class="panel" id="log-list"></div>
@@ -269,5 +285,6 @@
 <script src="js/api.js?v=20260926a3"></script>
 <script src="js/ui.js?v=20260926a3"></script>
 <script src="js/game.js?v=20260926a3"></script>
+<script src="js/exam.js?v=20260926a3"></script>
 </body>
 </html>

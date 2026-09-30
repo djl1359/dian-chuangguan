@@ -1,5 +1,5 @@
 /* ============================================================
- * 电闯关·电工大作战 — 服务端（零依赖 Node.js + Access 数据库，1.0.0.5）
+ * 电闯关·电工大作战 — 服务端（零依赖 Node.js + JSON 数据库，1.0.0.5）
  * 《电工技术基础与技能（第4版）》周绍敏主编 动作闯关游戏
  * 运行：node server.js   (或双击 start.bat / 电闯关服务端.exe)
  * 端口：8123（默认，可用环境变量 PORT 修改）
@@ -17,7 +17,7 @@ const crypto = require('crypto');
 const acc = require('./access.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.2.0.1';
+const VERSION = '1.3.0.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -290,7 +290,13 @@ const server = http.createServer(async (req, res) => {
   try {
     /* ---------------- 静态资源 ---------------- */
     if (req.method === 'GET' && p.startsWith('/api/') === false) {
-      let file = path.normalize(path.join(PUBLIC_DIR, p === '/' ? 'index.html' : decodeURIComponent(p)));
+      let file;
+      if (p.startsWith('/uploads/')) {
+        file = path.normalize(path.join(acc.DATA_DIR, decodeURIComponent(p.replace(/^\/uploads\//, ''))));
+        if (!file.startsWith(acc.DATA_DIR)) { sendJSON(res, 403, { err: 'forbidden' }); return; }
+      } else {
+        file = path.normalize(path.join(PUBLIC_DIR, p === '/' ? 'index.html' : decodeURIComponent(p)));
+      }
       if (!file.startsWith(PUBLIC_DIR)) { sendJSON(res, 403, { err: 'forbidden' }); return; }
       fs.stat(file, (err, st) => {
         if (err || !st.isFile()) { res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' }); res.end('<h1>404 Not Found</h1>'); return; }
@@ -873,6 +879,253 @@ const server = http.createServer(async (req, res) => {
       });
       return res.end(Buffer.from('\uFEFF' + doc, 'utf8'));
     }
+    // ============ 1.3.0.0 考试/阅卷（西红柿阅卷） ============
+    // 保存考试（创建/更新；questions: [{id, score}] 或完整题目对象）
+    if (p === '/api/exam/save' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const title = String(body.title || '').trim();
+      if (!title) return sendJSON(res, 400, { err: '考试名称不能为空' });
+      let qs = Array.isArray(body.questions) ? body.questions : [];
+      if (!qs.length) return sendJSON(res, 400, { err: '试卷不能为空，请先组卷' });
+      // 规范化题目（带分值，缺省 1 分）
+      const list = qs.map(x => {
+        const src = typeof x.id !== 'undefined' ? questions.find(qq => qq.id === Number(x.id)) : x;
+        if (!src) return null;
+        return { id: src.id, chapter: src.chapter, section: src.section || 1, type: src.type, question: src.question,
+          options: src.options, answer: src.answer, difficulty: src.difficulty || 3, score: Math.max(1, Number(x.score) || 1) };
+      }).filter(Boolean);
+      if (!list.length) return sendJSON(res, 400, { err: '题目无效或未找到' });
+      const totalScore = list.reduce((s2, x) => s2 + x.score, 0);
+      const now = Date.now();
+      const exam = {
+        id: body.id || 'ex' + uid(),
+        title, subject: String(body.subject || '电工技术基础与技能'),
+        className: String(body.className || ''), grade: String(body.grade || ''),
+        createdAt: now, status: 'draft',
+        questions: list, qcount: list.length, totalScore,
+        createdBy: a.user.name, publishedAt: '', note: String(body.note || '')
+      };
+      await acc.saveExam(exam);
+      db.logs.push({ t: Date.now(), op: '创建/更新考试「' + title + '」（' + list.length + '题/' + totalScore + '分）', by: a.user.name });
+      await acc.appendLog(db.logs[db.logs.length - 1]);
+      return sendJSON(res, 200, { ok: 1, exam: publicExam(exam) });
+    }
+    // 考试列表（教师）
+    if (p === '/api/exam/list' && req.method === 'GET') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      return sendJSON(res, 200, { list: acc.listExams().map(publicExam) });
+    }
+    // 考试详情（教师，含答案）
+    if (p === '/api/exam/get' && req.method === 'GET') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const exam = acc.listExams().find(x => x.id === q.get('id'));
+      if (!exam) return sendJSON(res, 404, { err: '考试不存在' });
+      return sendJSON(res, 200, { exam: publicExam(exam, true) });
+    }
+    // 删除考试
+    if (p === '/api/exam/delete' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const exam = acc.listExams().find(x => x.id === body.id);
+      await acc.deleteExam(String(body.id || ''));
+      if (exam) {
+        db.logs.push({ t: Date.now(), op: '删除考试「' + exam.title + '」', by: a.user.name });
+        await acc.appendLog(db.logs[db.logs.length - 1]);
+      }
+      return sendJSON(res, 200, { ok: 1 });
+    }
+    // 考试状态流转（open 开考 / grading 收卷阅卷 / published 发布成绩）
+    if (p === '/api/exam/status' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const exam = acc.listExams().find(x => x.id === body.id);
+      if (!exam) return sendJSON(res, 404, { err: '考试不存在' });
+      const st = ['draft', 'open', 'grading', 'published'].includes(body.status) ? body.status : exam.status;
+      exam.status = st;
+      if (st === 'published') exam.publishedAt = Date.now();
+      await acc.saveExam(exam);
+      db.logs.push({ t: Date.now(), op: '考试「' + exam.title + '」状态变更为 ' + st, by: a.user.name });
+      await acc.appendLog(db.logs[db.logs.length - 1]);
+      return sendJSON(res, 200, { ok: 1, status: st });
+    }
+    // 学生端：我的考试（进行中/已发布）
+    if (p === '/api/exam/mine' && req.method === 'GET') {
+      const a = auth('student');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const exams = acc.listExams().filter(x => x.status === 'open' || x.status === 'published');
+      const ans = acc.listExamAnswers ? acc.listExamAnswersOf(a.user.id) : [];
+      const map = {};
+      (acc.listExamAnswers ? acc.listExamAnswersOf(a.user.id) : []).forEach(x => { map[x.examId] = x; });
+      const list = exams.map(x => {
+        const my = map[x.id];
+        return { id: x.id, title: x.title, subject: x.subject, className: x.className, status: x.status,
+          qcount: x.qcount, totalScore: x.totalScore, publishedAt: x.publishedAt,
+          answered: !!my, myTotal: my ? my.total : null, myStatus: my ? my.status : null, grade: my ? my.total : null };
+      });
+      return sendJSON(res, 200, { list });
+    }
+    // 学生提交答卷（客观题识别结果：objective=[{id, given}]；服务端重新判分防伪造）
+    if (p === '/api/exam/submit' && req.method === 'POST') {
+      const a = auth('student');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const exam = acc.listExams().find(x => x.id === body.examId);
+      if (!exam) return sendJSON(res, 404, { err: '考试不存在' });
+      if (exam.status !== 'open') return sendJSON(res, 400, { err: '考试当前不可作答' });
+      const given = Array.isArray(body.objective) ? body.objective : [];
+      const objective = exam.questions.map(qq => {
+        const g = given.find(x => String(x.id) === String(qq.id));
+        const val = g ? g.given : '';
+        let ok = false;
+        if (qq.type === 'single' || qq.type === 'judge') {
+          const letter = String(val || '').trim().toUpperCase();
+          ok = letter.length === 1 && letter === String(qq.answer).toUpperCase();
+        } else if (qq.type === 'multi') {
+          const want = String(qq.answer).split(/[,，]/).map(s => s.trim().toUpperCase()).filter(Boolean).sort();
+          const sel = String(val || '').toUpperCase().split(/[,，]/).map(s => s.trim()).filter(Boolean).sort();
+          ok = want.length > 0 && want.join(',') === sel.join(',');
+        } else if (qq.type === 'fill') {
+          ok = answerMatch(String(val || ''), String(qq.answer));
+        }
+        return { id: qq.id, type: qq.type, given: val, ok, score: ok ? qq.score : 0 };
+      });
+      const autoScore = objective.reduce((s2, x) => s2 + x.score, 0);
+      const subjective = exam.questions.filter(qq => ['matching', 'calc'].includes(qq.type))
+        .map(qq => ({ id: qq.id, maxScore: qq.score, score: 0, graded: false }));
+      const ans = { examId: exam.id, userId: a.user.id, name: a.user.name, t: Date.now(),
+        objective, subjective, total: autoScore, status: subjective.length ? 'pending' : 'graded', img: String(body.img || '') };
+      await acc.saveExamAnswer(ans);
+      return sendJSON(res, 200, { ok: 1, total: ans.total, needManual: !!subjective.length });
+    }
+    // 教师：答卷列表（含识别结果/图片）
+    if (p === '/api/exam/answers' && req.method === 'GET') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const examId = q.get('examId');
+      const exam = acc.listExams().find(x => x.id === examId);
+      if (!exam) return sendJSON(res, 404, { err: '考试不存在' });
+      const list = acc.listExamAnswers(examId).map(x => {
+        const subDone = (x.subjective || []).every(s => s.graded);
+        return { userId: x.userId, name: x.name, t: x.t, total: x.total, status: subDone ? 'graded' : x.status, img: x.img || '',
+          objective: x.objective, subjective: x.subjective, examTotal: exam.totalScore };
+      }).sort((x, y) => (x.name || '').localeCompare(y.name || '', 'zh'));
+      return sendJSON(res, 200, { list, exam: publicExam(exam, true) });
+    }
+    // 教师：主观题批改
+    if (p === '/api/exam/grade' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const exam = acc.listExams().find(x => x.id === body.examId);
+      const answers = acc.listExamAnswers(body.examId);
+      const ans = answers.find(x => x.userId === body.userId);
+      if (!exam || !ans) return sendJSON(res, 404, { err: '答卷不存在' });
+      const subs = Array.isArray(body.subjective) ? body.subjective : [];
+      (ans.subjective || []).forEach(s => {
+        const g = subs.find(x => String(x.id) === String(s.id));
+        if (g) {
+          const v = Math.max(0, Math.min(s.maxScore, Number(g.score) || 0));
+          s.score = v; s.graded = true;
+        }
+      });
+      const subTotal = (ans.subjective || []).reduce((s2, x) => s2 + (x.graded ? x.score : 0), 0);
+      const objTotal = (ans.objective || []).reduce((s2, x) => s2 + x.score, 0);
+      ans.total = objTotal + subTotal;
+      ans.status = (ans.subjective || []).every(s => s.graded) ? 'graded' : 'pending';
+      await acc.saveExamAnswer(ans);
+      return sendJSON(res, 200, { ok: 1, total: ans.total, status: ans.status });
+    }
+    // 教师：考试统计（每题正确率 / 分数分布 / 个人成绩）
+    if (p === '/api/exam/stats' && req.method === 'GET') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const examId = q.get('examId');
+      const exam = acc.listExams().find(x => x.id === examId);
+      if (!exam) return sendJSON(res, 404, { err: '考试不存在' });
+      const answers = acc.listExamAnswers(examId);
+      const perQ = exam.questions.map(qq => {
+        const tried = answers.filter(x => x.objective && x.objective.some(o => String(o.id) === String(qq.id) && o.given !== '' && o.given != null));
+        const okN = tried.filter(x => x.objective.some(o => String(o.id) === String(qq.id) && o.ok)).length;
+        return { id: qq.id, type: qq.type, question: qq.question, score: qq.score, tried: tried.length, ok: okN, acc: tried.length ? Math.round(okN / tried.length * 100) : null };
+      });
+      const scores = answers.map(x => x.total);
+      const avg = scores.length ? Math.round(scores.reduce((s2, v) => s2 + v, 0) / scores.length * 10) / 10 : 0;
+      const dist = [0, 0, 0, 0, 0];
+      scores.forEach(v => { const pct = exam.totalScore ? v / exam.totalScore : 0; if (pct >= 0.9) dist[0]++; else if (pct >= 0.75) dist[1]++; else if (pct >= 0.6) dist[2]++; else dist[3]++; });
+      const students = db.users.filter(x => x.role === 'student');
+      const personal = students.map(st => {
+        const an = answers.find(x => x.userId === st.id);
+        return { id: st.id, name: st.name, total: an ? an.total : null, status: an ? an.status : 'absent', graded: an ? (an.subjective || []).every(s => s.graded) : false };
+      }).sort((x, y) => (y.total == null ? -1 : y.total) - (x.total == null ? -1 : x.total));
+      return sendJSON(res, 200, { exam: publicExam(exam), perQ, avg, count: answers.length, totalScore: exam.totalScore, dist, personal });
+    }
+    // 教师-导出标准考试试卷（.doc，1.3.0.0）
+    if (p === '/api/paper/exam' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      let r = null;
+      if (body.examId) {
+        const exam = acc.listExams().find(x => x.id === body.examId);
+        if (!exam) return sendJSON(res, 404, { err: '考试不存在' });
+        r = { title: exam.title, subject: exam.subject, total: exam.qcount, totalScore: exam.totalScore, list: exam.questions };
+        const typeOrder = ['single', 'judge', 'multi', 'fill', 'matching', 'calc'];
+        const typeName = { single: '单选题', judge: '判断题', multi: '多选题', fill: '填空题', matching: '连线题', calc: '计算题' };
+        r.groups = typeOrder.filter(t => exam.questions.some(q => q.type === t)).map(t => ({ type: t, name: typeName[t], questions: exam.questions.filter(q => q.type === t) }));
+      } else {
+        r = buildPaper(body);
+        r.subject = '电工技术基础与技能'; r.totalScore = r.list.reduce((s2, x) => s2 + (x.score || 1), 0);
+      }
+      const doc = examToDoc(r, !!body.includeAnswer);
+      const unit = db.settings.unit || '';
+      const fname = (unit ? unit + '-' : '') + r.title + (body.includeAnswer ? '-答案版' : '') + '-标准试卷.doc';
+      res.writeHead(200, { 'Content-Type': 'application/msword; charset=utf-8',
+        'Content-Disposition': 'attachment; filename="' + encodeURIComponent(fname).replace(/%20/g, ' ') + '"', 'Cache-Control': 'no-store' });
+      return res.end(Buffer.from('\uFEFF' + doc, 'utf8'));
+    }
+    // 教师-导出机读答题卡（.doc，1.3.0.0）
+    if (p === '/api/paper/card' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      let r = null;
+      if (body.examId) {
+        const exam = acc.listExams().find(x => x.id === body.examId);
+        if (!exam) return sendJSON(res, 404, { err: '考试不存在' });
+        r = { title: exam.title, total: exam.qcount, totalScore: exam.totalScore, list: exam.questions };
+      } else {
+        r = buildPaper(body);
+        r.totalScore = r.list.reduce((s2, x) => s2 + (x.score || 1), 0);
+      }
+      const doc = cardToDoc(r);
+      const unit = db.settings.unit || '';
+      const fname = (unit ? unit + '-' : '') + r.title + '-机读答题卡.doc';
+      res.writeHead(200, { 'Content-Type': 'application/msword; charset=utf-8',
+        'Content-Disposition': 'attachment; filename="' + encodeURIComponent(fname).replace(/%20/g, ' ') + '"', 'Cache-Control': 'no-store' });
+      return res.end(Buffer.from('\uFEFF' + doc, 'utf8'));
+    }
+    // 上传答题卡图片（base64 JSON，存 data/uploads）
+    if (p === '/api/exam/upload' && req.method === 'POST') {
+      const a = auth();
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const b64 = String(body.data || '');
+      const m = b64.match(/^data:image\/(\w+);base64,(.+)$/s);
+      if (!m) return sendJSON(res, 400, { err: '图片数据格式错误' });
+      const ext = m[1] === 'jpeg' ? 'jpg' : m[1];
+      const examId = String(body.examId || 'none').replace(/[^\w-]/g, '');
+      const dir = path.join(acc.DATA_DIR, 'uploads', examId);
+      fs.mkdirSync(dir, { recursive: true });
+      const fname = a.user.id + '_' + Date.now() + '.' + ext;
+      fs.writeFileSync(path.join(dir, fname), Buffer.from(m[2], 'base64'));
+      return sendJSON(res, 200, { ok: 1, url: '/uploads/' + examId + '/' + fname });
+    }
     // 教师-修改用户名/密码（记录日志）
     if (p === '/api/teacher' && req.method === 'PUT') {
       const a = auth('teacher');
@@ -1244,6 +1497,178 @@ function paperToDoc(r, includeAnswer) {
   return html;
 }
 
+/* ============ 1.3.0.0 标准试卷 / 机读答题卡导出 ============ */
+/* 标准正规考试试卷（密封线/分值/注意事项/答题空间） */
+function examToDoc(r, includeAnswer) {
+  const escH = (x) => String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const unit = db.settings.unit || '';
+  const gameName = db.settings.gameName || '电闯关·电工大作战';
+  const typeName = { single: '单选题', judge: '判断题', multi: '多选题', fill: '填空题', matching: '连线题', calc: '计算题' };
+  const typeTip = {
+    single: '（每题只有一个正确答案）', judge: '（判断对错，正确打“√”，错误打“×”）',
+    multi: '（每题有两个或两个以上正确答案，多选、少选、错选均不得分）', fill: '（将正确答案填写在横线上）',
+    matching: '（将左列与右列对应的选项用线连接）', calc: '（请按“已知、求、解、答”四步作答，写出完整计算过程）'
+  };
+  let no = 0;
+  const groupScore = (arr) => arr.reduce((s2, x) => s2 + (x.score || 1), 0);
+  let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">';
+  html += '<head><meta charset="utf-8"><title>' + escH(r.title) + '</title>';
+  html += '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->';
+  html += '<style>body{font-family:"宋体",SimSun,serif;font-size:12pt;line-height:1.9;color:#000;margin:0 20px} ' +
+    '.seal{position:relative;float:left;width:26px;margin:0 8px 0 0;border-left:1px dashed #000;border-right:1px dashed #000;height:740px;font-size:9pt;text-align:center;padding:4px 2px} ' +
+    '.seal div{margin:10px 0;letter-spacing:3px} ' +
+    '.paper-title{text-align:center;font-size:16pt;font-weight:bold;letter-spacing:3px;margin:4px 0 2px} ' +
+    '.paper-sub{text-align:center;font-size:10.5pt;color:#333;margin:2px 0 6px} ' +
+    '.info-table{width:100%;border-collapse:collapse;margin:6px 0 8px} .info-table td{border:1px solid #000;padding:4px 8px;font-size:11pt;height:26px} ' +
+    '.require{font-size:10.5pt;color:#333;margin:4px 0 8px} .require b{color:#000} ' +
+    'h3{font-size:12.5pt;font-weight:bold;margin:14px 0 6px;page-break-after:avoid} ' +
+    '.q{margin:10px 0;page-break-inside:avoid} .q .no{font-weight:bold} ' +
+    '.opts{margin:2px 0 2px 26px;font-size:12pt;line-height:1.9} ' +
+    '.judge-blank{display:inline-block;margin-left:18px} ' +
+    '.fill-blank{display:inline-block;margin-left:12px;border-bottom:1.5px solid #000;width:120px;height:1.4em;vertical-align:bottom} ' +
+    '.calc-frame{margin:6px 0 4px 24px;font-size:12pt;line-height:1.6} .calc-line{display:block;border-bottom:1px solid #000;height:1.5em;margin:6px 0 2px 2em} ' +
+    '.ans{margin-top:4px;color:#222;font-size:10.5pt;border-top:1px dashed #aaa;padding-top:3px} .ans b{color:#c00} ' +
+    '.footer{margin-top:24px;text-align:center;font-size:10.5pt;color:#555} ' +
+    '.score-row{width:100%;border-collapse:collapse;margin-top:10px} .score-row td{border:1px solid #000;height:34px;text-align:center;font-size:11pt}</style></head>';
+  html += '<body><table style="width:100%;border-collapse:collapse"><tr><td style="width:34px;vertical-align:top;padding:0">';
+  /* 密封线 */
+  html += '<div class="seal"><div>┄┄ 装 ┄ 订 ┄ 线 ┄┄</div><div>班 级：________</div><div>姓 名：________</div><div>考 号：________</div><div>┄┄ 装 ┄ 订 ┄ 线 ┄┄</div></div>';
+  html += '</td><td style="vertical-align:top;padding:0 4px">';
+  html += '<div class="paper-title">' + escH(r.title) + '</div>';
+  html += '<div class="paper-sub">' + (unit ? escH(unit) + '　' : '') + escH(gameName) + '　·　' + escH(r.subject || '电工技术基础与技能') +
+    '　·　考试时间 60 分钟　·　满分 ' + r.totalScore + ' 分</div>';
+  html += '<table class="info-table"><tr><td style="width:14%">班　级：</td><td style="width:36%">&nbsp;</td><td style="width:14%">姓　名：</td><td style="width:36%">&nbsp;</td></tr>' +
+    '<tr><td>考　号：</td><td>&nbsp;</td><td>得　分：</td><td>&nbsp;</td></tr></table>';
+  html += '<p class="require"><b>注意事项：</b>1. 答题前请将班级、姓名、考号填写清楚；2. 客观题（选择、判断、多选）请用 2B 铅笔在答题卡上填涂，主观题请在试卷上作答；' +
+    '3. 本试卷共 ' + r.total + ' 题，满分 ' + r.totalScore + ' 分，考试时间 60 分钟；4. 请认真审题，字迹工整，答完仔细检查。</p>';
+  const no2 = { single: '一', judge: '二', multi: '三', fill: '四', matching: '五', calc: '六' };
+  r.groups.forEach(g => {
+    const sc = groupScore(g.questions);
+    html += '<h3>' + no2[g.type] + '、' + typeName[g.type] + '（共 ' + g.questions.length + ' 题，每题 ' + (g.questions[0] ? g.questions[0].score : 1) + ' 分，共 ' + sc + ' 分）' + typeTip[g.type] + '</h3>';
+    g.questions.forEach(q => {
+      no++;
+      html += '<div class="q"><span class="no">' + no + '.</span> ' + escH(q.question);
+      if (q.type === 'single' || q.type === 'multi') {
+        html += '<div class="opts">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]\s*/, '')).join('　　') : '') + '</div>';
+      } else if (q.type === 'judge') {
+        html += '<span class="judge-blank">（&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;）</span>';
+      } else if (q.type === 'fill') {
+        html += '<span class="fill-blank"></span>';
+      } else if (q.type === 'matching') {
+        const o = q.options || {};
+        html += '<div class="opts">' + (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + l).join('　　') : '') + '</div>' +
+          '<div class="opts">' + (Array.isArray(o.right) ? o.right.map((rr, i) => String.fromCharCode(65 + i) + '. ' + rr).join('　　') : '') + '</div>';
+      } else if (q.type === 'calc') {
+        html += '<div class="calc-frame"><b>已知：</b><span class="calc-line"></span><b>求：</b><span class="calc-line"></span>' +
+          '<b>解：</b><span class="calc-line"></span><span class="calc-line"></span><span class="calc-line"></span><b>答：</b><span class="calc-line"></span></div>';
+      }
+      if (includeAnswer) {
+        if (q.type === 'matching') {
+          let pairs = []; try { pairs = JSON.parse(q.answer || '[]'); } catch (e) {}
+          html += '<div class="ans">参考答案：<b>' + pairs.map((pr, li) => (li + 1) + '→' + String.fromCharCode(65 + (pr[1] == null ? 0 : pr[1]))).join('　') + '</b>' + (q.explain ? '<br/>解析：' + escH(q.explain) : '') + '</div>';
+        } else {
+          html += '<div class="ans">参考答案：<b>' + escH(q.answer) + '</b>' + (q.explain ? '<br/>解析：' + escH(q.explain) : '') + '</div>';
+        }
+      }
+      html += '</div>';
+    });
+  });
+  html += '<table class="score-row"><tr><td style="width:20%">题类</td><td>客观题（选择/判断/多选/填空）</td><td>主观题（连线/计算）</td><td style="width:16%">总分</td></tr>' +
+    '<tr><td>得分</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table>';
+  html += '<div class="footer">—— ' + escH(gameName) + ' · ' + escH(unit || '') + ' ——</div>';
+  html += '</td></tr></table></body></html>';
+  return html;
+}
+/* 标准机读答题卡（OMR）：定位标记 + 考号填涂 + 客观题涂卡 + 主观题区 */
+function cardToDoc(r) {
+  const escH = (x) => String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const unit = db.settings.unit || '';
+  const gameName = db.settings.gameName || '电闯关·电工大作战';
+  const typeName = { single: '单选题', judge: '判断题', multi: '多选题', fill: '填空题', matching: '连线题', calc: '计算题' };
+  const singles = r.list.filter(x => x.type === 'single' || x.type === 'multi');
+  const judges = r.list.filter(x => x.type === 'judge');
+  const subs = r.list.filter(x => ['fill', 'matching', 'calc'].includes(x.type));
+  const colW = singles.length ? Math.ceil(singles.length / 4) : 0;
+  const rowH = 42;
+  const letters = ['A', 'B', 'C', 'D'];
+  let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">';
+  html += '<head><meta charset="utf-8"><title>' + escH(r.title) + ' 答题卡</title>';
+  html += '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->';
+  html += '<style>body{font-family:"宋体",SimSun,serif;font-size:11pt;color:#000;margin:0 18px} ' +
+    '.reg-marks{position:relative;width:100%;height:8px} .reg{position:absolute;top:0;width:6px;height:6px;background:#000} ' +
+    '.card-title{text-align:center;font-size:14pt;font-weight:bold;letter-spacing:2px;margin:2px 0} ' +
+    '.card-sub{text-align:center;font-size:9.5pt;color:#333;margin:2px 0 6px} ' +
+    '.info-table{width:100%;border-collapse:collapse;margin:4px 0 8px} .info-table td{border:1px solid #000;padding:3px 6px;font-size:10.5pt;height:24px} ' +
+    '.info-table input{width:100%;border:none;font-size:10.5pt} ' +
+    '.stu-no{width:100%;border-collapse:collapse;margin:4px 0 8px;text-align:center;font-size:9.5pt} .stu-no td{border:1px solid #000;height:26px;padding:2px 1px} .stu-no .hl{background:#000;color:#fff} ' +
+    '.sec{font-size:11pt;font-weight:bold;margin:10px 0 4px;page-break-after:avoid} ' +
+    '.bubble-table{width:100%;border-collapse:collapse;font-size:10pt;text-align:center;page-break-inside:avoid} ' +
+    '.bubble-table td{border:1px solid #000;height:34px;padding:2px} .bubble-table .no-cell{width:38px;font-weight:bold;background:#f2f2f2} ' +
+    '.bubble{display:inline-block;width:14px;height:14px;border:1.5px solid #000;border-radius:8px;margin:0 7px;vertical-align:middle} ' +
+    '.sub-zone{margin:6px 0} .sub-item{page-break-inside:avoid;margin:6px 0} .sub-item .q{font-size:10.5pt} ' +
+    '.sub-lines{margin:2px 0 0 8px} .sub-lines div{border-bottom:1px solid #000;height:1.6em;margin:4px 0 2px 2em} ' +
+    '.calc-frame{margin:4px 0 2px 8px;font-size:10.5pt;line-height:1.5} .calc-line{display:block;border-bottom:1px solid #000;height:1.5em;margin:5px 0 2px 2em} ' +
+    '.foot{margin-top:12px;text-align:center;font-size:9.5pt;color:#555;border-top:1px solid #000;padding-top:4px} ' +
+    '.mark-row{width:100%;border-collapse:collapse;margin-top:8px;font-size:10pt;text-align:center} .mark-row td{border:1px solid #000;height:30px}</style></head>';
+  html += '<body>';
+  html += '<div class="reg-marks"><span class="reg" style="left:0"></span><span class="reg" style="right:0"></span></div>';
+  html += '<div class="card-title">' + escH(r.title) + '　机读答题卡</div>';
+  html += '<div class="card-sub">' + (unit ? escH(unit) + '　' : '') + escH(gameName) + '　·　共 ' + r.total + ' 题 / ' + r.totalScore + ' 分</div>';
+  html += '<table class="info-table"><tr><td style="width:12%">姓　名</td><td style="width:26%">&nbsp;</td><td style="width:12%">班　级</td><td style="width:22%">&nbsp;</td><td style="width:10%">学　号</td><td>&nbsp;</td></tr></table>';
+  /* 准考证号填涂（10 位） */
+  html += '<div style="font-size:10pt;margin:2px 0">准 考 证 号：</div><table class="stu-no"><tr><td>考号位</td>' + [1,2,3,4,5,6,7,8,9,10].map(i => '<td>' + i + '</td>').join('') + '</tr>' +
+    [0,1,2,3,4,5,6,7,8,9].map(d => '<tr><td class="hl" style="background:#000;color:#fff">' + d + '</td>' + [0,1,2,3,4,5,6,7,8,9].map(() => '<td class="bubble"></td>').join('') + '</tr>').join('') + '</table>';
+  /* 客观题：单选/多选 */
+  if (singles.length) {
+    html += '<div class="sec">一、客观题（单选题 / 多选题）—— 用 2B 铅笔填涂，多选可涂多个</div>';
+    html += '<table class="bubble-table"><tr><td class="no-cell">题号</td><td>A</td><td>B</td><td>C</td><td>D</td></tr>';
+    singles.forEach((q, i) => {
+      html += '<tr><td class="no-cell">' + (i + 1) + '</td><td class="bubble"></td><td class="bubble"></td><td class="bubble"></td><td class="bubble"></td></tr>';
+    });
+    html += '</table>';
+  }
+  /* 判断题 */
+  if (judges.length) {
+    html += '<div class="sec">二、判断题 —— 正确涂 A（√），错误涂 B（×）</div>';
+    html += '<table class="bubble-table"><tr><td class="no-cell">题号</td><td>A（√）</td><td>B（×）</td></tr>';
+    judges.forEach((q, i) => {
+      html += '<tr><td class="no-cell">' + (singles.length + i + 1) + '</td><td class="bubble"></td><td class="bubble"></td></tr>';
+    });
+    html += '</table>';
+  }
+  /* 主观题：填空/连线/计算 手写区 */
+  if (subs.length) {
+    html += '<div class="sec">三、主观题（填空 / 连线 / 计算）—— 用黑色签字笔在对应区域作答</div>';
+    let subNo = singles.length + judges.length;
+    subs.forEach(q => {
+      subNo++;
+      html += '<div class="sub-item"><div class="q"><b>' + subNo + '.</b> ' + escH(q.question) + '（' + q.score + ' 分）</div>';
+      if (q.type === 'fill') {
+        html += '<div class="sub-lines"><div></div><div></div></div>';
+      } else if (q.type === 'matching') {
+        const o = q.options || {};
+        html += '<div style="font-size:10.5pt;margin:2px 0 2px 8px">' + (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + l).join('　　') : '') + '</div>' +
+          '<div style="font-size:10.5pt;margin:2px 0 4px 8px">' + (Array.isArray(o.right) ? o.right.map((rr, i) => String.fromCharCode(65 + i) + '. ' + rr).join('　　') : '') + '</div>' +
+          '<div class="sub-lines"><div></div><div></div></div>';
+      } else if (q.type === 'calc') {
+        html += '<div class="calc-frame"><b>已知：</b><span class="calc-line"></span><b>求：</b><span class="calc-line"></span><b>解：</b><span class="calc-line"></span><span class="calc-line"></span><span class="calc-line"></span><b>答：</b><span class="calc-line"></span></div>';
+      }
+      html += '</div>';
+    });
+  }
+  html += '<table class="mark-row"><tr><td>客观题得分</td><td>主观题得分</td><td>总分</td><td>阅卷人</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table>';
+  html += '<div class="reg-marks" style="margin-top:10px"><span class="reg" style="left:0"></span><span class="reg" style="right:0"></span></div>';
+  html += '<div class="foot">' + escH(gameName) + ' · ' + escH(unit || '') + ' · 机读答题卡（1.3.0.0）</div>';
+  html += '</body></html>';
+  return html;
+}
+function publicExam(e, withAnswer) {
+  const qs = (e.questions || []).map(q => withAnswer ? q : { id: q.id, chapter: q.chapter, section: q.section, type: q.type, question: q.question, options: q.options, difficulty: q.difficulty, score: q.score });
+  return { id: e.id, title: e.title, subject: e.subject, className: e.className, grade: e.grade,
+    createdAt: e.createdAt, status: e.status, questions: qs, qcount: e.qcount, totalScore: e.totalScore,
+    createdBy: e.createdBy, publishedAt: e.publishedAt, note: e.note || '' };
+}
+
 function validateQuestion(b) {
   const chapters = CHAPTERS.map(c => c.id);
   const types = ['single', 'judge', 'multi', 'fill', 'matching', 'calc'];
@@ -1284,7 +1709,7 @@ function validateQuestion(b) {
   return null;
 }
 
-/* 启动：初始化 Access 数据库（读题库/业务库/保证教师账号）后监听 */
+/* 启动：初始化 JSON 数据库（读题库/业务库/保证教师账号）后监听 */
 acc.init().then(async () => {
   questions = acc.state.questions;
   // 1.0.0.4：版本号与展示单位随程序更新（升级旧数据无需手工改库）
@@ -1303,10 +1728,10 @@ acc.init().then(async () => {
     console.log('关卡配置初始化：题数 6/8/10/5，每题自动计时 ' + auto.levelTimeBase['1'] + '~' + auto.levelTimeBase['boss'] + ' 秒');
   }
   server.listen(PORT, '0.0.0.0', () => {
-    process.title = '电闯关服务端-Access版 V' + VERSION;
+    process.title = '电闯关服务端-JSON版 V' + VERSION;
     try { require('child_process').execSync('title ' + process.title, { stdio: 'ignore' }); } catch (e) {}
     console.log('============================================');
-    console.log('  电闯关·电工大作战 服务端已启动 (Access 数据库)');
+    console.log('  电闯关·电工大作战 服务端已启动 (JSON 数据库)');
     console.log('  版本       : ' + VERSION);
     console.log('  本机访问   : http://localhost:' + PORT);
     console.log('  局域网访问 : http://<本机IP>:' + PORT + '  (手机/其他电脑同WiFi可访问)');

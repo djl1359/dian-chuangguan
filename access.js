@@ -110,7 +110,9 @@ const DDL = [
   "CREATE TABLE logs (id COUNTER, t TEXT(20), op TEXT(200), who TEXT(50), name TEXT(50), reason TEXT(200))",
   "CREATE TABLE answer_logs (id COUNTER, t TEXT(20), userId TEXT(32), name TEXT(50), qid LONG, chapter LONG, [section] LONG, correct LONG)",
   "CREATE TABLE questions (id LONG, chapter LONG, [section] LONG, type TEXT(10), question MEMO, options MEMO, answer MEMO, explain MEMO, difficulty LONG)",
-  "CREATE TABLE settings (id COUNTER, k TEXT(50), v MEMO)"
+  "CREATE TABLE settings (id COUNTER, k TEXT(50), v MEMO)",
+  "CREATE TABLE exams (id TEXT(32), title MEMO, subject MEMO, className TEXT(60), grade TEXT(30), createdAt TEXT(20), [status] TEXT(10), questions MEMO, qcount LONG, totalScore LONG, createdBy TEXT(50), publishedAt TEXT(20), [note] MEMO)",
+  "CREATE TABLE exam_answers (id COUNTER, examId TEXT(32), userId TEXT(32), name TEXT(50), t TEXT(20), objective MEMO, subjective MEMO, total LONG, [status] TEXT(10), img MEMO)"
 ];
 
 /* 创建新库：ADOX 创建受中文路径影响，故先建在系统临时目录(ASCII)再移动到数据目录 */
@@ -209,6 +211,8 @@ async function loadAll() {
   const questions = await q('SELECT * FROM questions ORDER BY id');
   const ansLogs = await q('SELECT t, userId, name, qid, chapter, [section], correct FROM answer_logs ORDER BY id');
   const settings = await q('SELECT k, v FROM settings');
+  const examsRows = await q('SELECT id, title, subject, className, grade, createdAt, [status], questions, qcount, totalScore, createdBy, publishedAt, [note] FROM exams');
+  const examAnsRows = await q('SELECT examId, userId, name, t, objective, subjective, total, [status], img FROM exam_answers');
   state.users = users.map(u => ({
     id: u.id, name: u.name, salt: u.salt, pass: u.pass, role: u.role, score: u.score || 0,
     reg: parseInt(u.reg, 10) || 0, lastLogin: parseInt(u.lastLogin, 10) || 0,
@@ -238,7 +242,15 @@ async function loadAll() {
     try { opts = JSON.parse(x.options || '[]'); } catch (e) { opts = []; }
     return { id: x.id, chapter: x.chapter, section: x.section || 1, type: x.type, question: x.question, options: opts, answer: x.answer, explain: x.explain || '', difficulty: x.difficulty == null ? 3 : x.difficulty };
   });
+  state.exams = examsRows.map(x => parseJSON(x.questions, []));
+  state.examAnswers = examAnsRows.map(x => ({
+    examId: x.examId, userId: x.userId, name: x.name || '', t: parseInt(x.t, 10) || 0,
+    objective: parseJSON(x.objective, []), subjective: parseJSON(x.subjective, []),
+    total: x.total || 0, status: x.status || 'pending', img: x.img || ''
+  }));
 }
+/* 解析 JSON 字段（MEMO 可能为 null） */
+function parseJSON(v, def) { try { return JSON.parse(v || 'null') == null ? def : JSON.parse(v); } catch (e) { return def; } }
 
 /* ---------------- 业务增量落库 ---------------- */
 function insertUser(u) {
@@ -302,24 +314,73 @@ function deleteQuestion(id) {
   return run(["DELETE FROM questions WHERE id=" + esc(id)]);
 }
 
+/* ---------------- 1.3.0.0 考试/阅卷任务 ---------------- */
+/* 旧库补建 exams / exam_answers 表（已存在则忽略）并载入 */
+async function ensureExamTables() {
+  try {
+    const f = tmpFile();
+    await callWorker('exec', ["CREATE TABLE exams (id TEXT(32), title MEMO, subject MEMO, className TEXT(60), grade TEXT(30), createdAt TEXT(20), [status] TEXT(10), questions MEMO, qcount LONG, totalScore LONG, createdBy TEXT(50), publishedAt TEXT(20), [note] MEMO)",
+      "CREATE TABLE exam_answers (id COUNTER, examId TEXT(32), userId TEXT(32), name TEXT(50), t TEXT(20), objective MEMO, subjective MEMO, total LONG, [status] TEXT(10), img MEMO)"], f);
+  } catch (e) { /* 表已存在等，忽略 */ }
+  try {
+    const examsRows = await q("SELECT id, title, subject, className, grade, createdAt, [status], questions, qcount, totalScore, createdBy, publishedAt, [note] FROM exams");
+    state.exams = examsRows.map(x => parseJSON(x.questions, []));
+  } catch (e) { /* 表不存在则跳过 */ }
+  try {
+    const examAnsRows = await q("SELECT examId, userId, name, t, objective, subjective, total, [status], img FROM exam_answers");
+    state.examAnswers = examAnsRows.map(x => ({
+      examId: x.examId, userId: x.userId, name: x.name || '', t: parseInt(x.t, 10) || 0,
+      objective: parseJSON(x.objective, []), subjective: parseJSON(x.subjective, []),
+      total: x.total || 0, status: x.status || 'pending', img: x.img || ''
+    }));
+  } catch (e) { /* 表不存在则跳过 */ }
+}
+function listExams() { return state.exams.slice(); }
+function saveExam(e) {
+  const sql = ["DELETE FROM exams WHERE id=" + esc(e.id),
+    "INSERT INTO exams (id,title,subject,className,grade,createdAt,[status],questions,qcount,totalScore,createdBy,publishedAt,[note]) VALUES (" +
+    esc(e.id) + ',' + esc(e.title || '') + ',' + esc(e.subject || '') + ',' + esc(e.className || '') + ',' + esc(e.grade || '') + ',' +
+    esc(String(e.createdAt || Date.now())) + ',' + esc(e.status || 'draft') + ',' + esc(JSON.stringify(e.questions || [])) + ',' +
+    esc(e.qcount || 0) + ',' + esc(e.totalScore || 0) + ',' + esc(e.createdBy || '') + ',' + esc(e.publishedAt || '') + ',' + esc(e.note || '') + ')'];
+  const i = state.exams.findIndex(x => x.id === e.id);
+  if (i >= 0) state.exams[i] = e; else state.exams.push(e);
+  return run(sql);
+}
+function deleteExam(id) {
+  state.exams = state.exams.filter(x => x.id !== id);
+  state.examAnswers = state.examAnswers.filter(x => x.examId !== id);
+  return run(["DELETE FROM exams WHERE id=" + esc(id), "DELETE FROM exam_answers WHERE examId=" + esc(id)]);
+}
+function listExamAnswers(examId) {
+  return state.examAnswers.filter(x => x.examId === examId);
+}
+function listExamAnswersOf(userId) {
+  return state.examAnswers.filter(x => x.userId === userId);
+}
+function saveExamAnswer(a) {
+  const sql = ["DELETE FROM exam_answers WHERE examId=" + esc(a.examId) + " AND userId=" + esc(a.userId),
+    "INSERT INTO exam_answers (examId,userId,name,t,objective,subjective,total,[status],img) VALUES (" +
+    esc(a.examId) + ',' + esc(a.userId) + ',' + esc(a.name || '') + ',' + esc(String(a.t || Date.now())) + ',' +
+    esc(JSON.stringify(a.objective || [])) + ',' + esc(JSON.stringify(a.subjective || [])) + ',' + esc(a.total || 0) + ',' +
+    esc(a.status || 'pending') + ',' + esc(a.img || '') + ')'];
+  const i = state.examAnswers.findIndex(x => x.examId === a.examId && x.userId === a.userId);
+  if (i >= 0) state.examAnswers[i] = a; else state.examAnswers.push(a);
+  return run(sql);
+}
+function deleteExamAnswers(examId) {
+  state.examAnswers = state.examAnswers.filter(x => x.examId !== examId);
+  return run(["DELETE FROM exam_answers WHERE examId=" + esc(examId)]);
+}
+
 /* 启动初始化入口 */
 async function init() {
   sweepTempFiles();
   await ensureDb();
   await ensureQuestionDiff();
+  await ensureExamTables();
   await loadAll();
   await ensureTeacher();
-  // 1.0.0.4：确保使用说明中承诺的测试账号存在（闯关测试员 / 1234，教师可删除）
-  const tester = await q("SELECT id,name,salt,pass,role,score,reg,lastLogin,loginCount,correct,total FROM users WHERE name='闯关测试员' AND role='student'");
-  if (!tester.length) {
-    const id = uid(), s = uid(), now = nowStr();
-    await run(["INSERT INTO users (id,name,salt,pass,role,score,reg,lastLogin,loginCount,correct,total) VALUES (" +
-      esc(id) + ",'闯关测试员'," + esc(s) + ',' + esc(sha256(s + '1234')) + ",'student',0," + esc(now) + ",0,0,0,0)"]);
-    // 同步进内存，避免首次启动后需重启才能登录
-    state.users.push({ id, name: '闯关测试员', salt: s, pass: sha256(s + '1234'), role: 'student', score: 0, reg: Date.now(), lastLogin: 0, loginCount: 0, correct: 0, total: 0 });
-  } else {
-    // 兼容：已在库中但内存缺载（loadAll 已载入，无需处理）
-  }
+  // 1.2.0.1：不再自动创建演示学生账号（闯关测试员），由教师按需自行注册/添加
 }
 
 module.exports = {
@@ -328,5 +389,6 @@ module.exports = {
   init, ensureDb, createDbWithSeed, loadAll, ensureTeacher, buildTemplate,
   insertUser, updateUser, upsertSession, deleteUser,
   upsertProgress, upsertWrong, removeWrong, setMemoryBest, appendLog, logAnswer, setSetting,
-  insertQuestion, batchInsertQuestions, updateQuestion, deleteQuestion
+  insertQuestion, batchInsertQuestions, updateQuestion, deleteQuestion,
+  ensureExamTables, listExams, saveExam, deleteExam, listExamAnswers, listExamAnswersOf, saveExamAnswer, deleteExamAnswers
 };

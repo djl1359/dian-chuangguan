@@ -31,7 +31,9 @@ const state = {
   logs: [],         // [{id,t,op,by,name,reason}]
   answerLogs: [],   // [{t,userId,name,qid,chapter,section,correct}] 每题答题明细（成绩分析）
   settings: {},     // { unit: '使用单位名称' } 系统设置
-  questions: []     // [{id,chapter,section,type,question,options,answer,explain}]
+  questions: [],     // [{id,chapter,section,type,question,options,answer,explain}]
+  exams: [],         // 1.3.0.0 考试/阅卷任务 [{id,title,subject,className,createdAt,status,questions,totalScore,...}]
+  examAnswers: []    // 1.3.0.0 答卷 [{examId,userId,name,t,objective,subjective,total,status,img}]
 };
 
 /* 写链：所有落盘串行执行，防并发写坏文件 */
@@ -40,7 +42,8 @@ function saveDB() {
   const snap = {
     users: state.users, sessions: state.sessions, progress: state.progress,
     wrongs: state.wrongs, memoryBest: state.memoryBest, logs: state.logs,
-    answerLogs: state.answerLogs, settings: state.settings
+    answerLogs: state.answerLogs, settings: state.settings,
+    exams: state.exams, examAnswers: state.examAnswers
   };
   writeChain = writeChain.then(() => {
     fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -78,6 +81,8 @@ async function init() {
     state.logs = loaded.logs || [];
     state.answerLogs = loaded.answerLogs || [];
     state.settings = loaded.settings || {};
+    state.exams = loaded.exams || [];
+    state.examAnswers = loaded.examAnswers || [];
   } else {
     await saveDB();
   }
@@ -87,12 +92,7 @@ async function init() {
     state.users.push({ id: uid(), name: 'teacher', salt: tSalt, pass: sha256(tSalt + '123456'), role: 'teacher', score: 0, reg: Date.now(), lastLogin: 0, loginCount: 0, correct: 0, total: 0 });
     await saveDB();
   }
-  // 1.0.0.4：确保使用说明中承诺的测试账号存在（闯关测试员 / 1234，教师可删除）
-  if (!state.users.some(u => u.name === '闯关测试员' && u.role === 'student')) {
-    const sSalt = uid();
-    state.users.push({ id: uid(), name: '闯关测试员', salt: sSalt, pass: sha256(sSalt + '1234'), role: 'student', score: 0, reg: Date.now(), lastLogin: 0, loginCount: 0, correct: 0, total: 0 });
-    await saveDB();
-  }
+  // 1.2.0.1：不再自动创建演示学生账号（闯关测试员），由教师按需自行注册/添加
 }
 
 /* ---------------- 业务增量落盘（与 access.js 同签名） ----------------
@@ -117,11 +117,40 @@ function insertQuestion(qq) { return saveQuestions(); }
 function updateQuestion(qq) { return saveQuestions(); }
 function deleteQuestion(id) { return saveQuestions(); }
 
+/* ---------------- 1.3.0.0 考试/阅卷任务（与 access.js 同签名） ---------------- */
+function listExams() { return state.exams.slice(); }
+function saveExam(e) {
+  const i = state.exams.findIndex(x => x.id === e.id);
+  if (i >= 0) state.exams[i] = e; else state.exams.push(e);
+  return saveDB();
+}
+function deleteExam(id) {
+  state.exams = state.exams.filter(x => x.id !== id);
+  state.examAnswers = state.examAnswers.filter(x => x.examId !== id);
+  return saveDB();
+}
+function listExamAnswers(examId) {
+  return state.examAnswers.filter(x => x.examId === examId);
+}
+function listExamAnswersOf(userId) {
+  return state.examAnswers.filter(x => x.userId === userId);
+}
+function saveExamAnswer(a) {
+  const i = state.examAnswers.findIndex(x => x.examId === a.examId && x.userId === a.userId);
+  if (i >= 0) state.examAnswers[i] = a; else state.examAnswers.push(a);
+  return saveDB();
+}
+function deleteExamAnswers(examId) {
+  state.examAnswers = state.examAnswers.filter(x => x.examId !== examId);
+  return saveDB();
+}
+
 module.exports = {
   APP_DIR, DATA_DIR, DB_FILE, QS_FILE,
   state, sha256, uid,
   init, saveDB, saveQuestions,
   insertUser, updateUser, upsertSession, deleteUser,
   upsertProgress, upsertWrong, removeWrong, setMemoryBest, appendLog, logAnswer, setSetting,
-  insertQuestion, updateQuestion, deleteQuestion
+  insertQuestion, updateQuestion, deleteQuestion,
+  listExams, saveExam, deleteExam, listExamAnswers, listExamAnswersOf, saveExamAnswer, deleteExamAnswers
 };

@@ -83,7 +83,19 @@
     settings: () => API.req('GET', '/api/settings'),
     setUnit: (unit) => API.req('PUT', '/api/settings', { unit }),
     setSettings: (obj) => API.req('PUT', '/api/settings', obj),
-    setTeacher: (obj) => API.req('PUT', '/api/teacher', obj)
+    setTeacher: (obj) => API.req('PUT', '/api/teacher', obj),
+    /* 1.3.0.0 考试/阅卷（西红柿阅卷） */
+    examSave: (data) => API.req('POST', '/api/exam/save', data),
+    examList: () => API.req('GET', '/api/exam/list'),
+    examGet: (id) => API.req('GET', '/api/exam/get?id=' + encodeURIComponent(id)),
+    examDelete: (id) => API.req('POST', '/api/exam/delete', { id }),
+    examStatus: (id, status) => API.req('POST', '/api/exam/status', { id, status }),
+    examMine: () => API.req('GET', '/api/exam/mine'),
+    examSubmit: (data) => API.req('POST', '/api/exam/submit', data),
+    examAnswers: (examId) => API.req('GET', '/api/exam/answers?examId=' + encodeURIComponent(examId)),
+    examGrade: (data) => API.req('POST', '/api/exam/grade', data),
+    examStats: (examId) => API.req('GET', '/api/exam/stats?examId=' + encodeURIComponent(examId)),
+    examUpload: (data) => API.req('POST', '/api/exam/upload', data)
   };
   window.API = API;
 })();

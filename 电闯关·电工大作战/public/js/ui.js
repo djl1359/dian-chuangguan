@@ -731,7 +731,7 @@ async function loadChapterAnalysis(ch) {
         S.chapters.forEach(c => {
           const chd = u.chapters.find(x => x.chapter === c.id);
           if (!chd || !chd.answered) { html += '<td style="color:var(--dim)">—</td>'; return; }
-          html += '<td class="m-cell" onclick="UIM.toggleMastery(' + u.id + ',' + c.id + ',this)">' +
+          html += '<td class="m-cell" onclick="UIM.toggleMastery(\'' + u.id + '\',' + c.id + ',this)">' +
             '<span class="m-acc">' + chd.acc + '%</span>' +
             '<span class="m-sub">答对 ' + chd.correct + '/' + chd.answered + '</span></td>';
         });
@@ -771,7 +771,7 @@ async function loadChapterAnalysis(ch) {
         S.chapters.forEach(c => {
           const chd = u.chapters.find(x => x.chapter === c.id);
           if (!chd || !chd.answered) { html += '<td style="color:var(--dim)">—</td>'; return; }
-          html += '<td class="m-cell" onclick="UIM.toggleMastery(' + u.id + ',' + c.id + ',this)">' +
+          html += '<td class="m-cell" onclick="UIM.toggleMastery(\'' + u.id + '\',' + c.id + ',this)">' +
             '<span class="m-acc">' + chd.acc + '%</span>' +
             '<span class="m-sub">答对 ' + chd.correct + '/' + chd.answered + '</span></td>';
         });
@@ -890,6 +890,8 @@ async function loadChapterAnalysis(ch) {
     $('btn-goto-memory').onclick = renderMemory;
     $('btn-memory-back').onclick = () => showScreen('screen-menu');
     $('btn-memory-quiz').onclick = startMemoryQuiz;
+    $('btn-goto-exam').onclick = () => { showScreen('screen-exam'); EXM.studentRender(); };
+    $('btn-exam-back').onclick = () => showScreen('screen-menu');
     $('btn-goto-teacher').onclick = openTeacher;
     $('btn-teacher-back').onclick = () => showScreen('screen-menu');
 
@@ -904,6 +906,7 @@ async function loadChapterAnalysis(ch) {
         if (b.dataset.tab === 'analysis') loadAnalysis();
         if (b.dataset.tab === 'logs') loadLogs();
         if (b.dataset.tab === 'paper') UIM.renderPaperTab();
+        if (b.dataset.tab === 'exam') EXM.render();
       };
     });
     // 题库筛选
