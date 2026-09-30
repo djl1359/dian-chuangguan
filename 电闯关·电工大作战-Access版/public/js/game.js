@@ -56,12 +56,11 @@
   function vy(y) { return y * ch / VH; }
   function sx(s) { return s * cw / VW; }
 
-  /* ---------- 静音开关（v1.0.0.2）：HUD 与答题区人物按钮双向联动 ---------- */
+  /* ---------- 静音开关：顶部 HUD 与答题区人物按钮双向联动 ---------- */
   function syncVoiceBtns() {
     const icon = window.__voiceMuted ? '🔇' : '🔊';
-    const a = $('btn-voice'), b = $('btn-voice2');
+    const a = $('btn-voice');
     if (a) a.textContent = icon;
-    if (b) b.textContent = icon;
     const c = $('btn-voice3');
     if (c) { const v = c.querySelector('.mp-vol'); if (v) v.textContent = icon; }
   }
@@ -97,11 +96,9 @@
     window.addEventListener('resize', resize);
     const vbtn = $('btn-voice');
     if (vbtn) { vbtn.textContent = window.__voiceMuted ? '🔇' : '🔊'; vbtn.onclick = toggleVoice; }
-    const vbtn2 = $('btn-voice2');
-    if (vbtn2) { vbtn2.textContent = window.__voiceMuted ? '🔇' : '🔊'; vbtn2.onclick = toggleVoice; }
     syncVoiceBtns();
     state = {
-      chapter, level, questions, cfg,
+      chapter, level, questions, cfg, pt: pt || '',
       qi: 0,                 // 当前题序号
       hearts: 3, maxHearts: 3,
       score: 0, apiGain: 0,
@@ -149,14 +146,18 @@
     box.innerHTML = '';
     $('fill-box').style.display = 'none';
     if (!q) return;
-    if (q.type === 'fill') {
+    if (q.type === 'fill' || q.type === 'calc') {
       $('fill-box').style.display = 'flex';
       $('fill-input').value = '';
       $('fill-input').focus();
       return;
     }
     if (q.type === 'matching') {
-      window.UIM.buildMatchUI(box, q, (correct) => { applyAnswer(correct); });
+      window.UIM.buildMatchUI(box, q, (userPairs) => {
+        if (!state || state.phase !== 'play' || state.over || state.graded) return;
+        state.graded = true;
+        submitAnswer(userPairs);
+      });
       return;
     }
     q.options.forEach((o, i) => {
@@ -226,7 +227,7 @@
     const hint = state.isBoss
       ? '答对电击BOSS（BOSS -1 血），答错 BOSS 回血！'
       : '答对电击消灭故障怪，答错或超时损失一颗心！';
-    $('q-hint').textContent = q.type === 'multi' ? hint + '（多选：点选项勾选后点“确认作答”）' : (q.type === 'fill' ? hint + '（在输入框填写答案）' : (q.type === 'matching' ? hint + '（连线：先点左侧一项，再点右侧对应项配对）' : hint));
+    $('q-hint').textContent = q.type === 'multi' ? hint + '（多选：点选项勾选后点“确认作答”）' : (q.type === 'fill' || q.type === 'calc' ? hint + '（计算/填空题：在输入框填写答案）' : (q.type === 'matching' ? hint + '（连线：先点左侧一项，再点右侧对应项配对）' : hint));
     buildAnswerUI();
     // 每题的敌人刷新
     state.enemies = [];
@@ -235,12 +236,7 @@
       spawnWave(n);
     }
     state.spawnT = 1.2;
-    // 换题：初始化动画（玩家回起点、清空弹幕与特效）
-    const pp = state.player;
-    if (pp) {
-      pp.x = VW / 2; pp.y = GROUND; pp.vx = 0; pp.vy = 0; pp.dir = 1;
-      pp.onGround = true; pp.invuln = 0; pp.stun = 0; pp.walkT = 0;
-    }
+    // 换题：清空弹幕与特效（人物保持原位，读题暂停动画，不重置位置）
     state.bolts = [];
     state.particles = [];
     state.popups = [];
@@ -259,7 +255,7 @@
       (q.options || []).forEach((o, i) => {
         text += '。' + LETTERS[i] + '，' + String(o).replace(/^[A-D][.．、]\s*/, '');
       });
-    } else if (q.type === 'fill') {
+    } else if (q.type === 'fill' || q.type === 'calc') {
       text += '。请在输入框中填写答案';
     } else if (q.type === 'matching') {
       text += '。请将左右两项连线配对';
@@ -290,28 +286,33 @@
     return id === 1 ? 0.42 : (id === 2 ? 0.62 : (state.isBoss ? 0.6 : 0.82));
   }
 
-  /* ---------- 作答判定 ---------- */
+  /* ---------- 作答判定（1.0.0.4：提交 choice 由服务端判分） ---------- */
+  /* 提交答案：choice = 选项下标/下标数组/填空文本/连线配对，null 表示超时或放弃 */
+  function submitAnswer(choice) {
+    const q = curQ();
+    if (!q) { applyAnswer(false); return; }
+    API.answer({
+      pt: state.pt, qid: q.id, choice,
+      combo: state.combo + 1, tLeft: Math.max(0, state.time)
+    }).then(r => {
+      applyAnswer(!!r.correct);
+    }).catch(() => {
+      // 网络异常等：按答错处理，保证游戏可继续
+      applyAnswer(false);
+    });
+  }
   function grade(pick) {
     if (!state || state.phase !== 'play' || state.over || state.graded) return;
     const q = curQ();
     state.graded = true;
-    if (q.type === 'matching') { applyAnswer(false); return; }
-    let correct = false;
-    if (q.type === 'multi') {
-      const ans = (q.answerIdx || []).slice().sort();
-      const sel = (pick || []).slice().sort();
-      correct = ans.length === sel.length && ans.every((v, i) => v === sel[i]);
-    } else {
-      correct = q.answerIdx === pick;
-    }
-    applyAnswer(correct);
+    if (q.type === 'matching') { submitAnswer(null); return; }
+    submitAnswer(q.type === 'multi' ? (pick || []).slice() : pick);
   }
   function submitFill() {
     const q = curQ();
     if (!q || state.graded || state.over) return;
     state.graded = true;
-    const correct = window.Norm.answerMatch($('fill-input').value, q.answer);
-    applyAnswer(correct);
+    submitAnswer($('fill-input').value);
   }
   function applyAnswer(correct) {
     const q = curQ();
@@ -331,7 +332,27 @@
         state.boss.hitFlash = 0.18;
         state.shockFx = 0.5;
         state.shake = 0.35;
-        if (state.boss.hp <= 0) { endLevel(true); return; }
+        /* 战斗感强化：电光爆发 + 伤害飘字 + BOSS 被电击击退 */
+        burstBossParticles(state.boss.x, state.boss.y - 40, '#ffd93b', 12);
+        burstBossParticles(state.boss.x, state.boss.y - 40, '#2fd6ff', 8);
+        pop('-1', state.boss.x, state.boss.y - 122, '#ff5a5a');
+        const away = state.boss.x > state.player.x ? 1 : -1;
+        state.boss.x = clamp(state.boss.x + away * 46, 90, VW - 90);
+        if (state.boss.hp <= 0) {
+          /* 击杀：爆炸粒子 + 大飘字 + 强震动；延迟结算让特效完整展示 */
+          burstBossParticles(state.boss.x, state.boss.y - 40, '#ff9f1a', 28);
+          burstBossParticles(state.boss.x, state.boss.y - 40, '#ff5a5a', 18);
+          burstBossParticles(state.boss.x, state.boss.y - 40, '#ffd93b', 14);
+          state.shake = 0.9;
+          pop('⚡ BOSS 击败！', state.boss.x, state.boss.y - 160, '#ffd93b');
+          state.bolts = [];
+          state.player.invuln = Math.max(state.player.invuln, 1.2);
+          if (!state._killT) {
+            state._killT = 0.9;
+            setTimeout(() => { if (state && !state.over) endLevel(true); }, 900);
+          }
+          return;
+        }
       } else {
         state.shockFx = 0.5;
         killEnemies();
@@ -347,10 +368,13 @@
       state.enemies.forEach(e => { if (!e.dead) e.x += (e.x > state.player.x ? 1 : -1) * 150; });
       if (state.isBoss && state.boss) {
         state.boss.hp = Math.min(state.cfg.q, state.boss.hp + 1);
+        /* 战斗感强化：回血飘字 + 绿色回复粒子 + 立即反击射击 */
+        pop('BOSS 回血 +1', state.boss.x, state.boss.y - 122, '#3bff8f');
+        burstBossParticles(state.boss.x, state.boss.y - 40, '#3bff8f', 10);
+        state.bossShootT = Math.min(state.bossShootT, 0.15);
       }
     }
-    // 上报服务端
-    API.answer({ qid: q.id, chapter: q.chapter, correct, score: delta }).catch(() => {});
+    // 上报已在 submitAnswer 中完成（服务端判分）
     if (!state.over && state.hearts > 0) setTimeout(nextQuestion, correct ? 900 : 1200);
     else if (!state.over && state.hearts <= 0) { /* 等 loseHeart 的 endLevel */ }
   }
@@ -435,7 +459,7 @@
     if (s.time <= 0 && !s.graded) {
       s.time = 0;
       state.graded = true;
-      applyAnswer(false);
+      submitAnswer(null);   // 超时：服务端判为答错
     }
     /* 玩家 */
     const p = s.player;
@@ -472,9 +496,14 @@
       if (s.boss.hitFlash > 0) s.boss.hitFlash -= dt;
       s.bossShootT -= dt;
       if (s.bossShootT <= 0) {
-        s.bossShootT = 2.0;
-        const ang = Math.atan2(p.y - (s.boss.y - 40), p.x - s.boss.x);
-        s.bolts.push({ x: s.boss.x, y: s.boss.y - 60, vx: Math.cos(ang) * 210, vy: Math.sin(ang) * 210, r: 9, t: 0 });
+        const angry = s.boss.hp <= Math.ceil(s.cfg.q / 2);
+        s.bossShootT = angry ? rnd(0.9, 1.6) : rnd(1.3, 2.2);
+        const nShot = angry ? 3 : 1;
+        const baseAng = Math.atan2(p.y - (s.boss.y - 40), p.x - s.boss.x);
+        for (let i = 0; i < nShot; i++) {
+          const a = baseAng + (nShot === 3 ? (i - 1) * 0.22 : 0);
+          s.bolts.push({ x: s.boss.x, y: s.boss.y - 60, vx: Math.cos(a) * 210, vy: Math.sin(a) * 210, r: 9, t: 0 });
+        }
       }
       if (s.boss.hp >= 1) {
         // 随机生成巡逻小怪（BOSS战的干扰）
@@ -508,6 +537,24 @@
         c.strokeStyle = color; c.lineWidth = 3; c.stroke();
       }
     };
+  }
+  function burstBossParticles(x, y, color, n) {
+    for (let i = 0; i < n; i++) {
+      const a = rnd(0, Math.PI * 2), sp = rnd(60, 230);
+      const life = rnd(0.3, 0.7);
+      state.particles.push({
+        x, y, life, max: life, color,
+        draw(c, p) {
+          c.save();
+          c.globalAlpha = Math.max(0, p.life / p.max);
+          c.fillStyle = color;
+          c.beginPath();
+          c.arc(p.x + Math.cos(a) * (1 - p.life / p.max) * sp * 0.38, p.y + Math.sin(a) * (1 - p.life / p.max) * sp * 0.38, 4 + 4 * (p.life / p.max), 0, 7);
+          c.fill();
+          c.restore();
+        }
+      });
+    }
   }
   function pop(text, x, y, color) {
     state.popups.push({ text, x, y, life: 1.1, max: 1.1, color });
@@ -572,7 +619,7 @@
   }
   function drawPedestals() {
     const q = curQ();
-    if (!q || q.type === 'fill') return;
+    if (!q || q.type === 'fill' || q.type === 'calc') return;
     const n = q.options.length;
     const w = Math.min(170, VW / (n + 1) - 20);
     q.options.forEach((o, i) => {
@@ -731,14 +778,21 @@
   function drawBossHp() {
     const b = state.boss;
     const w = 320, x = (VW - w) / 2, y = 74;
+    const q = state.cfg.q;
+    const ratio = b.hp / q;
+    const low = ratio <= 0.5 && Math.floor(performance.now() / 220) % 2 === 0;
     ctx.fillStyle = 'rgba(0,0,0,.55)';
     ctx.beginPath(); ctx.roundRect(x - 4, y - 4, w + 8, 24, 12); ctx.fill();
-    ctx.fillStyle = '#3a1040';
-    ctx.beginPath(); ctx.roundRect(x, y, w, 16, 8); ctx.fill();
-    ctx.fillStyle = b.hp / state.cfg.q > 0.5 ? '#ff5a5a' : (b.hp / state.cfg.q > 0.25 ? '#ff9f1a' : '#ffd93b');
-    ctx.beginPath(); ctx.roundRect(x, y, Math.max(0, w * b.hp / state.cfg.q), 16, 8); ctx.fill();
+    const cellW = Math.max(14, (w - (q - 1) * 4) / q);
+    for (let i = 0; i < q; i++) {
+      const cx = x + i * (cellW + 4);
+      ctx.fillStyle = i < b.hp
+        ? (low ? '#ff5a5a' : (ratio > 0.5 ? '#ff5a5a' : (ratio > 0.25 ? '#ff9f1a' : '#ffd93b')))
+        : '#3a1040';
+      ctx.beginPath(); ctx.roundRect(cx, y, cellW, 16, 4); ctx.fill();
+    }
     ctx.font = 'bold 13px sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
-    ctx.fillText('霸主生命 ' + b.hp + ' / ' + state.cfg.q, VW / 2, y + 32);
+    ctx.fillText('⚡ 霸主生命 ' + b.hp + ' / ' + q, VW / 2, y + 32);
   }
   function drawTimerBar() {
     const w = 180, x = VW - w - 20, y = 92;

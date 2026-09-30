@@ -83,20 +83,7 @@
     settings: () => API.req('GET', '/api/settings'),
     setUnit: (unit) => API.req('PUT', '/api/settings', { unit }),
     setSettings: (obj) => API.req('PUT', '/api/settings', obj),
-    setTeacher: (obj) => API.req('PUT', '/api/teacher', obj),
-
-    /* 1.1.0.0 试卷库 / 答题卡 / 阅卷 */
-    paperSave: (data) => API.req('POST', '/api/paper/save', data),
-    papers: () => API.req('GET', '/api/papers'),
-    paperDetail: (id) => API.req('GET', '/api/papers?id=' + encodeURIComponent(id)),
-    paperRename: (id, title) => API.req('PUT', '/api/papers', { id, title }),
-    paperDelete: (id) => API.req('DELETE', '/api/papers?id=' + encodeURIComponent(id)),
-    paperSheets: (paperId) => API.req('GET', '/api/paper/sheets?paperId=' + encodeURIComponent(paperId || '')),
-    paperUpload: (paperId, files) => API.req('POST', '/api/paper/upload', { paperId, files }),
-    paperGrade: (data) => API.req('PUT', '/api/paper/sheets', data),
-    sheetDelete: (id) => API.req('DELETE', '/api/paper/sheets?id=' + encodeURIComponent(id)),
-    paperAnalysis: (paperId) => API.req('GET', '/api/paper/analysis?paperId=' + encodeURIComponent(paperId)),
-    downloadGet: (url) => API.download(url, 'GET', null)
+    setTeacher: (obj) => API.req('PUT', '/api/teacher', obj)
   };
   window.API = API;
 })();

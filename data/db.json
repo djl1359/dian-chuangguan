@@ -6,12 +6,12 @@
       "salt": "9668710463a0f0e1",
       "pass": "928cf42193eec5baa17229c7a1060eb2b1d1dc8441754392282845ebd5d89b34",
       "role": "teacher",
-      "score": 9474,
+      "score": 24707,
       "reg": 1790361073164,
-      "lastLogin": 1790525093559,
-      "loginCount": 63,
-      "correct": 29,
-      "total": 29
+      "lastLogin": 1790726601314,
+      "loginCount": 49,
+      "correct": 74,
+      "total": 75
     },
     {
       "id": "35137e1bbbb41ac3",
@@ -28,36 +28,715 @@
     }
   ],
   "sessions": {
-    "916bbfe4d021e0e0f425f48871d4fd6b": "37443a200f06c56b",
-    "7ea39b2792c529c563b005f0788f306c": "37443a200f06c56b",
-    "0de5834ec045a9754aa81588eb820b79": "37443a200f06c56b",
-    "a1d3ef386d3f98a083eff0d049292123": "37443a200f06c56b",
-    "9966d948406e7e5a33fd9ce96a4cae4d": "37443a200f06c56b",
-    "bf9cc2270524a15046ce19361df81c0f": "37443a200f06c56b",
-    "e8a4b50b1a0aa709a4b28bc5b7710d7c": "37443a200f06c56b",
-    "8651a0277143f8be89031eba424bfdcd": "37443a200f06c56b",
-    "66755459ffb0c519029aff59a281a56b": "37443a200f06c56b",
-    "92a092d2111e4a32c27ca0240c038233": "37443a200f06c56b",
-    "a953aa57df6a6eaf98e6c49996a1f25e": "37443a200f06c56b",
-    "6fe80bd7f4d35e4f552f74bcefc81cc5": "37443a200f06c56b",
-    "b20ae30772ef6aafdb4e9d98ac12b5f0": "37443a200f06c56b",
-    "9211c786833bbf050723654115eb1877": "37443a200f06c56b",
-    "c5559b6d086ee984ae2b2b5002176151": "37443a200f06c56b",
-    "57f574e2dff342efefeb704ab44b9f30": "37443a200f06c56b",
-    "2fd047b80b19af63fdbde204a526cb1a": "37443a200f06c56b"
+    "58125cddfa1a93a3f97bc9d00c1c5c93": "37443a200f06c56b",
+    "ab2564dbc01d13ad8f5f52eee170e1bd": "37443a200f06c56b",
+    "1acf2449fe75c7ff3c1b706d16f4ef7b": "37443a200f06c56b"
   },
-  "progress": {},
-  "wrongs": {},
+  "progress": {
+    "37443a200f06c56b": {
+      "0": {
+        "lv1": 3,
+        "lv2": 3,
+        "lv3": 3,
+        "boss": 3
+      }
+    }
+  },
+  "wrongs": {
+    "37443a200f06c56b": [
+      {
+        "qid": 9,
+        "chapter": 0,
+        "count": 1,
+        "last": 1790726676296,
+        "good": 0
+      }
+    ]
+  },
   "memoryBest": {},
   "logs": [],
-  "answerLogs": [],
-  "papers": [],
-  "answerSheets": [],
+  "answerLogs": [
+    {
+      "t": 1790725838372,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725839528,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725840692,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725841847,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725843008,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725871281,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725900114,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725901276,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725902434,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725903590,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725904740,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725905896,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725907059,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725908215,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725988039,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725989113,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725990191,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725991266,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725992334,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725993407,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725994479,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725995553,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790725996627,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790725997703,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726000139,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726001214,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726002331,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726003405,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726004490,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726016413,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726020981,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726023436,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726028593,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726034325,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726039007,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726040078,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726041148,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726042226,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726043298,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726044375,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726045452,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726046535,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726047607,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726048721,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726051153,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726052224,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726053289,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726054369,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726072486,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726075700,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726079220,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726082648,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726085608,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726088430,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726272686,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726276099,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726280098,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726281300,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726282510,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726503647,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726504632,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726507103,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726509543,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726510643,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726675346,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726676293,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1790726678800,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726813355,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790726930290,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790726934406,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790727027760,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790727031890,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790727036179,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1790727040424,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1790727044149,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    }
+  ],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.1.0.0",
-    "timeAdd": "5",
-    "timeMatchAdd": "10",
+    "version": "1.2.0.0",
+    "timeAdd": 5,
+    "timeMatchAdd": 10,
     "levelQ": {
       "1": 6,
       "2": 8,

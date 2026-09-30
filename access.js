@@ -45,8 +45,6 @@ const state = {
   memoryBest: {},   // userId -> best
   logs: [],         // [{id,t,op,by,name,reason}]
   answerLogs: [],   // [{t,userId,name,qid,chapter,section,correct}] 每题答题明细
-  papers: [],       // [{id,title,questions,includeAnswer,total,createdAt,updatedAt}] 试卷库(1.1.0.0)
-  answerSheets: [], // [{id,paperId,paperTitle,studentName,photos,score,maxScore,detail,graded,createdAt,gradedAt}] 答题卡/答卷(1.1.0.0)
   settings: {},     // { unit: "使用单位名称" } 系统设置
   questions: []     // [{id,chapter,section,type,question,options,answer,explain}]
 };
@@ -112,9 +110,7 @@ const DDL = [
   "CREATE TABLE logs (id COUNTER, t TEXT(20), op TEXT(200), who TEXT(50), name TEXT(50), reason TEXT(200))",
   "CREATE TABLE answer_logs (id COUNTER, t TEXT(20), userId TEXT(32), name TEXT(50), qid LONG, chapter LONG, [section] LONG, correct LONG)",
   "CREATE TABLE questions (id LONG, chapter LONG, [section] LONG, type TEXT(10), question MEMO, options MEMO, answer MEMO, explain MEMO, difficulty LONG)",
-  "CREATE TABLE settings (id COUNTER, k TEXT(50), v MEMO)",
-  "CREATE TABLE papers (id TEXT(32), title TEXT(200), questions MEMO, includeAnswer LONG, total LONG, createdAt TEXT(20), updatedAt TEXT(20))",
-  "CREATE TABLE answer_sheets (id TEXT(32), paperId TEXT(32), paperTitle TEXT(200), studentName TEXT(50), photos MEMO, score LONG, maxScore LONG, detail MEMO, graded LONG, createdAt TEXT(20), gradedAt TEXT(20))"
+  "CREATE TABLE settings (id COUNTER, k TEXT(50), v MEMO)"
 ];
 
 /* 创建新库：ADOX 创建受中文路径影响，故先建在系统临时目录(ASCII)再移动到数据目录 */
@@ -191,20 +187,6 @@ async function ensureTeacher() {
   if (!rows.length) await run([insertTeacherSQL()]);
 }
 
-/* 1.1.0.0：旧库补 试卷库/答题卡 两表（已存在则忽略） */
-async function ensurePaperTables() {
-  const add = [
-    "CREATE TABLE papers (id TEXT(32), title TEXT(200), questions MEMO, includeAnswer LONG, total LONG, createdAt TEXT(20), updatedAt TEXT(20))",
-    "CREATE TABLE answer_sheets (id TEXT(32), paperId TEXT(32), paperTitle TEXT(200), studentName TEXT(50), photos MEMO, score LONG, maxScore LONG, detail MEMO, graded LONG, createdAt TEXT(20), gradedAt TEXT(20))"
-  ];
-  for (const ddl of add) {
-    try {
-      const f = tmpFile();
-      await callWorker('exec', [ddl], f);
-    } catch (e) { /* 表已存在等，忽略 */ }
-  }
-}
-
 /* 1.0.0.4：清扫历史运行残留的临时文件（旧版本不清理，data 目录会越积越多） */
 function sweepTempFiles() {
   try {
@@ -227,8 +209,6 @@ async function loadAll() {
   const questions = await q('SELECT * FROM questions ORDER BY id');
   const ansLogs = await q('SELECT t, userId, name, qid, chapter, [section], correct FROM answer_logs ORDER BY id');
   const settings = await q('SELECT k, v FROM settings');
-  const papers = await q('SELECT * FROM papers ORDER BY createdAt');
-  const sheets = await q('SELECT * FROM answer_sheets ORDER BY createdAt');
   state.users = users.map(u => ({
     id: u.id, name: u.name, salt: u.salt, pass: u.pass, role: u.role, score: u.score || 0,
     reg: parseInt(u.reg, 10) || 0, lastLogin: parseInt(u.lastLogin, 10) || 0,
@@ -253,8 +233,6 @@ async function loadAll() {
   state.answerLogs = ansLogs.map(l => ({ t: parseInt(l.t, 10) || 0, userId: l.userId || '', name: l.name || '', qid: l.qid, chapter: l.chapter, section: l.section || 1, correct: !!l.correct }));
   state.settings = {};
   settings.forEach(s => { state.settings[s.k] = s.v; });
-  state.papers = papers.map(p => ({ id: p.id, title: p.title, questions: (function(){ try { const a = JSON.parse(p.questions || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; } })(), includeAnswer: !!p.includeAnswer, total: p.total || 0, createdAt: p.createdAt || '', updatedAt: p.updatedAt || '' }));
-  state.answerSheets = sheets.map(s => ({ id: s.id, paperId: s.paperId, paperTitle: s.paperTitle, studentName: s.studentName, photos: (function(){ try { const a = JSON.parse(s.photos || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; } })(), score: s.score || 0, maxScore: s.maxScore || 0, detail: (function(){ try { const a = JSON.parse(s.detail || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; } })(), graded: !!s.graded, createdAt: s.createdAt || '', gradedAt: s.gradedAt || '' }));
   state.questions = questions.map(x => {
     let opts = [];
     try { opts = JSON.parse(x.options || '[]'); } catch (e) { opts = []; }
@@ -323,37 +301,12 @@ function updateQuestion(qq) {
 function deleteQuestion(id) {
   return run(["DELETE FROM questions WHERE id=" + esc(id)]);
 }
-/* ---------------- 1.1.0.0 试卷/答题卡持久化 ---------------- */
-function upsertPaper(p) {
-  return run(["DELETE FROM papers WHERE id=" + esc(p.id),
-    "INSERT INTO papers (id,title,questions,includeAnswer,total,createdAt,updatedAt) VALUES (" +
-    esc(p.id) + ',' + esc(p.title) + ',' + esc(JSON.stringify(p.questions || [])) + ',' + esc(p.includeAnswer ? 1 : 0) + ',' + esc(p.total || 0) + ',' +
-    esc(p.createdAt || '') + ',' + esc(p.updatedAt || '') + ')' ]);
-}
-function removePaper(id) {
-  return run(["DELETE FROM papers WHERE id=" + esc(id)]);
-}
-function upsertSheet(s) {
-  return run(["DELETE FROM answer_sheets WHERE id=" + esc(s.id),
-    "INSERT INTO answer_sheets (id,paperId,paperTitle,studentName,photos,score,maxScore,detail,graded,createdAt,gradedAt) VALUES (" +
-    esc(s.id) + ',' + esc(s.paperId) + ',' + esc(s.paperTitle) + ',' + esc(s.studentName) + ',' + esc(JSON.stringify(s.photos || [])) + ',' + esc(s.score || 0) + ',' + esc(s.maxScore || 0) + ',' +
-    esc(JSON.stringify(s.detail || [])) + ',' + esc(s.graded ? 1 : 0) + ',' + esc(s.createdAt || '') + ',' + esc(s.gradedAt || '') + ')' ]);
-}
-function removeSheet(id) {
-  return run(["DELETE FROM answer_sheets WHERE id=" + esc(id)]);
-}
-/* 兜底全量落盘（兼容 server.js 的 savePapers 调用：试卷与答卷逐张重写） */
-async function savePapers() {
-  for (const p of state.papers) await upsertPaper(p);
-  for (const st of state.answerSheets) await upsertSheet(st);
-}
 
 /* 启动初始化入口 */
 async function init() {
   sweepTempFiles();
   await ensureDb();
   await ensureQuestionDiff();
-  await ensurePaperTables();
   await loadAll();
   await ensureTeacher();
   // 1.0.0.4：确保使用说明中承诺的测试账号存在（闯关测试员 / 1234，教师可删除）
@@ -374,7 +327,6 @@ module.exports = {
   state, q, run, esc, sha256, uid, nowStr,
   init, ensureDb, createDbWithSeed, loadAll, ensureTeacher, buildTemplate,
   insertUser, updateUser, upsertSession, deleteUser,
-  upsertPaper, removePaper, upsertSheet, removeSheet, savePapers,
   upsertProgress, upsertWrong, removeWrong, setMemoryBest, appendLog, logAnswer, setSetting,
   insertQuestion, batchInsertQuestions, updateQuestion, deleteQuestion
 };

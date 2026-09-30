@@ -548,7 +548,6 @@
         pp.rows.map(x => '<tr><td><a class="stu-link" href="javascript:void(0)" onclick="UIM.viewStudent(\'' + ((S.users.find(u => u.name === x.name) || {}).id || '') + '\',\'' + esc(x.name) + '\')">' + esc(x.name) + '</a></td><td>' + x.score + '</td><td>' + x.correct + '/' + x.total + '</td><td>' + x.acc + '%</td><td style="color:' + (x.grade === '优' ? 'var(--ok)' : x.grade === '差' ? 'var(--danger)' : 'var(--accent2)') + ';font-weight:700">' + x.grade + '</td><td>' + x.stars + '</td></tr>').join('') + '</table>' +
         pagerHtml(rows.length, PG.analysis, 'UIM.gotoAnalysis');
       renderAnaMode();
-      loadAnaPaperSel();
     } catch (e) { p.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
   }
     
@@ -791,123 +790,6 @@ async function loadChapterAnalysis(ch) {
     } catch (e) { p.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
   }
 
-  /* ==================== 1.1.0.0 试卷库/答题卡/阅卷 辅助 ==================== */
-  const PAPER_TNAME = { single: '单选题', judge: '判断题', multi: '多选题', fill: '填空题', matching: '连线题', calc: '计算题' };
-  const PAPER_TNO = { single: '一', judge: '二', multi: '三', fill: '四', matching: '五', calc: '六' };
-  /* 试卷预览 HTML（前端渲染） */
-  function paperPreviewHtml(title, groups, showAns) {
-    const total = groups.reduce((s2, g) => s2 + g.questions.length, 0);
-    let h = '<div style="text-align:center;font-size:16px;font-weight:700;margin:6px 0">' + esc(title) + '</div>' +
-      '<div style="text-align:center;color:var(--dim);font-size:12px">' + esc(S.unit) + '　' + esc(S.gameName) + '　共 ' + total + ' 题' + (showAns ? '（含参考答案）' : '') + '</div>' +
-      '<div style="border:1px solid var(--line);padding:6px 8px;margin:8px 0;font-size:12px">姓　名：＿＿＿＿＿＿　　班　级：＿＿＿＿＿＿　　学　号：＿＿＿＿＿＿　　得　分：＿＿＿＿＿＿</div>';
-    let no = 0;
-    groups.forEach(g => {
-      h += '<div style="margin:10px 0 4px;font-weight:700">' + PAPER_TNO[g.type] + '、' + PAPER_TNAME[g.type] + '（' + g.questions.length + '题）</div>';
-      g.questions.forEach(q => {
-        no++;
-        h += '<div style="margin:5px 0">' + no + '. ' + esc(q.question);
-        if (q.type === 'single' || q.type === 'multi') {
-          h += '<div style="margin-left:22px">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + esc(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('　　') : '') + '</div>';
-        } else if (q.type === 'judge') {
-          h += '<span style="margin-left:16px">（　　　　）</span>';
-        } else if (q.type === 'fill') {
-          h += '<span style="display:inline-block;border-bottom:1.5px solid #000;width:120px;margin-left:10px">&nbsp;</span>';
-        } else if (q.type === 'matching') {
-          const o = q.options || {};
-          const left = Array.isArray(o.left) ? o.left : [];
-          const right = Array.isArray(o.right) ? o.right : [];
-          h += '<div style="margin-left:22px">' + left.map((l, i) => (i + 1) + '. ' + esc(l)).join('　　') + '</div><div style="margin-left:22px">' + right.map((r, i) => String.fromCharCode(65 + i) + '. ' + esc(r)).join('　　') + '</div>';
-        } else if (q.type === 'calc') {
-          h += '<div style="margin-left:22px;border:1px dashed var(--line);padding:6px">已知：＿＿＿＿＿＿<br>求：＿＿＿＿＿＿<br>解：＿＿＿＿＿＿<br>答：＿＿＿＿＿＿</div>';
-        }
-        if (showAns) {
-          h += '<div style="color:#c00;margin-left:10px">参考答案：' + esc(q.answer) + (q.explain ? '　解析：' + esc(q.explain) : '') + '</div>';
-        }
-        h += '</div>';
-      });
-    });
-    return h;
-  }
-  /* 答题卡打印 HTML */
-  function answerSheetPrintHtml(paper, showAns) {
-    const groups = [];
-    const byType = {};
-    paper.questions.forEach(q => { (byType[q.type] = byType[q.type] || []).push(q); });
-    ['single', 'judge', 'multi', 'fill', 'matching', 'calc'].forEach(t => { if (byType[t] && byType[t].length) groups.push({ type: t, questions: byType[t] }); });
-    let h = '<div style="text-align:center;font-size:16px;font-weight:bold">' + esc(paper.title) + '<br>答题卡</div>' +
-      '<div style="text-align:center;font-size:10.5pt;color:#333">' + esc(S.unit) + '　' + esc(S.gameName) + '　共 ' + paper.total + ' 题，满分 ' + paper.total + ' 分（每题 1 分）</div>' +
-      '<div style="border:1px solid #000;padding:6px;margin:8px 0">姓　名：＿＿＿＿＿＿　　班　级：＿＿＿＿＿＿　　学　号：＿＿＿＿＿＿　　得　分：＿＿＿＿＿＿</div>';
-    let no = 0;
-    groups.forEach(g => {
-      h += '<div style="font-weight:bold;margin:12px 0 4px">' + PAPER_TNO[g.type] + '、' + PAPER_TNAME[g.type] + '（' + g.questions.length + '题）</div>';
-      g.questions.forEach(q => {
-        no++;
-        h += '<div style="margin:6px 0">' + no + '. ' + esc(q.question);
-        if (q.type === 'single' || q.type === 'multi') {
-          h += '<div style="margin:2px 0 2px 22px">' + (Array.isArray(q.options) ? q.options.map((o, i) => '<span style="display:inline-block;border:1px solid #000;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;margin:2px 8px 2px 0">' + String.fromCharCode(65 + i) + '</span>').join('') : '') + '</div>';
-        } else if (q.type === 'judge') {
-          h += '<div style="margin-left:22px"><span style="display:inline-block;border:1px solid #000;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;margin:2px 8px 2px 0">√</span><span style="display:inline-block;border:1px solid #000;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;margin:2px 8px 2px 0">×</span></div>';
-        } else if (q.type === 'fill') {
-          h += '<span style="display:inline-block;border-bottom:1.5px solid #000;width:140px;margin-left:10px">&nbsp;</span>';
-        } else if (q.type === 'matching') {
-          const o = q.options || {};
-          const left = Array.isArray(o.left) ? o.left : [];
-          const right = Array.isArray(o.right) ? o.right : [];
-          const max = Math.max(left.length, right.length);
-          for (let i = 0; i < max; i++) {
-            h += '<div style="margin-left:22px"><span style="display:inline-block;width:220px">' + (i + 1) + '. ' + esc(left[i] || '') + '</span><span style="display:inline-block;width:200px;margin-left:30px">' + String.fromCharCode(65 + i) + '. ' + esc(right[i] || '') + '</span></div>';
-          }
-        } else if (q.type === 'calc') {
-          h += '<div style="margin-left:22px">已知：＿＿＿＿＿＿<br>求：＿＿＿＿＿＿<br>解：＿＿＿＿＿＿<br>答：＿＿＿＿＿＿</div>';
-        }
-        if (showAns) {
-          h += '<div style="color:#c00">参考答案：' + esc(q.answer) + '</div>';
-        }
-        h += '</div>';
-      });
-    });
-    return h;
-  }
-  /* 打印视图 */
-  function printDoc(title, bodyHtml) {
-    const w = window.open('', '_blank');
-    if (!w) { toast('浏览器阻止了打印窗口，请允许弹出窗口后重试'); return; }
-    w.document.write('<html><head><meta charset="utf-8"><title>' + title + '</title><style>body{font-family:"宋体",SimSun,serif;font-size:12pt;line-height:1.9;margin:20px}.ans{color:#c00}</style></head><body>' + bodyHtml + '<script>window.onload=function(){setTimeout(function(){window.print();},400)}<\/script></body></html>');
-    w.document.close();
-  }
-  /* 成绩分析-试卷下拉填充 */
-  function loadAnaPaperSel() {
-    const sel = $('ana-paper-select');
-    if (!sel) return;
-    API.papers().then(r => {
-      const cur = sel.value;
-      sel.innerHTML = '<option value="">— 选择试卷查看成绩 —</option>' + r.list.map(p => '<option value="' + p.id + '"' + (p.id === cur ? ' selected' : '') + '>' + esc(p.title) + '（' + p.total + '题）</option>').join('');
-    }).catch(() => {});
-  }
-  /* 成绩分析-试卷成绩（个人+集体） */
-  async function loadAnaPaper(id) {
-    const box = $('ana-paper');
-    if (!box) return;
-    if (!id) { box.innerHTML = ''; return; }
-    box.innerHTML = '<div class="empty-tip">加载中…</div>';
-    try {
-      const r = await API.paperAnalysis(id);
-      const sum = r.summary;
-      const cards = '<div class="stat-card"><div class="v">' + sum.total + '</div><div class="k">已阅人数</div></div>' +
-        '<div class="stat-card"><div class="v">' + sum.avg + '</div><div class="k">平均分(满分' + sum.max + ')</div></div>' +
-        '<div class="stat-card"><div class="v">' + sum.passRate + '%</div><div class="k">及格率(≥60%)</div></div>';
-      const distRow = Object.keys(r.dist).map(k => '<span style="margin-right:10px;font-size:12px">' + k + '：<b>' + r.dist[k] + '</b>人</span>').join('');
-      const stuTable = '<table class="data-table" style="margin-top:8px"><tr><th>姓名</th><th>得分</th><th>正确率</th><th>等级</th></tr>' +
-        r.students.map(s => '<tr><td>' + esc(s.name) + '</td><td>' + s.score + '/' + s.maxScore + '</td><td>' + s.acc + '%</td><td style="color:' + (s.acc >= 90 ? 'var(--ok)' : s.acc < 60 ? 'var(--danger)' : 'var(--accent2)') + ';font-weight:700">' + (s.acc >= 90 ? '优' : s.acc >= 75 ? '良' : s.acc >= 60 ? '中' : '差') + '</td></tr>').join('') + '</table>';
-      const qTable = '<table class="data-table" style="margin-top:8px"><tr><th>题号</th><th>题型</th><th>题目</th><th>答对</th><th>答错</th><th>正确率</th></tr>' +
-        r.qStats.map(q => '<tr><td>' + q.no + '</td><td>' + (PAPER_TNAME[q.type] || q.type) + '</td><td style="max-width:340px">' + esc(q.question) + '</td><td>' + q.correct + '</td><td>' + (q.total - q.correct) + '</td><td>' + (q.acc == null ? '—' : q.acc + '%') + '</td></tr>').join('') + '</table>';
-      box.innerHTML = '<div class="stat-cards">' + cards + '</div>' +
-        '<div style="margin:6px 0;font-size:12px;color:var(--dim)">成绩分布：' + distRow + '</div>' +
-        '<div class="ana-title" style="margin-top:8px">📋 学生成绩明细（个人）</div>' + stuTable +
-        '<div class="ana-title" style="margin-top:8px">📊 各题答题情况（集体）</div>' + qTable;
-    } catch (e) { box.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
-  }
-
   /* ---------- 弹窗 ---------- */
   function openModal(html) { $('modal-body').innerHTML = html; $('modal').style.display = 'flex'; }
   function closeModal() { $('modal').style.display = 'none'; }
@@ -1015,8 +897,6 @@ async function loadChapterAnalysis(ch) {
         if (b.dataset.tab === 'analysis') loadAnalysis();
         if (b.dataset.tab === 'logs') loadLogs();
         if (b.dataset.tab === 'paper') UIM.renderPaperTab();
-        if (b.dataset.tab === 'papers') UIM.renderPapersTab();
-        if (b.dataset.tab === 'grading') UIM.renderGradingTab();
       };
     });
     // 题库筛选
@@ -1045,8 +925,6 @@ async function loadChapterAnalysis(ch) {
       }
     };
     $('ana-chapter-btn').onclick = () => loadChapterAnalysis(parseInt($('ana-chapter-select').value, 10));
-    const aps = $('ana-paper-select');
-    if (aps) aps.onchange = () => loadAnaPaper(aps.value);
     const bus = $('btn-unit-set');
     if (bus) bus.onclick = () => UIM.openUnitModal();
     const bts = $('btn-time-set');
@@ -1421,113 +1299,51 @@ async function loadChapterAnalysis(ch) {
       } catch (e) { toast(e.message); }
     },
     /* ---- 1.0.0.5 组卷打印 ---- */
-    /* ---- 1.1.0.0 重构：自动组卷（题型及数量）/手动组卷 + 预览/保存/下载/打印/答题卡 ---- */
     renderPaperTab() {
       const box = $('paper-box');
       if (!box) return;
       const P = S.paper;
-      const mode = S.paperMode || 'auto';
-      const tNames = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线', calc: '计算' };
       const chChips = S.chapters.map(c => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-ch" value="' + c.id + '"' + (P.chapters.includes(c.id) ? ' checked' : '') + '> 第' + (c.id === 0 ? '0' : c.id) + '章 ' + esc(c.name) + '</label>').join('');
       const diffChips = [1, 2, 3, 4, 5].map(n => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-diff" value="' + n + '"' + (P.diffs.includes(n) ? ' checked' : '') + '> ' + n + ' 星</label>').join('');
-      const typeCounts = Object.keys(tNames).map(t => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 10px 3px 0;font-size:13px">' + tNames[t] + ' <input type="number" class="p-typecnt" data-t="' + t + '" min="0" max="60" value="' + (P.typecnt && P.typecnt[t] ? P.typecnt[t] : '') + '" style="width:56px;padding:5px;border-radius:6px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">题</label>').join('');
-      box.innerHTML =
-        '<h3 style="margin-bottom:10px">📄 组卷打印（自动组卷 / 手动组卷，可预览 / 下载 / 打印 / 保存到试卷库 / 生成答题卡）</h3>' +
-        '<div class="form-row"><button class="btn small' + (mode === 'auto' ? ' primary' : '') + '" id="p-mode-auto">⚙️ 自动组卷</button> ' +
-        '<button class="btn small' + (mode === 'manual' ? ' primary' : '') + '" id="p-mode-manual">✋ 手动组卷</button>' +
-        '<span style="font-size:12px;color:var(--dim);margin-left:10px">（自动组卷可设定题型及题型数量；手动组卷从题库勾选题目）</span></div>' +
-        '<div id="p-auto-form"' + (mode === 'auto' ? '' : ' style="display:none"') + '>' +
+      const typeChips = [['single', '单选'], ['judge', '判断'], ['multi', '多选'], ['fill', '填空'], ['matching', '连线'], ['calc', '计算']].map(t => '<label style="display:inline-flex;align-items:center;gap:4px;margin:3px 8px 3px 0;font-size:13px"><input type="checkbox" class="p-type" value="' + t[0] + '"' + (P.types.includes(t[0]) ? ' checked' : '') + '> ' + t[1] + '</label>').join('');
+      box.innerHTML = '<h3 style="margin-bottom:10px">📄 自动组卷（按章节/难度/题型/掌握情况，可导出 Word 打印）</h3>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">选择章节（不选 = 全部章节）</label><br>' + chChips + '</div>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">难度等级（不选 = 全部难度）</label><br>' + diffChips + '</div>' +
-        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题型及题型数量（填 0 或留空 = 不出该题型）</label><br>' + typeCounts + '</div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题型（不选 = 全部题型）</label><br>' + typeChips + '</div>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">按学生掌握情况筛选</label><select id="p-mastery" style="width:60%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' +
         '<option value="all"' + (P.mastery === 'all' ? ' selected' : '') + '>不筛选（全部题目）</option>' +
         '<option value="weak"' + (P.mastery === 'weak' ? ' selected' : '') + '>薄弱题（全班正确率 &lt;60%）</option>' +
         '<option value="good"' + (P.mastery === 'good' ? ' selected' : '') + '>掌握较好（全班正确率 ≥60%）</option></select></div>' +
-        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">出题总数量兜底（题型数量全部留空时按此数量随机抽取）</label><input id="p-count" type="number" min="1" max="200" value="' + P.count + '" style="width:120px;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
-        '</div>' +
-        '<div id="p-manual-form"' + (mode === 'manual' ? '' : ' style="display:none"') + '>' +
-        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">手动挑题：筛选题库后勾选题目（已选 <b id="p-selcount">0</b> 题）</label><br>' +
-        '<select id="p-m-chapter" style="padding:8px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"><option value="">全部章节</option>' + S.chapters.map(c => '<option value="' + c.id + '">第' + (c.id === 0 ? '0' : c.id) + '章 ' + esc(c.name) + '</option>').join('') + '</select>' +
-        '<select id="p-m-type" style="padding:8px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"><option value="">全部题型</option><option value="single">单选</option><option value="judge">判断</option><option value="multi">多选</option><option value="fill">填空</option><option value="matching">连线</option><option value="calc">计算</option></select>' +
-        '<input id="p-m-kw" type="text" placeholder="关键词搜索" style="padding:8px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text);width:200px">' +
-        '<button class="btn small" id="p-m-filter">筛选</button>' +
-        '<label style="display:inline-flex;align-items:center;gap:4px;font-size:12px;margin-left:8px"><input type="checkbox" id="p-m-all"> 全选当前列表</label></div>' +
-        '<div id="p-m-list" style="max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px;font-size:13px;line-height:1.9"></div>' +
-        '</div>' +
-        '<div class="form-row" style="margin-top:6px"><label style="display:inline-flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" id="p-ans"> 试卷含参考答案与解析（不打勾 = 纯试题卷，供学生作答）</label></div>' +
-        '<div class="result-btns" style="margin:10px 0">' +
-        '<button class="btn primary" id="p-build">🎯 生成试卷</button>' +
-        '<button class="btn" id="p-save" disabled>💾 保存到试卷库</button>' +
-        '<button class="btn" id="p-export" disabled>📥 下载 Word/WPS</button>' +
-        '<button class="btn" id="p-print" disabled>🖨 打印</button>' +
-        '<button class="btn" id="p-anssheet" disabled>📄 答题卡下载</button>' +
-        '<button class="btn" id="p-anssheet-print" disabled>📄 答题卡打印</button>' +
-        '</div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">出题数量（1~200）</label><input id="p-count" type="number" min="1" max="200" value="' + P.count + '" style="width:120px;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div class="form-row"><label style="display:inline-flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" id="p-ans"> 试卷含参考答案与解析（不打勾 = 纯试题卷，供学生作答）</label></div>' +
+        '<div class="result-btns" style="margin:10px 0"><button class="btn primary" id="p-build">🎯 生成试卷</button><button class="btn" id="p-export" disabled>📥 导出 Word/WPS 打印</button></div>' +
         '<div id="p-preview" style="font-size:13px;line-height:1.9"></div>';
-      $('p-mode-auto').onclick = () => { S.paperMode = 'auto'; UIM.renderPaperTab(); };
-      $('p-mode-manual').onclick = () => { S.paperMode = 'manual'; UIM.renderPaperTab(); };
-      if (mode === 'manual') {
-        const loadMan = () => {
-          const ch = $('p-m-chapter').value, tp = $('p-m-type').value, kw = $('p-m-kw').value.trim();
-          API.qList({ chapter: ch, type: tp, kw }).then(r => {
-            const sel = S.manualSel || (S.manualSel = {});
-            $('p-m-list').innerHTML = (r.list || []).map(q => '<label style="display:block"><input type="checkbox" class="p-m-q" value="' + q.id + '"' + (sel[q.id] ? ' checked' : '') + '> #' + q.id + ' [' + (tNames[q.type] || q.type) + '] ' + esc(q.question) + '</label>').join('');
-            $('p-selcount').textContent = Object.keys(sel).length;
-            const qs = $('p-m-list').querySelectorAll('.p-m-q');
-            const allChk = $('p-m-all');
-            allChk.onchange = () => { qs.forEach(x => { x.checked = allChk.checked; sel[parseInt(x.value, 10)] = allChk.checked; }); $('p-selcount').textContent = Object.keys(sel).length; };
-            qs.forEach(x => x.onchange = () => { sel[parseInt(x.value, 10)] = x.checked; $('p-selcount').textContent = Object.keys(sel).length; });
-          }).catch(e => toast(e.message));
-        };
-        $('p-m-filter').onclick = loadMan;
-        $('p-m-kw').onkeydown = (e) => { if (e.key === 'Enter') loadMan(); };
-        loadMan();
-      }
       const collect = () => {
         P.chapters = [...document.querySelectorAll('.p-ch:checked')].map(x => parseInt(x.value, 10));
         P.diffs = [...document.querySelectorAll('.p-diff:checked')].map(x => parseInt(x.value, 10));
+        P.types = [...document.querySelectorAll('.p-type:checked')].map(x => x.value);
         P.mastery = $('p-mastery').value;
         P.count = parseInt($('p-count').value, 10) || 20;
         P.includeAnswer = $('p-ans').checked;
-        P.typecnt = {};
-        document.querySelectorAll('.p-typecnt').forEach(x => { const n = parseInt(x.value, 10); if (!isNaN(n) && n > 0) P.typecnt[x.dataset.t] = n; });
       };
       $('p-build').onclick = async () => {
+        collect();
         const pv = $('p-preview');
-        const btns = ['p-save', 'p-export', 'p-print', 'p-anssheet', 'p-anssheet-print'];
-        btns.forEach(id => { const b = $(id); if (b) b.disabled = true; });
         pv.innerHTML = '<div class="empty-tip">组卷中…</div>';
         try {
-          let r = null;
-          if (mode === 'manual') {
-            const sel = S.manualSel || {};
-            const ids = Object.keys(sel).filter(k => sel[k]).map(Number);
-            if (!ids.length) throw new Error('请先勾选题目');
-            r = await API.paperGenerate({ qids: ids });
-          } else {
-            collect();
-            const tc = Object.keys(P.typecnt).length ? P.typecnt : null;
-            r = await API.paperGenerate({ chapters: P.chapters, difficulties: P.diffs, types: tc || [], mastery: P.mastery, count: P.count });
-          }
+          const r = await API.paperGenerate({ chapters: P.chapters, difficulties: P.diffs, types: P.types, mastery: P.mastery, count: P.count });
           S.paperTitle = r.title; S.paperGroups = r.groups; S.paperTotal = r.total;
-          S.curPaper = r;
-          btns.forEach(id => { const b = $(id); if (b) b.disabled = false; });
-          pv.innerHTML = paperPreviewHtml(r.title, r.groups, P.includeAnswer);
+          const ex = $('p-export'); if (ex) ex.disabled = false;
+          pv.innerHTML = '<b style="color:var(--accent2)">' + esc(r.title) + '</b>　共 ' + r.total + ' 题<br>' +
+            r.groups.map(g => '<div style="margin:6px 0"><b>' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
+              g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + esc(q.question) + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
+            '<div style="margin-top:8px;color:var(--dim)">导出 Word 后可在 WPS/Word 中打开打印。</div>';
         } catch (e) { pv.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
       };
-      $('p-save').onclick = async () => {
-        if (!S.curPaper) return;
-        try {
-          const r = await API.paperSave({ title: S.curPaper.title, questions: S.curPaper.list, includeAnswer: P.includeAnswer });
-          S.curPaperId = r.id;
-          toast('试卷已保存到试卷库');
-        } catch (e) { toast(e.message); }
-      };
       $('p-export').onclick = async () => {
-        if (!S.curPaper) return;
+        collect();
         try {
-          const blob = await API.download('/api/paper/export', 'POST', { qids: S.curPaper.list.map(q => q.id), includeAnswer: P.includeAnswer });
+          const blob = await API.download('/api/paper/export', 'POST', { chapters: P.chapters, difficulties: P.diffs, types: P.types, mastery: P.mastery, count: P.count, includeAnswer: P.includeAnswer });
           const a = document.createElement('a');
           const fname = (S.unit ? S.unit + '-' : '') + (S.paperTitle || '组卷') + (P.includeAnswer ? '-答案版' : '') + '.doc';
           a.href = URL.createObjectURL(blob); a.download = fname; a.click();
@@ -1535,233 +1351,6 @@ async function loadChapterAnalysis(ch) {
           toast('试卷已导出，可用 Word/WPS 打开打印');
         } catch (e) { toast(e.message); }
       };
-      $('p-print').onclick = () => {
-        if (!S.curPaper) return;
-        printDoc(S.paperTitle, paperPreviewHtml(S.paperTitle, S.curPaper.groups, P.includeAnswer));
-      };
-      $('p-anssheet').onclick = async () => {
-        if (!S.curPaper) return;
-        try {
-          let id = S.curPaperId;
-          if (!id) {
-            const r = await API.paperSave({ title: S.curPaper.title, questions: S.curPaper.list, includeAnswer: false });
-            id = r.id; S.curPaperId = id;
-            toast('试卷已同时保存到试卷库');
-          }
-          const blob = await API.downloadGet('/api/paper/answersheet?id=' + id);
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(blob); a.download = (S.unit ? S.unit + '-' : '') + S.paperTitle + '-答题卡.doc'; a.click();
-          setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-        } catch (e) { toast(e.message); }
-      };
-      $('p-anssheet-print').onclick = () => {
-        if (!S.curPaper) return;
-        const paper = { title: S.paperTitle, total: S.paperTotal, questions: S.curPaper.list };
-        printDoc(S.paperTitle + ' 答题卡', answerSheetPrintHtml(paper, false));
-      };
-    },
-    /* ---- 1.1.0.0 试卷管理 ---- */
-    renderPapersTab() {
-      const box = $('papers-box');
-      if (!box) return;
-      box.innerHTML = '<div class="empty-tip">加载中…</div>';
-      API.papers().then(r => {
-        if (!r.list.length) { box.innerHTML = '<div class="empty-tip">暂无试卷，请先在「组卷打印」中生成试卷并点击「💾 保存到试卷库」。</div>'; return; }
-        box.innerHTML = '<h3 style="margin-bottom:10px">📚 试卷管理（增 / 删 / 改 / 预览 / 下载 / 答题卡）</h3>' +
-          '<table class="data-table"><tr><th>标题</th><th>题数</th><th>创建时间</th><th>更新时间</th><th>操作</th></tr>' +
-          r.list.map(p => '<tr><td>' + esc(p.title) + '</td><td>' + p.total + '</td><td>' + esc(p.createdAt) + '</td><td>' + esc(p.updatedAt) + '</td>' +
-            '<td class="row-act"><button class="btn small" onclick="UIM.paperPreview(\'' + p.id + '\')">👁 预览</button>' +
-            '<button class="btn small" onclick="UIM.paperDownload(\'' + p.id + '\')">📥 试卷</button>' +
-            '<button class="btn small" onclick="UIM.paperAnswerSheet(\'' + p.id + '\')">📄 答题卡</button>' +
-            '<button class="btn small" onclick="UIM.paperAnswerSheetAns(\'' + p.id + '\')">📄 答题卡答案版</button>' +
-            '<button class="btn small" onclick="UIM.paperRename(\'' + p.id + '\')">✏️ 改名</button>' +
-            '<button class="btn small danger" onclick="UIM.paperDelete(\'' + p.id + '\')">🗑 删除</button></td></tr>').join('') + '</table>';
-      }).catch(e => box.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>');
-    },
-    async paperPreview(id) {
-      try {
-        const r = await API.paperDetail(id);
-        const paper = r.paper;
-        const groups = [];
-        const byType = {};
-        paper.questions.forEach(q => { (byType[q.type] = byType[q.type] || []).push(q); });
-        ['single', 'judge', 'multi', 'fill', 'matching', 'calc'].forEach(t => { if (byType[t] && byType[t].length) groups.push({ type: t, questions: byType[t] }); });
-        openModal('<div style="max-width:92vw;max-height:84vh;overflow:auto">' +
-          '<div class="result-btns" style="margin:4px 0"><button class="btn small" id="pv-ans">显示/隐藏答案</button> <button class="btn small" id="pv-print">🖨 打印</button></div>' +
-          '<div id="pv-body">' + paperPreviewHtml(paper.title, groups, false) + '</div></div>');
-        let showAns = false;
-        $('pv-ans').onclick = () => { showAns = !showAns; $('pv-body').innerHTML = paperPreviewHtml(paper.title, groups, showAns); };
-        $('pv-print').onclick = () => printDoc(paper.title, paperPreviewHtml(paper.title, groups, showAns));
-      } catch (e) { toast(e.message); }
-    },
-    async paperDownload(id) {
-      try {
-        const blob = await API.download('/api/paper/export', 'POST', { paperId: id, includeAnswer: false });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob); a.download = (S.unit ? S.unit + '-' : '') + '试卷-' + id.slice(0, 6) + '.doc'; a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-      } catch (e) { toast(e.message); }
-    },
-    async paperAnswerSheet(id) {
-      try {
-        const blob = await API.downloadGet('/api/paper/answersheet?id=' + id);
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob); a.download = (S.unit ? S.unit + '-' : '') + '答题卡-' + id.slice(0, 6) + '.doc'; a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-      } catch (e) { toast(e.message); }
-    },
-    async paperAnswerSheetAns(id) {
-      try {
-        const blob = await API.downloadGet('/api/paper/answersheet?id=' + id + '&ans=1');
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob); a.download = (S.unit ? S.unit + '-' : '') + '答题卡答案版-' + id.slice(0, 6) + '.doc'; a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-      } catch (e) { toast(e.message); }
-    },
-    async paperRename(id) {
-      const r = await API.paperDetail(id).catch(e => { toast(e.message); return null; });
-      if (!r) return;
-      openModal('<h3 style="margin-bottom:12px">✏️ 修改试卷标题</h3>' +
-        '<div class="form-row"><input id="pr-title" value="' + esc(r.paper.title) + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"></div>' +
-        '<div class="result-btns"><button class="btn primary" id="pr-save">保存</button></div>');
-      $('pr-save').onclick = async () => {
-        const t = $('pr-title').value.trim();
-        if (!t) { toast('标题不能为空'); return; }
-        try { await API.paperRename(id, t); closeModal(); toast('标题已修改'); UIM.renderPapersTab(); } catch (e) { toast(e.message); }
-      };
-    },
-    async paperDelete(id) {
-      if (!confirm('确定删除该试卷？将同时删除其全部答卷记录与上传照片。')) return;
-      try { await API.paperDelete(id); toast('试卷已删除'); UIM.renderPapersTab(); } catch (e) { toast(e.message); }
-    },
-    /* ---- 1.1.0.0 阅卷 ---- */
-    async renderGradingTab() {
-      const box = $('grading-box');
-      if (!box) return;
-      box.innerHTML = '<div class="empty-tip">加载中…</div>';
-      const [papers, sheets] = await Promise.all([API.papers().catch(() => ({ list: [] })), API.paperSheets().catch(() => ({ list: [] }))]);
-      const selOpts = papers.list.map(p => '<option value="' + p.id + '">' + esc(p.title) + '（' + p.total + '题）</option>').join('');
-      box.innerHTML = '<h3 style="margin-bottom:10px">🖊 阅卷（学生线下作答 → 拍照 / 压缩包上传 → 教师评分 → 成绩分析）</h3>' +
-        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">选择试卷</label><select id="g-paper-select" style="width:70%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"><option value="">— 选择试卷 —</option>' + selOpts + '</select></div>' +
-        '<div class="form-row" id="g-upload" style="display:none"></div>' +
-        '<div id="g-sheets" style="margin-top:8px"></div>';
-      $('g-paper-select').onchange = (e) => UIM.loadGrading(e.target.value);
-      if (sheets.list.length) {
-        const pid = sheets.list[0].paperId;
-        if (papers.list.some(p => p.id === pid)) { $('g-paper-select').value = pid; UIM.loadGrading(pid); }
-      }
-    },
-    async loadGrading(paperId) {
-      if (!paperId) {
-        const up = $('g-upload'); if (up) up.style.display = 'none';
-        const sh = $('g-sheets'); if (sh) sh.innerHTML = '';
-        return;
-      }
-      const up = $('g-upload');
-      up.style.display = '';
-      up.innerHTML = '<label style="font-size:12px;color:var(--dim)">上传答题卡：可多选照片（建议文件名 = 学生姓名，如“张三.jpg”），或上传班级压缩包（zip，内含全班照片）</label><br>' +
-        '<input type="file" id="g-file" multiple accept="image/*,.zip" style="margin-top:6px"> ' +
-        '<button class="btn small primary" id="g-upload-btn">⬆ 上传</button> <span id="g-uploading" class="empty-tip" style="display:none">上传中…（压缩包解压需数秒）</span>';
-      const sheets = await API.paperSheets(paperId).catch(() => ({ list: [] }));
-      const sh = $('g-sheets');
-      if (!sheets.list.length) { sh.innerHTML = '<div class="empty-tip">暂无答卷，请上传答题卡照片或班级压缩包。</div>'; }
-      else {
-        sh.innerHTML = '<table class="data-table"><tr><th>学生姓名</th><th>照片</th><th>得分</th><th>状态</th><th>操作</th></tr>' +
-          sheets.list.map(x => '<tr><td>' + esc(x.studentName) + '</td><td>' + (x.photos || []).map(ph => '<a href="/uploads/' + ph.file + '" target="_blank" style="margin-right:6px">🖼 查看</a>').join('') + '</td>' +
-            '<td>' + (x.graded ? x.score + '/' + x.maxScore : '未评') + '</td><td>' + (x.graded ? '✅ 已评分' : '⏳ 待评分') + '</td>' +
-            '<td class="row-act"><button class="btn small" onclick="UIM.gradeWorkbench(\'' + x.id + '\')">🖊 阅卷</button>' +
-            '<button class="btn small danger" onclick="UIM.sheetDelete(\'' + x.id + '\')">🗑 删除</button></td></tr>').join('') + '</table>';
-      }
-      const inp = $('g-file');
-      $('g-upload-btn').onclick = async () => {
-        const files = inp.files;
-        if (!files || !files.length) { toast('请先选择照片或压缩包'); return; }
-        const arr = [];
-        for (const f of files) {
-          const b64 = await new Promise((res, rej) => {
-            const rd = new FileReader();
-            rd.onload = () => res(String(rd.result).split(',')[1] || '');
-            rd.onerror = rej;
-            rd.readAsDataURL(f);
-          });
-          arr.push({ name: f.name, b64 });
-        }
-        const st = $('g-uploading');
-        if (st) st.style.display = '';
-        try {
-          const r = await API.paperUpload(paperId, arr);
-          toast('上传完成：' + r.created.length + ' 张' + (r.problems && r.problems.length ? '，跳过 ' + r.problems.length + ' 个' : ''));
-          UIM.loadGrading(paperId);
-        } catch (e) { toast(e.message); if (st) st.style.display = 'none'; }
-      };
-    },
-    /* 阅卷工作台 */
-    async gradeWorkbench(sheetId) {
-      try {
-        const all = await API.paperSheets();
-        const sheet = all.list.find(x => x.id === sheetId);
-        if (!sheet) { toast('答卷不存在'); return; }
-        const pr = await API.paperDetail(sheet.paperId);
-        const paper = pr.paper;
-        const phs = (sheet.photos || []).map(ph => '<div style="margin:6px 0"><img src="/uploads/' + ph.file + '" style="max-width:100%;max-height:52vh;object-fit:contain;border:1px solid var(--line);border-radius:8px"></div>').join('');
-        const init = {};
-        (sheet.detail || []).forEach(d => { init[d.qid] = d.correct; });
-        let qHtml = '';
-        paper.questions.forEach((qq, i) => {
-          qHtml += '<div class="g-q" data-qid="' + qq.id + '" style="margin:6px 0;padding:6px;border:1px solid var(--line);border-radius:8px">' +
-            '<div style="font-size:13px"><b>' + (i + 1) + '.</b> ' + esc(qq.question) + '　<span style="color:#ff9f1a">参考答案：' + esc(qq.answer) + '</span></div>' +
-            '<div style="margin-top:4px"><button class="btn small g-ok">✓ 对</button> <button class="btn small g-no">✗ 错</button> ' +
-            '<span class="g-mark" style="margin-left:8px;font-weight:700"></span></div></div>';
-        });
-        openModal('<div style="max-width:94vw;max-height:88vh;overflow:auto">' +
-          '<h3 style="margin-bottom:8px">🖊 阅卷：' + esc(sheet.studentName) + '（' + esc(sheet.paperTitle) + '）</h3>' +
-          '<div style="display:flex;gap:14px;flex-wrap:wrap">' +
-          '<div style="flex:1;min-width:240px">' + (phs || '<div class="empty-tip">无照片</div>') + '</div>' +
-          '<div style="flex:1.2;min-width:320px">' +
-          '<div class="form-row"><label style="font-size:12px;color:var(--dim)">学生姓名</label><input id="g-name" value="' + esc(sheet.studentName) + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"></div>' +
-          '<div class="result-btns" style="margin:6px 0"><button class="btn small" id="g-allok">✅ 全部判对</button> <button class="btn small" id="g-allno">❌ 全部判错</button> <button class="btn small" id="g-cc">清空</button></div>' +
-          '<div id="g-qs">' + qHtml + '</div>' +
-          '<div class="result-btns" style="margin:10px 0"><button class="btn primary" id="g-save">💾 保存评分</button> <span id="g-score-show"></span></div>' +
-          '</div></div></div>');
-        const marks = {};
-        const paint = () => {
-          let ok = 0;
-          document.querySelectorAll('.g-q').forEach(el => {
-            const qid = el.dataset.qid;
-            const m = marks[qid];
-            const st = el.querySelector('.g-mark');
-            if (m === 1) { el.style.borderColor = 'var(--ok)'; st.textContent = '✓ 对（+1分）'; st.style.color = 'var(--ok)'; ok++; }
-            else if (m === 0) { el.style.borderColor = 'var(--danger)'; st.textContent = '✗ 错（0分）'; st.style.color = 'var(--danger)'; }
-            else { el.style.borderColor = 'var(--line)'; st.textContent = '未判'; st.style.color = 'var(--dim)'; }
-          });
-          const sc = $('g-score-show');
-          if (sc) sc.innerHTML = '已判 <b>' + ok + '</b>/' + paper.questions.length + ' 题';
-        };
-        document.querySelectorAll('.g-q').forEach(el => {
-          const qid = el.dataset.qid;
-          if (init[qid] != null) marks[qid] = init[qid];
-          el.querySelector('.g-ok').onclick = () => { marks[qid] = 1; paint(); };
-          el.querySelector('.g-no').onclick = () => { marks[qid] = 0; paint(); };
-        });
-        $('g-allok').onclick = () => { document.querySelectorAll('.g-q').forEach(el => { marks[el.dataset.qid] = 1; }); paint(); };
-        $('g-allno').onclick = () => { document.querySelectorAll('.g-q').forEach(el => { marks[el.dataset.qid] = 0; }); paint(); };
-        $('g-cc').onclick = () => { document.querySelectorAll('.g-q').forEach(el => { marks[el.dataset.qid] = null; }); paint(); };
-        paint();
-        $('g-save').onclick = async () => {
-          const detail = paper.questions.map(qq => ({ qid: qq.id, correct: marks[qq.id] === 1 ? 1 : 0 }));
-          const name = $('g-name').value.trim();
-          try {
-            const r = await API.paperGrade({ id: sheetId, studentName: name || sheet.studentName, detail });
-            closeModal();
-            toast('评分已保存：' + (name || sheet.studentName) + ' ' + r.score + '/' + r.maxScore);
-            UIM.loadGrading(sheet.paperId);
-          } catch (e) { toast(e.message); }
-        };
-      } catch (e) { toast(e.message); }
-    },
-    async sheetDelete(id) {
-      if (!confirm('确定删除该答卷及其照片？')) return;
-      try { await API.sheetDelete(id); toast('答卷已删除'); UIM.renderGradingTab(); } catch (e) { toast(e.message); }
     }
   };
   window.UIM = UIM;

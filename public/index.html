@@ -108,10 +108,6 @@
         <input id="fill-input" type="text" placeholder="在此输入答案" autocomplete="off">
         <button class="btn primary small" id="fill-submit">提交</button>
       </div>
-      <div class="answer-toolbar" style="display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0 2px">
-        <button class="hud-chip" id="btn-voice2" style="cursor:pointer;border:none;font-size:15px;line-height:1">🔊</button>
-        <span style="font-size:12px;color:var(--dim2)">语音开关</span>
-      </div>
       <div id="answer-buttons" class="answer-buttons"></div>
       <div id="touch-controls" class="touch-controls">
         <div class="tc-left">
@@ -211,8 +207,6 @@
       <button class="tab-btn" data-tab="questions">题库管理</button>
       <button class="tab-btn" data-tab="analysis">成绩分析</button>
       <button class="tab-btn" data-tab="paper">📄 组卷打印</button>
-      <button class="tab-btn" data-tab="papers">📚 试卷管理</button>
-      <button class="tab-btn" data-tab="grading">🖊 阅卷</button>
       <button class="tab-btn" data-tab="logs">操作日志</button>
     </div>
     <div class="tabs-body">
@@ -253,25 +247,10 @@
           <div class="ana-title" id="ana-title-m">📋 同学掌握情况汇总（章·节·题）</div>
           <div id="ana-mastery"></div>
         </div>
-        <div class="panel" style="margin-top:10px">
-          <div class="ana-title">📝 试卷成绩分析（1.1.0.0）</div>
-          <div class="filter-row">
-            <select id="ana-paper-select"><option value="">— 选择试卷查看成绩 —</option></select>
-          </div>
-          <div id="ana-paper"></div>
-        </div>
       </div>
       <!-- 组卷打印 -->
       <div class="tab-body" id="tab-paper" style="display:none">
         <div class="panel" id="paper-box"></div>
-      </div>
-      <!-- 试卷管理（1.1.0.0） -->
-      <div class="tab-body" id="tab-papers" style="display:none">
-        <div class="panel" id="papers-box"></div>
-      </div>
-      <!-- 阅卷（1.1.0.0） -->
-      <div class="tab-body" id="tab-grading" style="display:none">
-        <div class="panel" id="grading-box"></div>
       </div>
       <!-- 操作日志 -->
       <div class="tab-body" id="tab-logs" style="display:none">
@@ -287,7 +266,7 @@
   <div class="toast" id="toast"></div>
 </div>
 
-<script src="js/api.js?v=11000"></script>
+<script src="js/api.js?v=20260926a3"></script>
 <script src="js/ui.js?v=20260926a3"></script>
 <script src="js/game.js?v=20260926a3"></script>
 </body>

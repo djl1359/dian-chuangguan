@@ -30,8 +30,6 @@ const state = {
   memoryBest: {},   // userId -> best
   logs: [],         // [{id,t,op,by,name,reason}]
   answerLogs: [],   // [{t,userId,name,qid,chapter,section,correct}] 每题答题明细（成绩分析）
-  papers: [],       // [{id,title,questions,includeAnswer,total,createdAt,updatedAt}] 试卷库（1.1.0.0）
-  answerSheets: [], // [{id,paperId,paperTitle,studentName,photos,score,maxScore,detail,graded,createdAt,gradedAt}] 答题卡/答卷（1.1.0.0）
   settings: {},     // { unit: '使用单位名称' } 系统设置
   questions: []     // [{id,chapter,section,type,question,options,answer,explain}]
 };
@@ -42,8 +40,7 @@ function saveDB() {
   const snap = {
     users: state.users, sessions: state.sessions, progress: state.progress,
     wrongs: state.wrongs, memoryBest: state.memoryBest, logs: state.logs,
-    answerLogs: state.answerLogs, papers: state.papers, answerSheets: state.answerSheets,
-    settings: state.settings
+    answerLogs: state.answerLogs, settings: state.settings
   };
   writeChain = writeChain.then(() => {
     fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -80,8 +77,6 @@ async function init() {
     state.memoryBest = loaded.memoryBest || {};
     state.logs = loaded.logs || [];
     state.answerLogs = loaded.answerLogs || [];
-    state.papers = loaded.papers || [];
-    state.answerSheets = loaded.answerSheets || [];
     state.settings = loaded.settings || {};
   } else {
     await saveDB();
@@ -122,19 +117,11 @@ function insertQuestion(qq) { return saveQuestions(); }
 function updateQuestion(qq) { return saveQuestions(); }
 function deleteQuestion(id) { return saveQuestions(); }
 
-/* ---------------- 1.1.0.0 试卷/答题卡持久化 ---------------- */
-function savePapers() { return saveDB(); }   // papers/answerSheets 随 db.json 全量落盘
-function upsertPaper(p) { return saveDB(); }
-function removePaper(id) { return saveDB(); }
-function upsertSheet(s) { return saveDB(); }
-function removeSheet(id) { return saveDB(); }
-
 module.exports = {
   APP_DIR, DATA_DIR, DB_FILE, QS_FILE,
   state, sha256, uid,
   init, saveDB, saveQuestions,
   insertUser, updateUser, upsertSession, deleteUser,
   upsertProgress, upsertWrong, removeWrong, setMemoryBest, appendLog, logAnswer, setSetting,
-  insertQuestion, updateQuestion, deleteQuestion,
-  savePapers, upsertPaper, removePaper, upsertSheet, removeSheet
+  insertQuestion, updateQuestion, deleteQuestion
 };
