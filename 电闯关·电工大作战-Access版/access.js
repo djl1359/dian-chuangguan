@@ -242,7 +242,13 @@ async function loadAll() {
     try { opts = JSON.parse(x.options || '[]'); } catch (e) { opts = []; }
     return { id: x.id, chapter: x.chapter, section: x.section || 1, type: x.type, question: x.question, options: opts, answer: x.answer, explain: x.explain || '', difficulty: x.difficulty == null ? 3 : x.difficulty };
   });
-  state.exams = examsRows.map(x => parseJSON(x.questions, []));
+  state.exams = examsRows.map(x => {
+    let qs = [];
+    try { qs = JSON.parse(x.questions || '[]'); } catch (e) { qs = []; }
+    return { id: x.id, title: x.title || '', subject: x.subject || '', className: x.className || '', grade: x.grade || '',
+      createdAt: parseInt(x.createdAt, 10) || 0, status: x.status || 'draft', questions: Array.isArray(qs) ? qs : [],
+      qcount: x.qcount || 0, totalScore: x.totalScore || 0, createdBy: x.createdBy || '', publishedAt: x.publishedAt || '', note: x.note || '' };
+  });
   state.examAnswers = examAnsRows.map(x => ({
     examId: x.examId, userId: x.userId, name: x.name || '', t: parseInt(x.t, 10) || 0,
     objective: parseJSON(x.objective, []), subjective: parseJSON(x.subjective, []),
@@ -324,7 +330,13 @@ async function ensureExamTables() {
   } catch (e) { /* 表已存在等，忽略 */ }
   try {
     const examsRows = await q("SELECT id, title, subject, className, grade, createdAt, [status], questions, qcount, totalScore, createdBy, publishedAt, [note] FROM exams");
-    state.exams = examsRows.map(x => parseJSON(x.questions, []));
+    state.exams = examsRows.map(x => {
+    let qs = [];
+    try { qs = JSON.parse(x.questions || '[]'); } catch (e) { qs = []; }
+    return { id: x.id, title: x.title || '', subject: x.subject || '', className: x.className || '', grade: x.grade || '',
+      createdAt: parseInt(x.createdAt, 10) || 0, status: x.status || 'draft', questions: Array.isArray(qs) ? qs : [],
+      qcount: x.qcount || 0, totalScore: x.totalScore || 0, createdBy: x.createdBy || '', publishedAt: x.publishedAt || '', note: x.note || '' };
+  });
   } catch (e) { /* 表不存在则跳过 */ }
   try {
     const examAnsRows = await q("SELECT examId, userId, name, t, objective, subjective, total, [status], img FROM exam_answers");

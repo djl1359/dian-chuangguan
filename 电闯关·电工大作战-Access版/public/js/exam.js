@@ -833,7 +833,7 @@
     /* 学生预览试卷/答题卡 */
     async studentPaper(id) {
       try {
-        const r = await API.examGet(id);
+        const r = await API.examPreview(id);
         const e = r.exam;
         const w = window.open('', '_blank', 'width=960,height=720');
         if (!w) { toast('请允许弹窗'); return; }
@@ -844,7 +844,7 @@
     },
     async studentCard(id) {
       try {
-        const r = await API.examGet(id);
+        const r = await API.examPreview(id);
         const e = r.exam;
         const w = window.open('', '_blank', 'width=960,height=720');
         if (!w) { toast('请允许弹窗'); return; }

@@ -91,6 +91,7 @@
     examDelete: (id) => API.req('POST', '/api/exam/delete', { id }),
     examStatus: (id, status) => API.req('POST', '/api/exam/status', { id, status }),
     examMine: () => API.req('GET', '/api/exam/mine'),
+    examPreview: (id) => API.req('GET', '/api/exam/preview?id=' + encodeURIComponent(id)),
     examSubmit: (data) => API.req('POST', '/api/exam/submit', data),
     examAnswers: (examId) => API.req('GET', '/api/exam/answers?examId=' + encodeURIComponent(examId)),
     examGrade: (data) => API.req('POST', '/api/exam/grade', data),

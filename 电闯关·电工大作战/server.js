@@ -17,7 +17,7 @@ const crypto = require('crypto');
 const acc = require('./store.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.3.0.1';
+const VERSION = '1.3.0.2';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -969,6 +969,15 @@ const server = http.createServer(async (req, res) => {
           answered: !!my, myTotal: my ? my.total : null, myStatus: my ? my.status : null, grade: my ? my.total : null };
       });
       return sendJSON(res, 200, { list });
+    }
+    // 学生预览试卷/答题卡（只读，不含答案）
+    if (p === '/api/exam/preview' && req.method === 'GET') {
+      const a = auth('student');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const exam = acc.listExams().find(x => x.id === q.get('id'));
+      if (!exam) return sendJSON(res, 404, { err: '考试不存在' });
+      if (exam.status !== 'open' && exam.status !== 'published') return sendJSON(res, 403, { err: '考试未开放' });
+      return sendJSON(res, 200, { exam: publicExam(exam, false) });
     }
     // 学生提交答卷（客观题识别结果：objective=[{id, given}]；服务端重新判分防伪造）
     if (p === '/api/exam/submit' && req.method === 'POST') {

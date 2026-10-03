@@ -1,0 +1,36 @@
+《电闯关·电工大作战》升级报告 1.3.0.2
+========================================
+升级日期：2026-10-03
+基于 1.3.0.1 小版本升级，修复网上考试学生端两个问题。
+
+一、本次修复内容
+1. 学生无法预览试卷/答题卡（核心修复）：
+   - 原因：学生端「预览试卷」「答题卡」按钮调用的是教师权限接口 /api/exam/get，学生请求返回 401，导致预览失败。
+   - 修复：新增学生只读接口 /api/exam/preview（学生登录即可用，仅返回不含答案的试卷内容，安全不外泄答案）；前端 exam.js 的 studentPaper/studentCard 改用该接口。
+2. Access 版考试数据重启后丢失（重要隐藏 Bug）：
+   - 原因：Access 版 access.js 加载 exams 表时 `state.exams = examsRows.map(x => parseJSON(x.questions, []))`，把每行考试记录映射成了"题目数组"，考试对象字段（标题/状态/题量等）全部丢失——服务重启后考试列表只剩空壳、学生看不到考试。
+   - 修复：改为逐字段映射 + 单独解析 questions 列，重启后考试数据完整恢复。
+3. 版本号 1.3.0.1 → 1.3.0.2（写入数据库 settings.version）。
+
+二、涉及文件（双版同步）
+- server.js（新增 /api/exam/preview 学生预览接口；VERSION=1.3.0.2）
+- public/js/api.js（新增 examPreview 调用）
+- public/js/exam.js（studentPaper/studentCard 改用 examPreview）
+- Access版/access.js（exams 表加载映射修复，两处）
+
+三、测试结果（双版实测通过）
+- JSON版(8123)：学生 student 登录 → 网上考试 → /api/exam/preview 返回 test1（9题，不含答案）正常。
+- Access版(8131)：
+  - 修复前：重启后 /api/exam/list 返回空壳 `{"questions":[],"note":""}`，学生 mine 为空；
+  - 修复后：考试列表恢复 test1（9题/9分/open），学生 mine 可见，preview 返回正常（不含答案），学生页「上传答题卡/预览试卷/答题卡」按钮齐全。
+- 独立 exe 验证：JSON/Access 版 exe 均返回 version=1.3.0.2。
+
+四、发布内容
+E:\发布文件-1.3.0.2\
+- 电闯关-服务端-JSON版 / 电闯关-服务端-Access版（完整源码+data+public+exe+bat+说明）
+- 电闯关-客户端、安装包（JSON/Access 两个 zip）
+- 升级报告-1.3.0.2.txt
+数据说明：发布数据含教师账号 teacher、题库 342 题、考试 test1（open）、学生账号 student（JSON版）。
+
+五、版权
+河北省滦州市职业技术教育中心 空城流水老师利用豆包AI制做
