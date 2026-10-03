@@ -450,6 +450,7 @@
     /* 组卷弹窗（新建/编辑） */
     async openModal(examId) {
       const mb = $id('modal-body'), ov = $id('modal');
+      mb.classList.add('exam-wide');
       this._editing = null;
       this._picker = [];
       let exam = null;
@@ -464,7 +465,8 @@
       const pick = this._picker;
       const qids = new Set(pick.map(p => p.id));
       let html = '<div class="ex-modal" style="max-width:960px">';
-      html += '<div class="ex-title" style="font-size:15px;font-weight:bold;margin-bottom:10px">' + (examId ? '✏️ 编辑考试' : '📝 新建考试（组卷）') + '</div>';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="font-size:15px;font-weight:bold">' + (examId ? '✏️ 编辑考试' : '📝 新建考试（组卷）') + '</div>' +
+        '<button class="btn small" onclick="document.getElementById(\'modal\').style.display=\'none\'">✕ 取消</button></div>';
       html += '<div class="filter-row" style="flex-wrap:wrap">' +
         '<input id="ex-title" type="text" placeholder="考试名称（必填）" value="' + esc(exam ? exam.title : '') + '" style="min-width:220px">' +
         '<input id="ex-class" type="text" placeholder="班级（如：电一(1)班）" value="' + esc(exam ? exam.className : '') + '" style="min-width:150px">' +
@@ -491,7 +493,9 @@
       html += '<div style="border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0">';
       html += '<div style="font-weight:bold;margin-bottom:6px">📋 已选题目（' + pick.length + ' 题）<span style="font-weight:normal;color:var(--dim)">— 可修改每题分值、移除；保存后自动计算总分</span></div>';
       html += '<div id="ex-picked"></div></div>';
-      html += '<div class="filter-row"><span id="ex-total" style="font-weight:bold"></span><button class="btn primary" id="ex-save-btn" style="margin-left:auto">💾 保存考试</button></div>';
+      html += '<div class="filter-row"><span id="ex-total" style="font-weight:bold"></span>' +
+        '<button class="btn" onclick="document.getElementById(\'modal\').style.display=\'none\'" style="margin-left:auto">取消</button>' +
+        '<button class="btn primary" id="ex-save-btn">💾 保存考试</button></div>';
       html += '</div>';
       mb.innerHTML = html;
       ov.style.display = 'flex';

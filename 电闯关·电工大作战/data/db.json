@@ -8,8 +8,21 @@
       "role": "teacher",
       "score": 0,
       "reg": 1790361073164,
-      "lastLogin": 1790751843741,
-      "loginCount": 66,
+      "lastLogin": 1791041269056,
+      "loginCount": 75,
+      "correct": 0,
+      "total": 0
+    },
+    {
+      "id": "1c4d7d34abbe97d2",
+      "name": "student",
+      "salt": "ccb41100c2e87ec4",
+      "pass": "03c2922243e722fae4b3b5eb6b41006569ed7da18e5551ea0d2530ad88c884a9",
+      "role": "student",
+      "score": 0,
+      "reg": 1791041078023,
+      "lastLogin": 1791041275622,
+      "loginCount": 2,
       "correct": 0,
       "total": 0
     }
@@ -35,7 +48,19 @@
     "0f43d423a59a572f52921405e3a41045": "37443a200f06c56b",
     "1f0b8447a34f376b5d2317fd8c40c152": "37443a200f06c56b",
     "5debe8cda6585cbac981dae95c5c4e31": "37443a200f06c56b",
-    "4a2cb9ad8f93b4fefce68876d84456e2": "37443a200f06c56b"
+    "4a2cb9ad8f93b4fefce68876d84456e2": "37443a200f06c56b",
+    "6f2b55d617f74b8263b654c7d0197969": "37443a200f06c56b",
+    "503a94d63c39f369d9b6229ae6179423": "37443a200f06c56b",
+    "1d0ae9f556fb769b3d00b31544b1f481": "37443a200f06c56b",
+    "1499b74f2a3205a36ced6ca52d6d43fe": "37443a200f06c56b",
+    "d488f84918188bcad03ff1bdfa2d2a03": "37443a200f06c56b",
+    "8b887985a4ca9692d3f2c02ac568c1df": "37443a200f06c56b",
+    "04bc689a25efff635f55a74744fee562": "37443a200f06c56b",
+    "928272b122126732af2b0e71c442eb67": "1c4d7d34abbe97d2",
+    "702210c936c9db8dc6f75af33a25cefd": "37443a200f06c56b",
+    "2c0ba9699f83e08dbbd16a8d4ea938ff": "1c4d7d34abbe97d2",
+    "b8f0c6a54992489a96edff9309edcc57": "37443a200f06c56b",
+    "4db3e016cfdf34c2b70d09c350c8bb13": "1c4d7d34abbe97d2"
   },
   "progress": {},
   "wrongs": {},
@@ -94,12 +119,103 @@
       "op": "删除学生",
       "name": "UI测试生",
       "by": "teacher"
+    },
+    {
+      "t": 1791039094950,
+      "op": "创建/更新考试「GitHub测试卷」（6题/12分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791039097030,
+      "op": "考试「GitHub测试卷」状态变更为 open",
+      "by": "teacher"
+    },
+    {
+      "t": 1791039113587,
+      "op": "考试「GitHub测试卷」状态变更为 published",
+      "by": "teacher"
+    },
+    {
+      "t": 1791039119831,
+      "op": "删除考试「GitHub测试卷」",
+      "by": "teacher"
+    },
+    {
+      "t": 1791039123947,
+      "op": "删除学生",
+      "name": "GitHub测试生",
+      "by": "teacher"
+    },
+    {
+      "t": 1791039254743,
+      "op": "创建/更新考试「Doc导出测试卷」（8题/16分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791039256837,
+      "op": "考试「Doc导出测试卷」状态变更为 open",
+      "by": "teacher"
+    },
+    {
+      "t": 1791039263016,
+      "op": "删除考试「Doc导出测试卷」",
+      "by": "teacher"
+    },
+    {
+      "t": 1791040107032,
+      "op": "创建/更新考试「test1」（2题/2分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791040111974,
+      "op": "考试「test1」状态变更为 open",
+      "by": "teacher"
+    },
+    {
+      "t": 1791040218551,
+      "op": "创建/更新考试「test1」（3题/3分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791040222421,
+      "op": "删除考试「test1」",
+      "by": "teacher"
+    },
+    {
+      "t": 1791041040802,
+      "op": "创建/更新考试「test1」（9题/9分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791041042864,
+      "op": "考试「test1」状态变更为 open",
+      "by": "teacher"
+    },
+    {
+      "t": 1791041198586,
+      "op": "考试「test1」状态变更为 grading",
+      "by": "teacher"
+    },
+    {
+      "t": 1791041221909,
+      "op": "考试「test1」状态变更为 published",
+      "by": "teacher"
+    },
+    {
+      "t": 1791041293414,
+      "op": "创建/更新考试「test1」（9题/9分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791041295429,
+      "op": "考试「test1」状态变更为 open",
+      "by": "teacher"
     }
   ],
   "answerLogs": [],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.3.0.0",
+    "version": "1.3.0.1",
     "timeAdd": 5,
     "timeMatchAdd": 10,
     "levelQ": {
@@ -116,6 +232,159 @@
     },
     "gameName": "电闯关·电工大作战"
   },
-  "exams": [],
+  "exams": [
+    {
+      "id": "ex417a030eeeab61b0",
+      "title": "test1",
+      "subject": "电工技术基础与技能",
+      "className": "",
+      "grade": "",
+      "createdAt": 1791041293412,
+      "status": "open",
+      "questions": [
+        {
+          "id": 6,
+          "chapter": 0,
+          "section": 1,
+          "type": "single",
+          "question": "特别潮湿、金属容器内等危险场所，安全电压应选用？",
+          "options": [
+            "A. 36V",
+            "B. 24V",
+            "C. 12V",
+            "D. 220V"
+          ],
+          "answer": "C",
+          "difficulty": 2,
+          "score": 1
+        },
+        {
+          "id": 3,
+          "chapter": 0,
+          "section": 1,
+          "type": "single",
+          "question": "发现有人触电时，首先应做的是？",
+          "options": [
+            "A. 用手直接把触电者拉开",
+            "B. 迅速切断电源或用干燥绝缘物挑开电线",
+            "C. 向触电者泼水",
+            "D. 站在一边等待"
+          ],
+          "answer": "B",
+          "difficulty": 2,
+          "score": 1
+        },
+        {
+          "id": 8,
+          "chapter": 0,
+          "section": 2,
+          "type": "single",
+          "question": "三孔插座中，接“地”的端子应连接？",
+          "options": [
+            "A. 相线（火线）",
+            "B. 零线",
+            "C. 保护接地线",
+            "D. 备用线"
+          ],
+          "answer": "C",
+          "difficulty": 2,
+          "score": 1
+        },
+        {
+          "id": 1,
+          "chapter": 0,
+          "section": 1,
+          "type": "single",
+          "question": "我国电力系统采用的交流电频率（工频）是？",
+          "options": [
+            "A. 50Hz",
+            "B. 60Hz",
+            "C. 100Hz",
+            "D. 25Hz"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "score": 1
+        },
+        {
+          "id": 5,
+          "chapter": 0,
+          "section": 1,
+          "type": "single",
+          "question": "电气设备起火时，正确的做法是？",
+          "options": [
+            "A. 直接用水扑救",
+            "B. 用泡沫灭火器扑救",
+            "C. 先切断电源，再用干粉或二氧化碳灭火器扑救",
+            "D. 不断电直接灭火"
+          ],
+          "answer": "C",
+          "difficulty": 2,
+          "score": 1
+        },
+        {
+          "id": 7,
+          "chapter": 0,
+          "section": 2,
+          "type": "judge",
+          "question": "电工作业时可以不穿绝缘鞋、戴绝缘手套。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "B",
+          "difficulty": 2,
+          "score": 1
+        },
+        {
+          "id": 2,
+          "chapter": 0,
+          "section": 1,
+          "type": "judge",
+          "question": "一般情况下，人体安全电压额定值不高于36V。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "score": 1
+        },
+        {
+          "id": 4,
+          "chapter": 0,
+          "section": 1,
+          "type": "judge",
+          "question": "可以用湿手触摸开关、插座等电气设备。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "B",
+          "difficulty": 2,
+          "score": 1
+        },
+        {
+          "id": 9,
+          "chapter": 0,
+          "section": 2,
+          "type": "judge",
+          "question": "移动式电气设备应安装漏电保护器。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "score": 1
+        }
+      ],
+      "qcount": 9,
+      "totalScore": 9,
+      "createdBy": "teacher",
+      "publishedAt": "",
+      "note": ""
+    }
+  ],
   "examAnswers": []
 }

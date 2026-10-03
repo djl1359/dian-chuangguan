@@ -129,8 +129,10 @@ body {
 .tc-btn:active { background: rgba(47,214,255,.4); }
 
 /* 结算 / 弹窗 */
-.overlay { position: fixed; inset: 0; background: rgba(2,6,20,.82); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
-.result-box, .modal-box { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px; width: 100%; max-width: 420px; text-align: center; }
+.overlay { position: fixed; inset: 0; background: rgba(2,6,20,.82); display: flex; align-items: flex-start; justify-content: center; z-index: 50; padding: 16px; overflow-y: auto; }
+.result-box, .modal-box { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px; width: 100%; max-width: 420px; text-align: center; margin: auto; }
+.result-box { max-width: 480px; }
+.modal-box.exam-wide { max-width: 980px; text-align: left; }
 .result-title { font-size: 22px; font-weight: 800; color: var(--accent2); }
 .result-title.fail { color: var(--danger); }
 .stars-row { font-size: 34px; letter-spacing: 6px; margin: 10px 0; }

@@ -798,7 +798,7 @@ async function loadChapterAnalysis(ch) {
   }
 
   /* ---------- 弹窗 ---------- */
-  function openModal(html) { $('modal-body').innerHTML = html; $('modal').style.display = 'flex'; }
+  function openModal(html) { var mb = $('modal-body'); mb.classList.remove('exam-wide'); mb.innerHTML = html; $('modal').style.display = 'flex'; }
   function closeModal() { $('modal').style.display = 'none'; }
 
   /* 题目表单（新增/编辑） */

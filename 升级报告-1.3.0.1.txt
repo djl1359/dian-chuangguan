@@ -1,0 +1,42 @@
+《电闯关·电工大作战》升级报告 1.3.0.1
+========================================
+升级日期：2026-10-03
+本次升级基于 1.3.0.0（GitHub 仓库 dian-chuangguan 最新源码）小版本迭代。
+
+一、本次修改内容
+1. 阅卷考试「新建考试」弹窗加入滚动条调节：
+   - 弹窗遮罩 .overlay 改为可纵向滚动（overflow-y:auto + 顶部对齐），超高弹窗不再上下溢出；
+   - 弹窗内容矮时仍保持居中（margin:auto）。
+2. 「保存考试」按钮可点击到：
+   - 弹窗内容超出视口时，滚动后底部「💾 保存考试」按钮完整可见、可点击。
+3. 支持随时取消：
+   - 弹窗标题栏右侧新增「✕ 取消」按钮，任意时刻点击即关闭弹窗、放弃编辑；
+   - 弹窗底部新增「取消」按钮，与「保存考试」并列。
+4. 考试弹窗专用宽度样式 .modal-box.exam-wide（max-width:980px、左对齐），普通弹窗不受影响。
+5. 版本号 1.3.0.0 → 1.3.0.1（写入数据库 settings.version，页面/服务端标题同步显示）。
+
+二、涉及文件（双版同步：JSON版 与 Access版）
+- public/css/style.css（.overlay / .modal-box / .exam-wide）
+- public/js/ui.js（openModal 重置弹窗类）
+- public/js/exam.js（openModal：exam-wide + ✕ 取消 + 底部取消）
+- server.js（VERSION = 1.3.0.1）
+
+三、测试结果
+- JSON版（:8123）与 Access版（:8131）均重启验证：
+  - /api/meta 返回 version=1.3.0.1；
+  - 新建考试弹窗：遮罩可滚动（overlay overflow=auto），滚动到底后保存按钮 top=775 < 视口 855，可见可点；
+  - 底部按钮序列：自动组卷 / 搜索 / 取消 / 保存考试；
+  - 点击「✕ 取消」弹窗立即关闭（display=none）；
+  - 弹窗容器类为 modal-box exam-wide（980px 宽、左对齐）。
+- 独立 exe 验证：JSON/Access 版 exe 均返回 version=1.3.0.1。
+
+四、发布内容
+E:\发布文件-1.3.0.1\
+- 电闯关-服务端-JSON版（完整源码 + data + public + 电闯关服务端-JSON版.exe + 启动服务.bat + 使用说明.txt）
+- 电闯关-服务端-Access版（完整源码 + data(含 dg_data.accdb) + public + 电闯关服务端-Access版.exe + 启动服务.bat + 使用说明.txt）
+- 电闯关-客户端（客户端使用说明.txt、打开游戏.bat）
+- 安装包\电闯关-完整版-JSON数据库-1.3.0.1.zip、电闯关-完整版-Access数据库-1.3.0.1.zip
+- 升级报告-1.3.0.1.txt
+
+五、版权
+河北省滦州市职业技术教育中心 空城流水老师利用豆包AI制做
