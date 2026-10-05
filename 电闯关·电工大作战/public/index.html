@@ -4,11 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1e88e5">
+<meta name="apple-mobile-web-app-title" content="电闯关">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <title>电闯关·电工大作战 — 电工技术基础与技能（第4版）</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div id="app">
+<script>
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
+</script>
 
   <!-- ============ 登录/注册 ============ -->
   <div class="screen" id="screen-login">

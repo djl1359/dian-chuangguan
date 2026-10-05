@@ -17,7 +17,7 @@ const crypto = require('crypto');
 const acc = require('./store.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.3.0.2';
+const VERSION = '1.3.0.3';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
