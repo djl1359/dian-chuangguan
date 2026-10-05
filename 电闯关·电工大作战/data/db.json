@@ -8,8 +8,8 @@
       "role": "teacher",
       "score": 0,
       "reg": 1790361073164,
-      "lastLogin": 1791210593348,
-      "loginCount": 106,
+      "lastLogin": 1791214922737,
+      "loginCount": 114,
       "correct": 0,
       "total": 0
     },
@@ -102,7 +102,15 @@
     "4a7e9f92b7672cf4a55a8eb99ed25632": "37443a200f06c56b",
     "249496ee9609461471ff23daa76b2998": "37443a200f06c56b",
     "64d7635b7f60d865b1605381bb11aae9": "37443a200f06c56b",
-    "c8593987dcb011fc67d860598d8e9730": "37443a200f06c56b"
+    "c8593987dcb011fc67d860598d8e9730": "37443a200f06c56b",
+    "dd3a71e2fa297fbd15c163ff5a5a3fa1": "37443a200f06c56b",
+    "5ebf2398dd3025a89830f2d496ba3c51": "37443a200f06c56b",
+    "6863e8f1c4a6e302bdbafd5a0e56d8e7": "37443a200f06c56b",
+    "e1219579cfefb689612dd0292471ae54": "37443a200f06c56b",
+    "6d9ffc0323c697eaad8e94aadbc35de9": "37443a200f06c56b",
+    "e8f9895b2a7669f17f7324d0578b7d20": "37443a200f06c56b",
+    "d66767e949cbdb5cc8e92977df4d8f84": "37443a200f06c56b",
+    "c91345e56bba16782f592e2c4bd09b45": "37443a200f06c56b"
   },
   "progress": {},
   "wrongs": {},
@@ -338,7 +346,7 @@
   "answerLogs": [],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.4.1.0",
+    "version": "1.4.2.0",
     "timeAdd": 5,
     "timeMatchAdd": 10,
     "levelQ": {
