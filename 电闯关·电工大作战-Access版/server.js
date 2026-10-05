@@ -17,7 +17,7 @@ const crypto = require('crypto');
 const acc = require('./access.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.4.0.1';
+const VERSION = '1.4.1.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */

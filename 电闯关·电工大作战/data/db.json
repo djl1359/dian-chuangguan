@@ -8,8 +8,8 @@
       "role": "teacher",
       "score": 0,
       "reg": 1790361073164,
-      "lastLogin": 1791207656165,
-      "loginCount": 100,
+      "lastLogin": 1791210593348,
+      "loginCount": 106,
       "correct": 0,
       "total": 0
     },
@@ -96,7 +96,13 @@
     "c0acb97b667a827ffcb9bfcdb1cec092": "37443a200f06c56b",
     "9fff3ee3e61b877cdd305eda4bf155cd": "37443a200f06c56b",
     "6685835a8df6cdde41d219bef3d58a30": "37443a200f06c56b",
-    "7e8b6a89375582c1ffd0086fc972d2ee": "37443a200f06c56b"
+    "7e8b6a89375582c1ffd0086fc972d2ee": "37443a200f06c56b",
+    "2bc9c98047c48b8e7636f7f3812ff402": "37443a200f06c56b",
+    "38a21f52e9b55eb398e89d531446f504": "37443a200f06c56b",
+    "4a7e9f92b7672cf4a55a8eb99ed25632": "37443a200f06c56b",
+    "249496ee9609461471ff23daa76b2998": "37443a200f06c56b",
+    "64d7635b7f60d865b1605381bb11aae9": "37443a200f06c56b",
+    "c8593987dcb011fc67d860598d8e9730": "37443a200f06c56b"
   },
   "progress": {},
   "wrongs": {},
@@ -322,12 +328,17 @@
       "t": 1791207660300,
       "op": "删除考试「图片对齐测试-8123」",
       "by": "teacher"
+    },
+    {
+      "t": 1791208846828,
+      "op": "导入试题 244 道（重复跳过 0，无效 0）",
+      "by": "teacher"
     }
   ],
   "answerLogs": [],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.4.0.1",
+    "version": "1.4.1.0",
     "timeAdd": 5,
     "timeMatchAdd": 10,
     "levelQ": {
