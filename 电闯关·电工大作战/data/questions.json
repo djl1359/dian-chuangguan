@@ -5292,5 +5292,41 @@
     "explain": "I=P/U=100/220≈0.45A。",
     "difficulty": 4,
     "id": 342
+  },
+  {
+    "id": 343,
+    "chapter": 0,
+    "section": 1,
+    "type": "single",
+    "question": "测试带图题目：下图所示电路（示意）",
+    "options": [
+      "A. 串联",
+      "B. 并联",
+      "C. 混联",
+      "D. 无"
+    ],
+    "answer": "A",
+    "explain": "测试图片题目",
+    "difficulty": 2,
+    "image": "qimg/q1791200959157_8613.png"
+  },
+  {
+    "id": 344,
+    "chapter": 0,
+    "section": 1,
+    "type": "single",
+    "question": "测试带图题目：下图所示电路（示意）",
+    "options": [
+      "A. 串联",
+      "B. 并联",
+      "C. 混联",
+      "D. 无"
+    ],
+    "answer": "A",
+    "explain": "测试图片题目",
+    "difficulty": 2,
+    "image": "qimg/q1791201254303_3779.png",
+    "imageAlign": "left",
+    "imgSize": 40
   }
 ]

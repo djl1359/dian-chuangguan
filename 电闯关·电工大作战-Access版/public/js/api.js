@@ -54,6 +54,9 @@
     qAdd: (data) => API.req('POST', '/api/questions/admin', data),
     qUpdate: (id, data) => API.req('PUT', '/api/questions/admin/' + id, data),
     qDelete: (id) => API.req('DELETE', '/api/questions/admin/' + id),
+    /* 1.4.0.0：题目图片上传/删除（base64 → public/qimg/） */
+    uploadQimg: (data) => API.req('POST', '/api/upload-qimg', { data }),
+    deleteQimg: (url) => API.req('POST', '/api/delete-qimg', { url }),
     /* 1.0.0.5：题库模板导出/试题导入/批量删除 */
     qImport: (format, content) => API.req('POST', '/api/questions/import', { format, content }),
     qBatchDelete: (ids) => API.req('POST', '/api/questions/admin/batch-delete', { ids }),

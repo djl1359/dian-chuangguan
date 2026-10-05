@@ -223,7 +223,8 @@
     $('q-type').textContent = TYPE_NAME[q.type];
     $('q-no').textContent = '第 ' + (state.qi + 1) + ' / ' + cfg.q + ' 题';
     $('q-combo').textContent = state.combo >= 2 ? '连击 ×' + state.combo : '';
-    $('q-text').textContent = q.question;
+    const qImg = q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + '"><img src="' + q.image + '" class="q-quest-img" style="width:' + (q.imgSize || 60) + '%" alt="题干图片"></div>' : '';
+    $('q-text').innerHTML = esc(q.question) + qImg;
     const hint = state.isBoss
       ? '答对电击BOSS（BOSS -1 血），答错 BOSS 回血！'
       : '答对电击消灭故障怪，答错或超时损失一颗心！';
@@ -865,6 +866,8 @@
     el.addEventListener('pointercancel', () => { KEYS[key] = false; });
   }
   const TYPE_NAME = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线' };
+  /* 1.4.0.1：game.js 独立 IIFE 需自带 esc（与 exam.js 同款），否则答题渲染引用未定义报错 */
+  const esc = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   /* ---------- BOSS 战准备：暂停 + 触控按钮拖拽调整 ---------- */
   function showBossReady() {

@@ -59,6 +59,7 @@
       arr.forEach(q => {
         no++;
         html += '<div style="margin:2mm 0;page-break-inside:avoid"><b>' + no + '.</b> ' + esc(q.question);
+        if (q.image) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:1mm 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:120mm;max-height:70mm;object-fit:contain;border:1px solid #ccc;background:#fff"></div>';
         if (q.type === 'single' || q.type === 'multi') {
           html += '<div style="margin:1mm 0 1mm 6mm">' + (q.options || []).map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]\s*/, '')).join('　　') + '</div>';
         } else if (q.type === 'judge') {
@@ -919,7 +920,7 @@
           selHtml = '<div style="font-size:11px;color:var(--dim);margin-top:4px">主观题（' + TYPE_NAME[q.type] + '）由教师在阅卷端批改，无需填写。</div>';
         }
         html += '<div style="border-top:1px dashed var(--line);padding:5px 0;font-size:12px">' +
-          '<b>' + (i + 1) + '.</b> ' + esc(q.question) + ' <span class="chip" style="font-size:10px">' + (TYPE_NAME[q.type] || q.type) + '</span>' + selHtml + '</div>';
+          '<b>' + (i + 1) + '.</b> ' + esc(q.question) + (q.image ? '<div style="margin:4px 0;text-align:' + (q.imageAlign || 'center') + '"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:90%;max-height:120px;object-fit:contain;border-radius:8px;background:#fff"></div>' : '') + ' <span class="chip" style="font-size:10px">' + (TYPE_NAME[q.type] || q.type) + '</span>' + selHtml + '</div>';
       });
       html += '</div>';
       box.innerHTML = html;

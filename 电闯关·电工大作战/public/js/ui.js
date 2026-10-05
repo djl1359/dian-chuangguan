@@ -490,7 +490,7 @@
         pagerHtml(list.length, PG.questions, 'UIM.gotoQuestions') +
         '<table class="data-table"><tr><th style="width:28px"><input type="checkbox" id="qsel-all" onclick="UIM.qSelAll(this)"></th><th>ID</th><th>章</th><th>节</th><th>题型</th><th>题干</th><th>难度</th><th>答案</th><th>操作</th></tr>' +
         pp.rows.map(q =>
-          '<tr><td style="width:28px"><input type="checkbox" data-qid="' + q.id + '"' + (S.qSel[q.id] ? ' checked' : '') + ' onchange="UIM.qSelOne(' + q.id + ',this)"></td><td>' + q.id + '</td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + TYPE_NAME[q.type] + '</td><td style="max-width:200px">' + esc(q.question) + '</td><td>' + UIM.diffStar(q.difficulty) + '</td><td>' + (q.type === 'matching' ? '配对' : esc(String(q.answer))) + '</td>' +
+          '<tr><td style="width:28px"><input type="checkbox" data-qid="' + q.id + '"' + (S.qSel[q.id] ? ' checked' : '') + ' onchange="UIM.qSelOne(' + q.id + ',this)"></td><td>' + q.id + '</td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + TYPE_NAME[q.type] + '</td><td style="max-width:200px">' + (q.image ? '<span class="qimg-tag" title="含题干图片">🖼</span> ' : '') + esc(q.question) + '</td><td>' + UIM.diffStar(q.difficulty) + '</td><td>' + (q.type === 'matching' ? '配对' : esc(String(q.answer))) + '</td>' +
           '<td><div class="actions-row"><button class="btn small" onclick="UIM.editQ(' + q.id + ')">编辑</button><button class="btn small danger" onclick="UIM.delQ(' + q.id + ')">删除</button></div></td></tr>').join('') + '</table>';
     } catch (e) { p.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
   }
@@ -813,6 +813,17 @@ async function loadChapterAnalysis(ch) {
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">节（成绩分析用，1~20）</label><input id="qf-section" type="number" min="1" max="20" value="' + (q ? (q.section || 1) : 1) + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题型</label><select id="qf-type" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' + typeSel + '</select></div>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题干</label><textarea id="qf-question" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + esc(q ? q.question : '') + '</textarea></div>' +
+      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题干图片（可选，≤3MB；电路图、实物图、符号图等，答题时随题干显示）</label>' +
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+      '<button type="button" class="btn small" onclick="document.getElementById(\'qf-img-file\').click()">📷 上传图片</button>' +
+      '<input type="file" id="qf-img-file" accept="image/*" style="display:none">' +
+      '<span id="qf-img-preview"></span>' +
+      '<button type="button" id="qf-img-del" class="btn small danger" style="display:none" onclick="UIM.delQfImg()">删除图片</button>' +
+      '</div>' +
+      '<div class="form-row" id="qf-align-row" style="display:none;margin-top:6px"><label style="font-size:12px;color:var(--dim)">图片对齐方式</label><select id="qf-align" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' +
+      '<option value="center">居中</option><option value="left">左对齐</option><option value="right">右对齐</option></select></div>' +
+      '<div class="form-row" id="qf-size-row" style="display:none;margin-top:6px"><label style="font-size:12px;color:var(--dim)">图片大小（显示宽度，闯关/试卷/答题卡通用）</label><select id="qf-size" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' +
+      '<option value="40">小（40%）</option><option value="60">中（60%）</option><option value="80">大（80%）</option><option value="100">原图（100%）</option></select></div></div>' +
       '<div class="form-row" id="qf-opts-row"><label style="font-size:12px;color:var(--dim)">选项（每行一个，如：A. 50Hz；多选答案填字母如 A,C；填空题型不填选项）</label><textarea id="qf-options" rows="4" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.options && Array.isArray(q.options) ? q.options.join('\n') : '') + '</textarea></div>' +
       '<div class="form-row" id="qf-match-row" style="display:none">' +
       '<label style="font-size:12px;color:var(--dim)">连线题·左列（每行一项）</label><textarea id="qf-m-left" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.left || []).join('\n') : '') + '</textarea>' +
@@ -829,6 +840,34 @@ async function loadChapterAnalysis(ch) {
     };
     $('qf-type').onchange = syncForm;
     syncForm();
+    /* 题干图片：上传/预览/删除/对齐/大小（1.4.0.0） */
+    S.qfImage = (q && q.image) || '';
+    S.qfAlign = (q && ['left', 'center', 'right'].includes(q.imageAlign)) ? q.imageAlign : 'center';
+    S.qfSize = (q && Number(q.imgSize) >= 20 && Number(q.imgSize) <= 100) ? Number(q.imgSize) : 60;
+    const renderQfImg = () => {
+      const box = $('qf-img-preview');
+      box.innerHTML = S.qfImage ? '<img src="' + S.qfImage + '" style="max-height:120px;border-radius:8px;border:1px solid var(--line)">' : '';
+      $('qf-img-del').style.display = S.qfImage ? '' : 'none';
+      $('qf-align-row').style.display = S.qfImage ? '' : 'none';
+      $('qf-size-row').style.display = S.qfImage ? '' : 'none';
+      if (S.qfImage) { $('qf-align').value = S.qfAlign; $('qf-size').value = String(S.qfSize); }
+    };
+    $('qf-img-file').onchange = () => {
+      const f = $('qf-img-file').files[0];
+      if (!f) return;
+      if (f.size > 3 * 1024 * 1024) { $('qf-msg').textContent = '图片不能超过 3MB'; return; }
+      const fr = new FileReader();
+      fr.onload = async () => {
+        try {
+          const r = await API.uploadQimg(fr.result);
+          S.qfImage = r.url;
+          renderQfImg();
+          toast('图片已上传');
+        } catch (e) { $('qf-msg').textContent = e.message; }
+      };
+      fr.readAsDataURL(f);
+    };
+    renderQfImg();
     $('qf-save').onclick = () => saveQuestion(q);
   }
   async function saveQuestion(q) {
@@ -856,7 +895,10 @@ async function loadChapterAnalysis(ch) {
       options,
       answer,
       explain: $('qf-explain').value.trim(),
-      difficulty: parseInt($('qf-diff').value, 10) || 3
+      difficulty: parseInt($('qf-diff').value, 10) || 3,
+      image: S.qfImage || '',
+      imageAlign: S.qfImage ? $('qf-align').value : 'center',
+      imgSize: S.qfImage ? (parseInt($('qf-size').value, 10) || 60) : 60
     };
     const msg = $('qf-msg');
     if (!data.question) { msg.textContent = '题干不能为空'; return; }
@@ -1272,6 +1314,18 @@ async function loadChapterAnalysis(ch) {
       document.querySelectorAll('#question-list input[data-qid]').forEach(c => { c.checked = ck.checked; if (ck.checked) S.qSel[parseInt(c.dataset.qid, 10)] = true; else delete S.qSel[parseInt(c.dataset.qid, 10)]; });
     },
     qSelOne(id, ck) { if (ck.checked) S.qSel[id] = true; else delete S.qSel[id]; },
+    /* 1.4.0.0：删除题目表单中的题干图片 */
+    async delQfImg() {
+      const u = S.qfImage;
+      if (!u) return;
+      try { await API.deleteQimg(u); } catch (e) { /* 文件不存在忽略 */ }
+      S.qfImage = ''; S.qfAlign = 'center';
+      const box = $('qf-img-preview');
+      if (box) box.innerHTML = '';
+      const d = $('qf-img-del');
+      if (d) d.style.display = 'none';
+      toast('图片已移除（保存后生效）');
+    },
     async qTemplateDownload() {
       try {
         const blob = await API.download('/api/questions/template', 'GET', null);
@@ -1346,7 +1400,7 @@ async function loadChapterAnalysis(ch) {
           const ex = $('p-export'); if (ex) ex.disabled = false;
           pv.innerHTML = '<b style="color:var(--accent2)">' + esc(r.title) + '</b>　共 ' + r.total + ' 题<br>' +
             r.groups.map(g => '<div style="margin:6px 0"><b>' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
-              g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + esc(q.question) + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
+              g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + esc(q.question) + (q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:180px;max-height:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff"></div>' : '') + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
             '<div style="margin-top:8px;color:var(--dim)">导出 Word 后可在 WPS/Word 中打开打印。</div>';
         } catch (e) { pv.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
       };

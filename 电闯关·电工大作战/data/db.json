@@ -8,8 +8,8 @@
       "role": "teacher",
       "score": 0,
       "reg": 1790361073164,
-      "lastLogin": 1791042119644,
-      "loginCount": 80,
+      "lastLogin": 1791207656165,
+      "loginCount": 100,
       "correct": 0,
       "total": 0
     },
@@ -21,8 +21,8 @@
       "role": "student",
       "score": 0,
       "reg": 1791041078023,
-      "lastLogin": 1791043091906,
-      "loginCount": 10,
+      "lastLogin": 1791206632870,
+      "loginCount": 13,
       "correct": 0,
       "total": 0
     }
@@ -73,7 +73,30 @@
     "05d8fc81f86e5db455a26768ffd060d2": "37443a200f06c56b",
     "6d138207398671f687c89d637546e72e": "1c4d7d34abbe97d2",
     "1d9ad94369aa0242b38257fc201d2e9d": "1c4d7d34abbe97d2",
-    "890bfa9a0a299056c16a6b2f2592ef4a": "1c4d7d34abbe97d2"
+    "890bfa9a0a299056c16a6b2f2592ef4a": "1c4d7d34abbe97d2",
+    "0c41eee32f92e49967172608808fa084": "37443a200f06c56b",
+    "9d38993bf273c63c75d2dea9d2ffb3a7": "37443a200f06c56b",
+    "aaf7b9a31c8530ee625c819e3adb536d": "37443a200f06c56b",
+    "155428e2e19236dd3bf7e1ef8d2f7de9": "37443a200f06c56b",
+    "a42f9f213fdbcdeccda577ed53559adc": "37443a200f06c56b",
+    "6dec25a648eb9ab9fc632013f893ebad": "37443a200f06c56b",
+    "6cf294fd2d3707cd947c8a0a1e48742a": "1c4d7d34abbe97d2",
+    "f25be7adce10e0fc714a45f1f1b5a8ee": "37443a200f06c56b",
+    "29c949483ddeb96d9b6550c750853435": "37443a200f06c56b",
+    "ce82183f1240baf6f7af860f658d3a11": "37443a200f06c56b",
+    "998dec7e9ad970173b1b1b43490d01f4": "37443a200f06c56b",
+    "45313f90c9e0b0b99f12ea4202095f6f": "1c4d7d34abbe97d2",
+    "0f7c7db7cd095f5ed546f5744829effa": "37443a200f06c56b",
+    "168ca7f67990f9ae6d67a0d3ca7d5fdc": "37443a200f06c56b",
+    "4cfd3f63738b0ea906edc05caa681f0d": "1c4d7d34abbe97d2",
+    "961ec97a3bf4977f647198fa11e31d3d": "37443a200f06c56b",
+    "a9eb37b05fd3b6de9433592fd1fe9cf0": "37443a200f06c56b",
+    "3a295df9bd421092ceec7a493cd925d1": "37443a200f06c56b",
+    "c70a6498f3ce7c3d791c0c4754788494": "37443a200f06c56b",
+    "c0acb97b667a827ffcb9bfcdb1cec092": "37443a200f06c56b",
+    "9fff3ee3e61b877cdd305eda4bf155cd": "37443a200f06c56b",
+    "6685835a8df6cdde41d219bef3d58a30": "37443a200f06c56b",
+    "7e8b6a89375582c1ffd0086fc972d2ee": "37443a200f06c56b"
   },
   "progress": {},
   "wrongs": {},
@@ -239,12 +262,72 @@
       "t": 1791043136832,
       "op": "考试「test1」状态变更为 published",
       "by": "teacher"
+    },
+    {
+      "t": 1791200961200,
+      "op": "新增题目#343",
+      "by": "teacher"
+    },
+    {
+      "t": 1791201256350,
+      "op": "新增题目#344",
+      "by": "teacher"
+    },
+    {
+      "t": 1791201778746,
+      "op": "创建/更新考试「test1」（11题/11分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791201805658,
+      "op": "考试「test1」状态变更为 open",
+      "by": "teacher"
+    },
+    {
+      "t": 1791201960765,
+      "op": "考试「test1」状态变更为 grading",
+      "by": "teacher"
+    },
+    {
+      "t": 1791202546187,
+      "op": "修改题目#344",
+      "by": "teacher"
+    },
+    {
+      "t": 1791205675625,
+      "op": "创建/更新考试「图片对齐测试-8123」（2题/3分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791206243546,
+      "op": "修改题目#344",
+      "by": "teacher"
+    },
+    {
+      "t": 1791206819790,
+      "op": "创建/更新考试「图片渲染验证卷」（1题/1分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791207583973,
+      "op": "删除考试「图片渲染验证卷」",
+      "by": "teacher"
+    },
+    {
+      "t": 1791207600280,
+      "op": "删除考试「test1」",
+      "by": "teacher"
+    },
+    {
+      "t": 1791207660300,
+      "op": "删除考试「图片对齐测试-8123」",
+      "by": "teacher"
     }
   ],
   "answerLogs": [],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.3.0.3",
+    "version": "1.4.0.1",
     "timeAdd": 5,
     "timeMatchAdd": 10,
     "levelQ": {
@@ -261,159 +344,6 @@
     },
     "gameName": "电闯关·电工大作战"
   },
-  "exams": [
-    {
-      "id": "ex417a030eeeab61b0",
-      "title": "test1",
-      "subject": "电工技术基础与技能",
-      "className": "",
-      "grade": "",
-      "createdAt": 1791041293412,
-      "status": "published",
-      "questions": [
-        {
-          "id": 6,
-          "chapter": 0,
-          "section": 1,
-          "type": "single",
-          "question": "特别潮湿、金属容器内等危险场所，安全电压应选用？",
-          "options": [
-            "A. 36V",
-            "B. 24V",
-            "C. 12V",
-            "D. 220V"
-          ],
-          "answer": "C",
-          "difficulty": 2,
-          "score": 1
-        },
-        {
-          "id": 3,
-          "chapter": 0,
-          "section": 1,
-          "type": "single",
-          "question": "发现有人触电时，首先应做的是？",
-          "options": [
-            "A. 用手直接把触电者拉开",
-            "B. 迅速切断电源或用干燥绝缘物挑开电线",
-            "C. 向触电者泼水",
-            "D. 站在一边等待"
-          ],
-          "answer": "B",
-          "difficulty": 2,
-          "score": 1
-        },
-        {
-          "id": 8,
-          "chapter": 0,
-          "section": 2,
-          "type": "single",
-          "question": "三孔插座中，接“地”的端子应连接？",
-          "options": [
-            "A. 相线（火线）",
-            "B. 零线",
-            "C. 保护接地线",
-            "D. 备用线"
-          ],
-          "answer": "C",
-          "difficulty": 2,
-          "score": 1
-        },
-        {
-          "id": 1,
-          "chapter": 0,
-          "section": 1,
-          "type": "single",
-          "question": "我国电力系统采用的交流电频率（工频）是？",
-          "options": [
-            "A. 50Hz",
-            "B. 60Hz",
-            "C. 100Hz",
-            "D. 25Hz"
-          ],
-          "answer": "A",
-          "difficulty": 2,
-          "score": 1
-        },
-        {
-          "id": 5,
-          "chapter": 0,
-          "section": 1,
-          "type": "single",
-          "question": "电气设备起火时，正确的做法是？",
-          "options": [
-            "A. 直接用水扑救",
-            "B. 用泡沫灭火器扑救",
-            "C. 先切断电源，再用干粉或二氧化碳灭火器扑救",
-            "D. 不断电直接灭火"
-          ],
-          "answer": "C",
-          "difficulty": 2,
-          "score": 1
-        },
-        {
-          "id": 7,
-          "chapter": 0,
-          "section": 2,
-          "type": "judge",
-          "question": "电工作业时可以不穿绝缘鞋、戴绝缘手套。",
-          "options": [
-            "A. 正确",
-            "B. 错误"
-          ],
-          "answer": "B",
-          "difficulty": 2,
-          "score": 1
-        },
-        {
-          "id": 2,
-          "chapter": 0,
-          "section": 1,
-          "type": "judge",
-          "question": "一般情况下，人体安全电压额定值不高于36V。",
-          "options": [
-            "A. 正确",
-            "B. 错误"
-          ],
-          "answer": "A",
-          "difficulty": 2,
-          "score": 1
-        },
-        {
-          "id": 4,
-          "chapter": 0,
-          "section": 1,
-          "type": "judge",
-          "question": "可以用湿手触摸开关、插座等电气设备。",
-          "options": [
-            "A. 正确",
-            "B. 错误"
-          ],
-          "answer": "B",
-          "difficulty": 2,
-          "score": 1
-        },
-        {
-          "id": 9,
-          "chapter": 0,
-          "section": 2,
-          "type": "judge",
-          "question": "移动式电气设备应安装漏电保护器。",
-          "options": [
-            "A. 正确",
-            "B. 错误"
-          ],
-          "answer": "A",
-          "difficulty": 2,
-          "score": 1
-        }
-      ],
-      "qcount": 9,
-      "totalScore": 9,
-      "createdBy": "teacher",
-      "publishedAt": 1791043136830,
-      "note": ""
-    }
-  ],
+  "exams": [],
   "examAnswers": []
 }
