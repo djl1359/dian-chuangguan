@@ -155,6 +155,7 @@
     if (q.type === 'matching') {
       window.UIM.buildMatchUI(box, q, (userPairs) => {
         if (!state || state.phase !== 'play' || state.over || state.graded) return;
+        if (state.isBoss && state.reading) { readBlockTip(); return; }
         state.graded = true;
         submitAnswer(userPairs);
       });
@@ -304,6 +305,7 @@
   }
   function grade(pick) {
     if (!state || state.phase !== 'play' || state.over || state.graded) return;
+    if (state.isBoss && state.reading) { readBlockTip(); return; }
     const q = curQ();
     state.graded = true;
     if (q.type === 'matching') { submitAnswer(null); return; }
@@ -312,8 +314,17 @@
   function submitFill() {
     const q = curQ();
     if (!q || state.graded || state.over) return;
+    if (state.isBoss && state.reading) { readBlockTip(); return; }
     state.graded = true;
     submitAnswer($('fill-input').value);
+  }
+  /* BOSS 战读题期间禁止答题：节流提示（每 1.5 秒最多提示一次） */
+  function readBlockTip() {
+    const now = Date.now();
+    if (!state._readTipT || now - state._readTipT > 1500) {
+      state._readTipT = now;
+      toastMsg('⏳ 正在读题，请听完后再作答');
+    }
   }
   function applyAnswer(correct) {
     const q = curQ();

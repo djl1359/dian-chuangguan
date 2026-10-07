@@ -6,12 +6,20 @@
       "salt": "9668710463a0f0e1",
       "pass": "928cf42193eec5baa17229c7a1060eb2b1d1dc8441754392282845ebd5d89b34",
       "role": "teacher",
-      "score": 890,
+      "score": 650,
       "reg": 1790361073164,
       "lastLogin": 1791359515962,
       "loginCount": 126,
       "correct": 5,
-      "total": 7
+      "total": 15,
+      "progress": {
+        "0": {
+          "lv1": 1,
+          "lv2": 1,
+          "lv3": 1,
+          "boss": 1
+        }
+      }
     },
     {
       "id": "1c4d7d34abbe97d2",
@@ -126,6 +134,12 @@
   },
   "progress": {
     "37443a200f06c56b": {
+      "0": {
+        "lv1": 1,
+        "lv2": 1,
+        "lv3": 1,
+        "boss": 1
+      },
       "12": {
         "lv1": 1
       }
@@ -145,6 +159,62 @@
         "chapter": 12,
         "count": 1,
         "last": 1791354918947,
+        "good": 0
+      },
+      {
+        "qid": 344,
+        "chapter": 0,
+        "count": 1,
+        "last": 1791374927934,
+        "good": 0
+      },
+      {
+        "qid": 343,
+        "chapter": 0,
+        "count": 1,
+        "last": 1791375024222,
+        "good": 0
+      },
+      {
+        "qid": 334,
+        "chapter": 12,
+        "count": 1,
+        "last": 1791375287627,
+        "good": 0
+      },
+      {
+        "qid": 330,
+        "chapter": 12,
+        "count": 1,
+        "last": 1791375293448,
+        "good": 0
+      },
+      {
+        "qid": 320,
+        "chapter": 12,
+        "count": 1,
+        "last": 1791375299267,
+        "good": 0
+      },
+      {
+        "qid": 327,
+        "chapter": 12,
+        "count": 1,
+        "last": 1791375305089,
+        "good": 0
+      },
+      {
+        "qid": 333,
+        "chapter": 12,
+        "count": 1,
+        "last": 1791375310910,
+        "good": 0
+      },
+      {
+        "qid": 317,
+        "chapter": 12,
+        "count": 1,
+        "last": 1791375316731,
         "good": 0
       }
     ]
@@ -586,11 +656,83 @@
       "chapter": 0,
       "section": 2,
       "correct": true
+    },
+    {
+      "t": 1791374927933,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 344,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791375024221,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 343,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791375287626,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 334,
+      "chapter": 12,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1791375293447,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 330,
+      "chapter": 12,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1791375299266,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 320,
+      "chapter": 12,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791375305088,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 327,
+      "chapter": 12,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1791375310909,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 333,
+      "chapter": 12,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1791375316730,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 317,
+      "chapter": 12,
+      "section": 1,
+      "correct": false
     }
   ],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.4.4.1",
+    "version": "1.4.4.2",
     "timeAdd": 5,
     "timeMatchAdd": 10,
     "levelQ": {
