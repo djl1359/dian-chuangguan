@@ -8792,5 +8792,2335 @@
     "answer": "停止",
     "explain": "红色表示停止，绿色表示起动。",
     "difficulty": 1
+  },
+  {
+    "id": 589,
+    "chapter": 0,
+    "section": 1,
+    "type": "single",
+    "question": "当人体触碰到掉落在地上的带电导线时，可能发生（）",
+    "options": [
+      "A. 单相触电",
+      "B. 两相触电",
+      "C. 跨步电压触电",
+      "D. 感应电压触电"
+    ],
+    "answer": "C",
+    "explain": "带电导线落地后地面形成电位分布，人走近两脚间会产生跨步电压造成触电",
+    "difficulty": 3
+  },
+  {
+    "id": 590,
+    "chapter": 0,
+    "section": 1,
+    "type": "single",
+    "question": "我国规定的安全电压（一般条件下）是指（）及以下的电压",
+    "options": [
+      "A. 12V",
+      "B. 24V",
+      "C. 36V",
+      "D. 220V"
+    ],
+    "answer": "C",
+    "explain": "一般规定36V及以下为安全电压，潮湿环境下应采用12V",
+    "difficulty": 2
+  },
+  {
+    "id": 591,
+    "chapter": 0,
+    "section": 1,
+    "type": "single",
+    "question": "带电灭火时切忌使用（）灭火剂",
+    "options": [
+      "A. 二氧化碳",
+      "B. 干粉",
+      "C. 干黄砂",
+      "D. 水和泡沫"
+    ],
+    "answer": "D",
+    "explain": "水和泡沫导电，带电灭火会造成触电，应使用二氧化碳或干粉灭火器",
+    "difficulty": 2
+  },
+  {
+    "id": 592,
+    "chapter": 0,
+    "section": 1,
+    "type": "judge",
+    "question": "电气设备的金属外壳必须可靠接地或接零。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "接地或接零可防止设备漏电时外壳带电危及人身安全",
+    "difficulty": 2
+  },
+  {
+    "id": 593,
+    "chapter": 0,
+    "section": 1,
+    "type": "judge",
+    "question": "单相触电时人体承受的电压一般是220V（380V/220V低压系统）。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "单相触电作用于人体的是相电压220V，两相触电承受线电压380V更危险",
+    "difficulty": 2
+  },
+  {
+    "id": 594,
+    "chapter": 0,
+    "section": 1,
+    "type": "judge",
+    "question": "用试电笔验电时，手可以接触笔尖的金属体。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "手只能接触笔尾金属体，若接触笔尖金属体会直接触电",
+    "difficulty": 2
+  },
+  {
+    "id": 595,
+    "chapter": 0,
+    "section": 1,
+    "type": "multi",
+    "question": "下列属于防止触电的保护措施的是（）",
+    "options": [
+      "A. 保护接地",
+      "B. 保护接零",
+      "C. 使用安全电压",
+      "D. 用湿抹布擦拭带电插座"
+    ],
+    "answer": "A,B,C",
+    "explain": "保护接地、保护接零和使用安全电压都是防触电措施；湿手湿布操作电气设备是危险行为",
+    "difficulty": 2
+  },
+  {
+    "id": 596,
+    "chapter": 0,
+    "section": 1,
+    "type": "fill",
+    "question": "一般认为通过人体的工频交流电流超过____mA时即可危及生命（填整数）。",
+    "options": [],
+    "answer": "30",
+    "explain": "通过人体的工频交流电流超过30mA就可能有生命危险，规定36V及以下为安全电压",
+    "difficulty": 3
+  },
+  {
+    "id": 597,
+    "chapter": 0,
+    "section": 1,
+    "type": "fill",
+    "question": "1kV=____mV（填数字）。",
+    "options": [],
+    "answer": "1000000",
+    "explain": "1kV=1000V=10^6mV，电压单位换算逐级相差1000倍",
+    "difficulty": 2
+  },
+  {
+    "id": 598,
+    "chapter": 0,
+    "section": 1,
+    "type": "matching",
+    "question": "请将常用电工工具与主要用途连线。",
+    "options": {
+      "left": [
+        "试电笔",
+        "电流表",
+        "万用表"
+      ],
+      "right": [
+        "验电",
+        "测电流",
+        "多用途测量"
+      ]
+    },
+    "answer": "[[0,0],[1,1],[2,2]]",
+    "explain": "试电笔用于验电、电流表用于测电流、万用表可测电压电流电阻等多用途",
+    "difficulty": 2
+  },
+  {
+    "id": 599,
+    "chapter": 1,
+    "section": 1,
+    "type": "single",
+    "question": "电路一般由电源、负载、导线和（）组成",
+    "options": [
+      "A. 电阻",
+      "B. 开关",
+      "C. 电容器",
+      "D. 电感器"
+    ],
+    "answer": "B",
+    "explain": "电路是由电源、负载、导线和开关等组成的闭合回路",
+    "difficulty": 1
+  },
+  {
+    "id": 600,
+    "chapter": 1,
+    "section": 1,
+    "type": "single",
+    "question": "在电路中消耗电能的装置（用电器）称为（）",
+    "options": [
+      "A. 电源",
+      "B. 负载",
+      "C. 开关",
+      "D. 导线"
+    ],
+    "answer": "B",
+    "explain": "负载把电能转换为其他形式的能量，如电灯、电动机等",
+    "difficulty": 1
+  },
+  {
+    "id": 601,
+    "chapter": 1,
+    "section": 1,
+    "type": "single",
+    "question": "下列设备中一定是电源的是（）",
+    "options": [
+      "A. 发电机",
+      "B. 冰箱",
+      "C. 蓄电池",
+      "D. 白炽灯"
+    ],
+    "answer": "A",
+    "explain": "发电机把机械能转换为电能一定是电源；蓄电池充电时相当于负载（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 602,
+    "chapter": 1,
+    "section": 1,
+    "type": "single",
+    "question": "识别电路的工作状态：闭合开关后电流经负载形成回路，电路处于（）状态",
+    "options": [
+      "A. 通路",
+      "B. 开路",
+      "C. 短路",
+      "D. 空载"
+    ],
+    "answer": "A",
+    "explain": "负载正常工作、电流形成闭合回路的状态为通路（负载状态）",
+    "difficulty": 1
+  },
+  {
+    "id": 603,
+    "chapter": 1,
+    "section": 1,
+    "type": "single",
+    "question": "电路中相线与中性线不经过负载直接接触的现象称为（）",
+    "options": [
+      "A. 通路",
+      "B. 开路",
+      "C. 短路",
+      "D. 空载"
+    ],
+    "answer": "C",
+    "explain": "短路时电流急剧增大，极易烧毁导线和电源，必须严格防止",
+    "difficulty": 1
+  },
+  {
+    "id": 604,
+    "chapter": 1,
+    "section": 1,
+    "type": "single",
+    "question": "电路中形成持续电流的条件是（）",
+    "options": [
+      "A. 只要电路中有电源",
+      "B. 有电源且电路闭合",
+      "C. 只要电路闭合",
+      "D. 只要电路中有开关"
+    ],
+    "answer": "B",
+    "explain": "必须有电源且电路闭合（通路）才能形成持续电流",
+    "difficulty": 1
+  },
+  {
+    "id": 605,
+    "chapter": 1,
+    "section": 1,
+    "type": "judge",
+    "question": "蓄电池在电路中必是电源，总是把化学能转化为电能。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "蓄电池放电时是电源，充电时把电能转化为化学能相当于负载（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 606,
+    "chapter": 1,
+    "section": 1,
+    "type": "multi",
+    "question": "电路通常的三种工作状态是（）",
+    "options": [
+      "A. 通路",
+      "B. 开路（空载）",
+      "C. 短路",
+      "D. 过载"
+    ],
+    "answer": "A,B,C",
+    "explain": "电路有通路、开路（空载）、短路三种状态；过载不属于基本工作状态",
+    "difficulty": 2
+  },
+  {
+    "id": 607,
+    "chapter": 1,
+    "section": 1,
+    "type": "matching",
+    "question": "请将电路组成部分与对应的作用连线。",
+    "options": {
+      "left": [
+        "电源",
+        "负载",
+        "开关"
+      ],
+      "right": [
+        "提供电能",
+        "消耗电能",
+        "控制电路通断"
+      ]
+    },
+    "answer": "[[0,0],[1,1],[2,2]]",
+    "explain": "电源提供电能、负载消耗电能、开关控制电路的通断",
+    "difficulty": 2
+  },
+  {
+    "id": 608,
+    "chapter": 1,
+    "section": 2,
+    "type": "single",
+    "question": "习惯上规定（）定向移动的方向为电流方向",
+    "options": [
+      "A. 正电荷",
+      "B. 负电荷",
+      "C. 电子",
+      "D. 离子"
+    ],
+    "answer": "A",
+    "explain": "电流方向规定为正电荷定向移动的方向，与电子（负电荷）移动方向相反",
+    "difficulty": 2
+  },
+  {
+    "id": 609,
+    "chapter": 1,
+    "section": 2,
+    "type": "judge",
+    "question": "金属导体中自由电子定向移动的方向与电流方向相反。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "电子带负电，其定向移动方向与电流方向相反",
+    "difficulty": 2
+  },
+  {
+    "id": 610,
+    "chapter": 1,
+    "section": 2,
+    "type": "single",
+    "question": "关于电流表和电压表的使用，下列说法正确的是（）",
+    "options": [
+      "A. 电流表应并联在被测电路两端",
+      "B. 电压表应串联在被测电路中",
+      "C. 电流表应串联在被测电路中",
+      "D. 电压表和电流表都应并联"
+    ],
+    "answer": "C",
+    "explain": "识图要点：电流表串联接入、电压表并联接入；电流表内阻很小、电压表内阻很大",
+    "difficulty": 2
+  },
+  {
+    "id": 611,
+    "chapter": 1,
+    "section": 2,
+    "type": "fill",
+    "question": "通过一个电阻的电流是5A，经过4min，通过该电阻某一横截面的电荷量是____C。",
+    "options": [],
+    "answer": "1200",
+    "explain": "Q=It=5A×240s=1200C（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 612,
+    "chapter": 1,
+    "section": 2,
+    "type": "fill",
+    "question": "3s内通过导体横截面的电荷量为12C，则通过导体的电流为____A。",
+    "options": [],
+    "answer": "4",
+    "explain": "由I=Q/t=12/3=4A",
+    "difficulty": 2
+  },
+  {
+    "id": 613,
+    "chapter": 1,
+    "section": 3,
+    "type": "single",
+    "question": "一般金属导体具有正温度系数，当环境温度升高时其电阻值将（）",
+    "options": [
+      "A. 增大",
+      "B. 减小",
+      "C. 不变",
+      "D. 不能确定"
+    ],
+    "answer": "A",
+    "explain": "金属导体的电阻随温度升高而增大（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 614,
+    "chapter": 1,
+    "section": 3,
+    "type": "single",
+    "question": "相同材料制成的两个均匀导体长度之比为3:5、横截面积之比为4:1，则其电阻之比为（）",
+    "options": [
+      "A. 12:5",
+      "B. 3:20",
+      "C. 7:6",
+      "D. 20:3"
+    ],
+    "answer": "B",
+    "explain": "由电阻定律R=ρL/S，R1/R2=(3/4)÷(5/1)=3/20（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 615,
+    "chapter": 1,
+    "section": 3,
+    "type": "single",
+    "question": "一段导体的电阻为4Ω，若将其长度均匀拉长为原来的2倍，则电阻变为（）",
+    "options": [
+      "A. 2Ω",
+      "B. 4Ω",
+      "C. 8Ω",
+      "D. 16Ω"
+    ],
+    "answer": "D",
+    "explain": "体积不变长度加倍则截面积减半，电阻变为原来的4倍即16Ω",
+    "difficulty": 3
+  },
+  {
+    "id": 616,
+    "chapter": 1,
+    "section": 3,
+    "type": "single",
+    "question": "铜导线长100m、横截面积为0.1mm²（铜的电阻率约1.7×10^-8Ω·m），20℃时其电阻约为（）",
+    "options": [
+      "A. 1.7Ω",
+      "B. 17Ω",
+      "C. 0.17Ω",
+      "D. 170Ω"
+    ],
+    "answer": "B",
+    "explain": "R=ρL/S=1.7×10^-8×100/(0.1×10^-6)=17Ω",
+    "difficulty": 3
+  },
+  {
+    "id": 617,
+    "chapter": 1,
+    "section": 3,
+    "type": "judge",
+    "question": "电阻值大的导体其电阻率一定也大。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "电阻除与材料（电阻率）有关外还与长度和截面积有关（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 618,
+    "chapter": 1,
+    "section": 3,
+    "type": "judge",
+    "question": "电阻元件的伏安特性曲线是过原点的直线时称为线性元件。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "线性电阻的伏安特性为过原点的直线，阻值恒定（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 619,
+    "chapter": 1,
+    "section": 4,
+    "type": "single",
+    "question": "某导体两端电压为100V时通过的电流为2A；当两端电压降为50V时该导体的电阻为（）",
+    "options": [
+      "A. 100Ω",
+      "B. 25Ω",
+      "C. 50Ω",
+      "D. 0Ω"
+    ],
+    "answer": "C",
+    "explain": "电阻是导体本身的性质不随电压变化，R=100/2=50Ω（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 620,
+    "chapter": 1,
+    "section": 4,
+    "type": "single",
+    "question": "一个电阻两端加50mV电压时电流为10mA；当两端加10V电压时电流为（）",
+    "options": [
+      "A. 0.2A",
+      "B. 1A",
+      "C. 2A",
+      "D. 20A"
+    ],
+    "answer": "C",
+    "explain": "R=0.05V/0.01A=5Ω，I=10V/5Ω=2A（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 621,
+    "chapter": 1,
+    "section": 4,
+    "type": "judge",
+    "question": "公式R=U/I中的R是由电压和电流的大小决定的。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "R=U/I只是计算式，电阻由材料、长度、截面积和温度决定（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 622,
+    "chapter": 1,
+    "section": 4,
+    "type": "calc",
+    "question": "某电阻两端电压为12V，通过的电流为0.4A，求该电阻的阻值。",
+    "options": [],
+    "answer": "30Ω",
+    "explain": "由部分电路欧姆定律R=U/I=12/0.4=30Ω",
+    "difficulty": 2
+  },
+  {
+    "id": 623,
+    "chapter": 1,
+    "section": 5,
+    "type": "single",
+    "question": "通常电工术语“负载大小”是指（）的大小",
+    "options": [
+      "A. 等效电阻",
+      "B. 实际电功率",
+      "C. 实际电压",
+      "D. 负载电流"
+    ],
+    "answer": "B",
+    "explain": "负载大小指其实际消耗的电功率（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 624,
+    "chapter": 1,
+    "section": 5,
+    "type": "single",
+    "question": "220V、40W的白炽灯正常发光（）小时消耗的电能为1kW·h。",
+    "options": [
+      "A. 20h",
+      "B. 40h",
+      "C. 45h",
+      "D. 25h"
+    ],
+    "answer": "D",
+    "explain": "t=W/P=1000Wh/40W=25h（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 625,
+    "chapter": 1,
+    "section": 5,
+    "type": "single",
+    "question": "1kW·h（1度电）等于（）J",
+    "options": [
+      "A. 3.6×10^3",
+      "B. 3.6×10^5",
+      "C. 3.6×10^6",
+      "D. 6.0×10^6"
+    ],
+    "answer": "C",
+    "explain": "1kW·h=1000W×3600s=3.6×10^6J",
+    "difficulty": 2
+  },
+  {
+    "id": 626,
+    "chapter": 1,
+    "section": 5,
+    "type": "single",
+    "question": "一只电炉铭牌上标有“220V、1000W”字样，其中1000W表示（）",
+    "options": [
+      "A. 电炉已消耗的电能",
+      "B. 电炉任意电压下的实际功率",
+      "C. 电炉的额定功率",
+      "D. 电炉的额定电流"
+    ],
+    "answer": "C",
+    "explain": "铭牌上标注的是额定值，1000W表示在额定电压220V下工作时的功率",
+    "difficulty": 1
+  },
+  {
+    "id": 627,
+    "chapter": 1,
+    "section": 5,
+    "type": "judge",
+    "question": "额定电压为220V的白炽灯接在110V电源上，消耗的功率为原来的1/4。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "电阻不变时P=U²/R，电压减半功率变为原来的1/4（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 628,
+    "chapter": 1,
+    "section": 5,
+    "type": "judge",
+    "question": "在纯电阻电路中电流通过电阻所做的功与它产生的热量相等。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "纯电阻电路中电能全部转化为热能，W=Q（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 629,
+    "chapter": 2,
+    "section": 1,
+    "type": "single",
+    "question": "闭合电路中电源电动势为E、内阻为r、外电阻为R，则电路中的电流为（）",
+    "options": [
+      "A. E/R",
+      "B. E/r",
+      "C. E/(R+r)",
+      "D. ER/(R+r)"
+    ],
+    "answer": "C",
+    "explain": "全电路欧姆定律I=E/(R+r)",
+    "difficulty": 2
+  },
+  {
+    "id": 630,
+    "chapter": 2,
+    "section": 1,
+    "type": "single",
+    "question": "在全电路中当负载电阻增大时电源的端电压将（）",
+    "options": [
+      "A. 增高",
+      "B. 减小",
+      "C. 不变",
+      "D. 不确定"
+    ],
+    "answer": "A",
+    "explain": "负载电阻增大电流减小，内阻压降Ir减小，端电压U=E-Ir增大",
+    "difficulty": 3
+  },
+  {
+    "id": 631,
+    "chapter": 2,
+    "section": 1,
+    "type": "single",
+    "question": "闭合电路中电源端电压与电动势的关系是（）",
+    "options": [
+      "A. 端电压等于电动势减去内阻压降",
+      "B. 端电压始终等于电动势",
+      "C. 端电压大于电动势",
+      "D. 端电压与电动势无关"
+    ],
+    "answer": "A",
+    "explain": "U=E-Ir，通路时端电压小于电动势",
+    "difficulty": 2
+  },
+  {
+    "id": 632,
+    "chapter": 2,
+    "section": 1,
+    "type": "judge",
+    "question": "当外电路开路时电源端电压等于零。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "开路时电流为零，端电压等于电源电动势（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 633,
+    "chapter": 2,
+    "section": 1,
+    "type": "calc",
+    "question": "电源电动势为1.5V、内电阻为0.12Ω，外电路电阻为1.38Ω，求电路中的电流和端电压。",
+    "options": [],
+    "answer": "I=1A；U=1.38V",
+    "explain": "I=E/(R+r)=1.5/1.5=1A，U=IR=1×1.38=1.38V（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 634,
+    "chapter": 2,
+    "section": 1,
+    "type": "calc",
+    "question": "某电源接负载电流0.2A时端电压为1.98V，电流0.4A时端电压为1.96V，求电源电动势和内阻。",
+    "options": [],
+    "answer": "E=2V；r=0.1Ω",
+    "explain": "联立E-0.2r=1.98和E-0.4r=1.96解得r=0.1Ω、E=2V（教材原题）",
+    "difficulty": 4
+  },
+  {
+    "id": 635,
+    "chapter": 2,
+    "section": 2,
+    "type": "single",
+    "question": "两只电阻R1、R2串联，通过它们的电流之比I1:I2为（）",
+    "options": [
+      "A. 1:2",
+      "B. 2:1",
+      "C. 1:1",
+      "D. 1:4"
+    ],
+    "answer": "C",
+    "explain": "串联电路各处电流相等，电流之比为1:1",
+    "difficulty": 1
+  },
+  {
+    "id": 636,
+    "chapter": 2,
+    "section": 2,
+    "type": "single",
+    "question": "串联电路中总电压等于各部分电路两端电压的（）",
+    "options": [
+      "A. 和",
+      "B. 差",
+      "C. 积",
+      "D. 商"
+    ],
+    "answer": "A",
+    "explain": "串联电路具有分压作用U=U1+U2",
+    "difficulty": 1
+  },
+  {
+    "id": 637,
+    "chapter": 2,
+    "section": 2,
+    "type": "single",
+    "question": "两只电阻R1=3R2串联，已知R1两端电压为9V，则电路总电压为（）",
+    "options": [
+      "A. 3V",
+      "B. 6V",
+      "C. 9V",
+      "D. 12V"
+    ],
+    "answer": "D",
+    "explain": "串联分压与电阻成正比U1/U2=R1/R2=3，U2=3V，总电压12V",
+    "difficulty": 3
+  },
+  {
+    "id": 638,
+    "chapter": 2,
+    "section": 2,
+    "type": "single",
+    "question": "串联电路中阻值最大的电阻其两端分得的电压（）",
+    "options": [
+      "A. 最大",
+      "B. 最小",
+      "C. 与其他电阻相同",
+      "D. 为零"
+    ],
+    "answer": "A",
+    "explain": "串联分压U1/U2=R1/R2，电阻越大分压越大",
+    "difficulty": 2
+  },
+  {
+    "id": 639,
+    "chapter": 2,
+    "section": 2,
+    "type": "judge",
+    "question": "R1=20Ω、R2=10Ω串联，因R2阻值小对电流阻碍作用小，故R2中流过的电流比R1中大。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "串联电路电流处处相等，通过两电阻的电流相同（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 640,
+    "chapter": 2,
+    "section": 2,
+    "type": "judge",
+    "question": "一条马路上的路灯总是同时亮、同时灭，因此这些灯都是串联接入电网的。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "路灯是并联的，只是共用总开关控制，一盏灯坏其他仍亮（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 641,
+    "chapter": 2,
+    "section": 2,
+    "type": "fill",
+    "question": "两个电阻R1=4Ω、R2=6Ω串联接在10V电源上，R2两端的电压为____V。",
+    "options": [],
+    "answer": "6",
+    "explain": "U2=UR2/(R1+R2)=10×6/10=6V",
+    "difficulty": 3
+  },
+  {
+    "id": 642,
+    "chapter": 2,
+    "section": 3,
+    "type": "single",
+    "question": "并联电路的总电阻与各支路电阻的关系是（）",
+    "options": [
+      "A. 大于任意支路电阻",
+      "B. 小于任意支路电阻",
+      "C. 等于各支路电阻之和",
+      "D. 等于各支路电阻之积"
+    ],
+    "answer": "B",
+    "explain": "并联电路总电阻的倒数等于各支路电阻倒数之和，总电阻小于任一支路电阻",
+    "difficulty": 1
+  },
+  {
+    "id": 643,
+    "chapter": 2,
+    "section": 3,
+    "type": "single",
+    "question": "两只电阻R1=3R2并联，通过R1与R2的电流之比I1:I2为（）",
+    "options": [
+      "A. 1:3",
+      "B. 3:1",
+      "C. 1:1",
+      "D. 9:1"
+    ],
+    "answer": "A",
+    "explain": "并联分流与电阻成反比I1/I2=R2/R1=1/3",
+    "difficulty": 3
+  },
+  {
+    "id": 644,
+    "chapter": 2,
+    "section": 3,
+    "type": "single",
+    "question": "两只电阻R1=3R2并联，已知通过R1的电流为1A，则电路总电流为（）",
+    "options": [
+      "A. 1A",
+      "B. 2A",
+      "C. 3A",
+      "D. 4A"
+    ],
+    "answer": "D",
+    "explain": "并联分流与电阻成反比I2=3A，总电流I=1+3=4A",
+    "difficulty": 3
+  },
+  {
+    "id": 645,
+    "chapter": 2,
+    "section": 3,
+    "type": "judge",
+    "question": "并联电路中各支路两端的电压相等。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "并联电路电压相等、电流按电阻反比分流",
+    "difficulty": 1
+  },
+  {
+    "id": 646,
+    "chapter": 2,
+    "section": 3,
+    "type": "judge",
+    "question": "通常照明电路中灯开得越多总的负载电阻就越大。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "照明灯都是并联的，并联支路越多总电阻越小（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 647,
+    "chapter": 2,
+    "section": 3,
+    "type": "fill",
+    "question": "两个电阻R1=6Ω、R2=3Ω并联，其等效电阻为____Ω。",
+    "options": [],
+    "answer": "2",
+    "explain": "1/R=1/6+1/3=1/2，R=2Ω；两阻并联R=R1R2/(R1+R2)",
+    "difficulty": 2
+  },
+  {
+    "id": 648,
+    "chapter": 2,
+    "section": 4,
+    "type": "single",
+    "question": "R1与R2并联后再与R3串联，已知R1=R2=6Ω、R3=5Ω，电路的等效电阻为（）",
+    "options": [
+      "A. 8Ω",
+      "B. 11Ω",
+      "C. 17Ω",
+      "D. 7Ω"
+    ],
+    "answer": "A",
+    "explain": "识图先算并联部分R12=6×6/(6+6)=3Ω，再与R3串联R=3+5=8Ω",
+    "difficulty": 2
+  },
+  {
+    "id": 649,
+    "chapter": 2,
+    "section": 4,
+    "type": "single",
+    "question": "识图：电流从电源正极流出后分为两路分别流过R1和R2，再汇合流回负极，则R1与R2的连接方式是（）",
+    "options": [
+      "A. 串联",
+      "B. 并联",
+      "C. 混联",
+      "D. 无法确定"
+    ],
+    "answer": "B",
+    "explain": "电流有分支、分别流过各电阻后汇合的连接方式为并联",
+    "difficulty": 1
+  },
+  {
+    "id": 650,
+    "chapter": 2,
+    "section": 4,
+    "type": "single",
+    "question": "两个相同的电阻R先串联后接在电源上，再改为并联接在同一电源上，两种情况总电阻之比（串:并）为（）",
+    "options": [
+      "A. 1:2",
+      "B. 2:1",
+      "C. 4:1",
+      "D. 1:4"
+    ],
+    "answer": "C",
+    "explain": "串联总电阻2R，并联总电阻R/2，比值4:1",
+    "difficulty": 3
+  },
+  {
+    "id": 651,
+    "chapter": 2,
+    "section": 4,
+    "type": "judge",
+    "question": "混联电路是指既含有串联又含有并联的电路。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "混联电路的分析方法是先化简并联（或串联）部分再逐步等效",
+    "difficulty": 1
+  },
+  {
+    "id": 652,
+    "chapter": 2,
+    "section": 4,
+    "type": "fill",
+    "question": "R1=8Ω与R2=8Ω并联后再与R4=6Ω串联，电路的等效电阻为____Ω。",
+    "options": [],
+    "answer": "10",
+    "explain": "并联部分R12=8×8/(8+8)=4Ω，总电阻4+6=10Ω",
+    "difficulty": 2
+  },
+  {
+    "id": 653,
+    "chapter": 2,
+    "section": 4,
+    "type": "calc",
+    "question": "某电路电源电动势8V、内阻1Ω，外电路由R1=5.8Ω与R2=2Ω、R3=3Ω组成（R2与R3并联后再与R1串联），求外电路等效电阻和干路电流。",
+    "options": [],
+    "answer": "R外=7Ω；I=1A",
+    "explain": "先求R23=2×3/(2+3)=1.2Ω…实际R外=5.8+1.2=7Ω，I=E/(R外+r)=8/8=1A",
+    "difficulty": 4
+  },
+  {
+    "id": 654,
+    "chapter": 2,
+    "section": 5,
+    "type": "single",
+    "question": "用万用表测电阻时下列操作正确的是（）",
+    "options": [
+      "A. 带电测量电阻",
+      "B. 选合适倍率档使指针指示在刻度中间附近读数",
+      "C. 双手同时捏住电阻两端测量",
+      "D. 测量完毕将开关置于欧姆最低档"
+    ],
+    "answer": "B",
+    "explain": "测电阻必须断电，指针在刻度中间附近读数最准确，用毕置于交流电压最高档或OFF",
+    "difficulty": 2
+  },
+  {
+    "id": 655,
+    "chapter": 2,
+    "section": 5,
+    "type": "judge",
+    "question": "万用表的电压、电流及电阻各档的刻度都是均匀的。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "电压电流档刻度均匀，电阻档刻度不均匀（教材原题）",
+    "difficulty": 2
+  },
+  {
+    "id": 656,
+    "chapter": 2,
+    "section": 5,
+    "type": "judge",
+    "question": "用伏安法测电阻时电压表内阻越大、电流表内阻越小，测量结果越接近真值。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "理想电压表内阻无穷大、理想电流表内阻为零，仪表内阻越理想误差越小",
+    "difficulty": 3
+  },
+  {
+    "id": 657,
+    "chapter": 2,
+    "section": 5,
+    "type": "single",
+    "question": "电路中某点的电位是该点与（）之间的电压",
+    "options": [
+      "A. 电源正极",
+      "B. 电源负极",
+      "C. 参考点",
+      "D. 任意点"
+    ],
+    "answer": "C",
+    "explain": "电位是相对于参考点的电压，参考点电位规定为零",
+    "difficulty": 2
+  },
+  {
+    "id": 658,
+    "chapter": 2,
+    "section": 5,
+    "type": "single",
+    "question": "电路中a、b两点的电位分别为Ua=5V、Ub=-3V，则电压Uab为（）",
+    "options": [
+      "A. 2V",
+      "B. 8V",
+      "C. -8V",
+      "D. 3V"
+    ],
+    "answer": "B",
+    "explain": "Uab=Ua-Ub=5-(-3)=8V",
+    "difficulty": 3
+  },
+  {
+    "id": 659,
+    "chapter": 2,
+    "section": 5,
+    "type": "single",
+    "question": "电路中任意两点之间的电位差称为（）",
+    "options": [
+      "A. 电动势",
+      "B. 电压",
+      "C. 电位",
+      "D. 电功率"
+    ],
+    "answer": "B",
+    "explain": "电压即两点间的电位差，其大小与参考点选择无关",
+    "difficulty": 1
+  },
+  {
+    "id": 660,
+    "chapter": 2,
+    "section": 5,
+    "type": "judge",
+    "question": "电路中各点电位的大小和正负与参考点的选择都有关，而两点间的电压与参考点的选择无关。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "电位是相对值随参考点变化，电压（电位差）是绝对值与参考点无关",
+    "difficulty": 2
+  },
+  {
+    "id": 661,
+    "chapter": 3,
+    "section": 1,
+    "type": "single",
+    "question": "基尔霍夫电流定律（KCL）指出任一时刻流过电路任一节点的电流（）",
+    "options": [
+      "A. 代数和为零",
+      "B. 之和恒为正",
+      "C. 之比等于电阻比",
+      "D. 之和等于电动势"
+    ],
+    "answer": "A",
+    "explain": "∑I=0，流入节点的电流之和等于流出节点的电流之和",
+    "difficulty": 2
+  },
+  {
+    "id": 662,
+    "chapter": 3,
+    "section": 1,
+    "type": "single",
+    "question": "基尔霍夫电压定律（KVL）指出沿任一闭合回路绕行一周各段电压的（）",
+    "options": [
+      "A. 代数和为零",
+      "B. 和恒为正",
+      "C. 和恒为负",
+      "D. 乘积为零"
+    ],
+    "answer": "A",
+    "explain": "∑U=0，电位升与电位降代数和为零",
+    "difficulty": 2
+  },
+  {
+    "id": 663,
+    "chapter": 3,
+    "section": 1,
+    "type": "single",
+    "question": "三条支路汇交于一个节点，两条支路流入电流分别为3A和2A，则第三条支路流出的电流为（）",
+    "options": [
+      "A. 1A",
+      "B. 5A",
+      "C. -5A",
+      "D. 6A"
+    ],
+    "answer": "B",
+    "explain": "由KCL流入之和等于流出之和，I=3+2=5A",
+    "difficulty": 2
+  },
+  {
+    "id": 664,
+    "chapter": 3,
+    "section": 1,
+    "type": "judge",
+    "question": "基尔霍夫定律不仅适用于线性电路而且对非线性电路也适用。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "基尔霍夫定律与元件性质无关，适用于任何集总电路（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 665,
+    "chapter": 3,
+    "section": 1,
+    "type": "judge",
+    "question": "基尔霍夫电压定律只与元件的连接方式有关而与元件的性质无关。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "KVL反映回路中电压的约束关系，与元件性质无关（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 666,
+    "chapter": 3,
+    "section": 1,
+    "type": "judge",
+    "question": "基尔霍夫电流定律仅适用于电路中的实际节点且与元件性质有关。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "KCL适用于任一节点和任一闭合面（广义节点），且与元件性质无关",
+    "difficulty": 3
+  },
+  {
+    "id": 667,
+    "chapter": 3,
+    "section": 2,
+    "type": "single",
+    "question": "用支路电流法求解具有n个节点、b条支路的复杂电路时需列出的节点电流方程个数为（）",
+    "options": [
+      "A. n",
+      "B. b",
+      "C. n-1",
+      "D. b-n+1"
+    ],
+    "answer": "C",
+    "explain": "节点电流方程列n-1个，回路电压方程列b-n+1个（教材结论）",
+    "difficulty": 3
+  },
+  {
+    "id": 668,
+    "chapter": 3,
+    "section": 2,
+    "type": "single",
+    "question": "用支路电流法求解时回路电压方程的个数为（）",
+    "options": [
+      "A. n-1",
+      "B. b",
+      "C. b-n+1",
+      "D. b+1"
+    ],
+    "answer": "C",
+    "explain": "共列b个方程，其中n-1个节点电流方程，b-n+1个回路电压方程",
+    "difficulty": 3
+  },
+  {
+    "id": 669,
+    "chapter": 3,
+    "section": 2,
+    "type": "calc",
+    "question": "电路中E1=40V、E2=5V、R1=5Ω、R2=R3=10Ω（E1串R1、E2串R2、R3为三条支路且并联），用支路电流法求各支路电流。",
+    "options": [],
+    "answer": "I1=5A；I2=1A；I3=4A",
+    "explain": "列KCL及两网孔KVL方程组解得I1=5A、I2=1A、I3=4A（教材原题）",
+    "difficulty": 4
+  },
+  {
+    "id": 670,
+    "chapter": 3,
+    "section": 3,
+    "type": "single",
+    "question": "应用叠加定理分析电路时对不作用的理想电压源应作（）处理",
+    "options": [
+      "A. 开路",
+      "B. 用短路线替代",
+      "C. 保留不变",
+      "D. 串联电阻"
+    ],
+    "answer": "B",
+    "explain": "理想电压源置零相当于短路；理想电流源置零相当于开路（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 671,
+    "chapter": 3,
+    "section": 3,
+    "type": "single",
+    "question": "应用叠加定理分析电路时对不作用的理想电流源应作（）处理",
+    "options": [
+      "A. 开路",
+      "B. 用短路线替代",
+      "C. 保留不变",
+      "D. 并联电阻"
+    ],
+    "answer": "A",
+    "explain": "理想电流源置零相当于开路，理想电压源置零相当于短路",
+    "difficulty": 3
+  },
+  {
+    "id": 672,
+    "chapter": 3,
+    "section": 4,
+    "type": "single",
+    "question": "戴维宁定理指出任何线性有源二端网络都可以等效为（）",
+    "options": [
+      "A. 理想电流源与电阻并联",
+      "B. 理想电压源与电阻串联",
+      "C. 一个纯电阻",
+      "D. 理想变压器"
+    ],
+    "answer": "B",
+    "explain": "可等效为理想电压源US与内阻R0串联的模型",
+    "difficulty": 2
+  },
+  {
+    "id": 673,
+    "chapter": 3,
+    "section": 4,
+    "type": "judge",
+    "question": "用戴维宁定理对线性有源二端网络进行等效时仅对外电路等效，而对网络内部电路是不等效的。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "等效只对外部电路成立，内部结构与功率分配不能等效（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 674,
+    "chapter": 3,
+    "section": 4,
+    "type": "calc",
+    "question": "某线性有源二端网络的开路电压为10V、两端短接时短路电流为2A，求其戴维宁等效参数；若两端接5Ω负载时负载电流为多少。",
+    "options": [],
+    "answer": "R0=5Ω；US=10V；I=1A",
+    "explain": "R0=US/ISC=10/2=5Ω，I=US/(R0+R)=10/(5+5)=1A（教材原题）",
+    "difficulty": 4
+  },
+  {
+    "id": 675,
+    "chapter": 3,
+    "section": 4,
+    "type": "single",
+    "question": "负载获得最大功率的条件是负载电阻（）电源内阻。",
+    "options": [
+      "A. 大于",
+      "B. 小于",
+      "C. 等于",
+      "D. 远大于"
+    ],
+    "answer": "C",
+    "explain": "当负载电阻等于电源内阻R=r时负载获得最大功率Pmax=E²/(4r)",
+    "difficulty": 3
+  },
+  {
+    "id": 676,
+    "chapter": 3,
+    "section": 5,
+    "type": "single",
+    "question": "理想电压源的内阻为（）",
+    "options": [
+      "A. 无穷大",
+      "B. 零",
+      "C. 不确定",
+      "D. 1Ω"
+    ],
+    "answer": "B",
+    "explain": "理想电压源端电压恒定不随负载变化，内阻为零",
+    "difficulty": 2
+  },
+  {
+    "id": 677,
+    "chapter": 3,
+    "section": 5,
+    "type": "single",
+    "question": "理想电流源的内阻为（）",
+    "options": [
+      "A. 无穷大",
+      "B. 零",
+      "C. 不确定",
+      "D. 1Ω"
+    ],
+    "answer": "A",
+    "explain": "理想电流源输出电流恒定，内阻为无穷大",
+    "difficulty": 2
+  },
+  {
+    "id": 678,
+    "chapter": 3,
+    "section": 5,
+    "type": "judge",
+    "question": "理想电流源的输出电流和端电压都是恒定的，不随负载而变化。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "理想电流源输出电流恒定，但端电压随负载变化（教材原题）",
+    "difficulty": 3
+  },
+  {
+    "id": 679,
+    "chapter": 3,
+    "section": 5,
+    "type": "single",
+    "question": "实际电压源与实际电流源进行等效变换时内阻的数值（）",
+    "options": [
+      "A. 不变",
+      "B. 改变",
+      "C. 一个为零",
+      "D. 无法确定"
+    ],
+    "answer": "A",
+    "explain": "两种电源模型等效变换时内阻数值不变，仅由串联改为并联（或相反）",
+    "difficulty": 3
+  },
+  {
+    "id": 680,
+    "chapter": 4,
+    "section": 1,
+    "type": "single",
+    "question": "电容的单位是（）",
+    "options": [
+      "A. 亨利(H)",
+      "B. 法拉(F)",
+      "C. 欧姆(Ω)",
+      "D. 瓦特(W)"
+    ],
+    "answer": "B",
+    "explain": "电容的单位是法拉(F)，常用μF、pF",
+    "difficulty": 1
+  },
+  {
+    "id": 681,
+    "chapter": 4,
+    "section": 1,
+    "type": "fill",
+    "question": "某电容器两极板间电压为10V时所带电荷量为2×10^-4C，其电容为____μF。",
+    "options": [],
+    "answer": "20",
+    "explain": "C=Q/U=2×10^-4/10=2×10^-5F=20μF",
+    "difficulty": 3
+  },
+  {
+    "id": 682,
+    "chapter": 4,
+    "section": 1,
+    "type": "judge",
+    "question": "电容器的电容大小由其本身结构决定，与是否带电及带电多少无关。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "C由极板正对面积、极间距离和介质决定，C=Q/U只是定义式",
+    "difficulty": 2
+  },
+  {
+    "id": 683,
+    "chapter": 4,
+    "section": 2,
+    "type": "single",
+    "question": "两个电容器串联时总电容与各电容的关系是（）",
+    "options": [
+      "A. 等于各电容之和",
+      "B. 总电容的倒数等于各电容倒数之和",
+      "C. 总电容大于任一电容",
+      "D. 无法确定"
+    ],
+    "answer": "B",
+    "explain": "串联电容倒数相加，总电容小于任何一个电容，耐压提高",
+    "difficulty": 2
+  },
+  {
+    "id": 684,
+    "chapter": 4,
+    "section": 2,
+    "type": "single",
+    "question": "两个电容器并联时总电容（）",
+    "options": [
+      "A. 等于各电容之和",
+      "B. 小于任一电容",
+      "C. 倒数相加",
+      "D. 等于较小的电容"
+    ],
+    "answer": "A",
+    "explain": "并联电容相加C=C1+C2，总耐压以最低者为准",
+    "difficulty": 2
+  },
+  {
+    "id": 685,
+    "chapter": 4,
+    "section": 2,
+    "type": "judge",
+    "question": "电容器串联时各电容器所带电荷量相等，电压按电容成反比分配。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "串联电荷相同，容量小的电容器分得电压高，使用时注意耐压",
+    "difficulty": 3
+  },
+  {
+    "id": 686,
+    "chapter": 4,
+    "section": 3,
+    "type": "single",
+    "question": "电容器在电路中的基本特性是（）",
+    "options": [
+      "A. 隔直流、通交流且能储存电场能",
+      "B. 只传导直流",
+      "C. 产生磁场",
+      "D. 消耗电能"
+    ],
+    "answer": "A",
+    "explain": "电容是储能元件，具有隔直通交的作用",
+    "difficulty": 2
+  },
+  {
+    "id": 687,
+    "chapter": 4,
+    "section": 3,
+    "type": "single",
+    "question": "RC电路充电过程中电容两端的电压（）",
+    "options": [
+      "A. 突变",
+      "B. 不能突变",
+      "C. 按正弦规律变化",
+      "D. 保持为零"
+    ],
+    "answer": "B",
+    "explain": "电容电压不能突变，充电时按指数规律逐渐上升",
+    "difficulty": 3
+  },
+  {
+    "id": 688,
+    "chapter": 5,
+    "section": 1,
+    "type": "single",
+    "question": "判断通电直导线周围磁场方向应使用（）",
+    "options": [
+      "A. 左手定则",
+      "B. 右手螺旋定则（安培定则）",
+      "C. 右手定则",
+      "D. 楞次定律"
+    ],
+    "answer": "B",
+    "explain": "右手拇指指向电流方向，弯曲四指指向为磁感线方向",
+    "difficulty": 2
+  },
+  {
+    "id": 689,
+    "chapter": 5,
+    "section": 1,
+    "type": "single",
+    "question": "用右手螺旋定则判断通电线圈的磁场时，弯曲四指指向电流方向则大拇指所指一端为线圈的（）极",
+    "options": [
+      "A. N",
+      "B. S",
+      "C. 不带磁",
+      "D. 正"
+    ],
+    "answer": "A",
+    "explain": "握住线圈四指指向电流方向，大拇指指向为N极",
+    "difficulty": 2
+  },
+  {
+    "id": 690,
+    "chapter": 5,
+    "section": 1,
+    "type": "judge",
+    "question": "电流的周围存在磁场，这一现象称为电流的磁效应。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "电流磁效应由奥斯特发现，磁生电则是电磁感应",
+    "difficulty": 1
+  },
+  {
+    "id": 691,
+    "chapter": 5,
+    "section": 2,
+    "type": "single",
+    "question": "磁感应强度B的单位是（）",
+    "options": [
+      "A. 韦伯(Wb)",
+      "B. 特斯拉(T)",
+      "C. 亨利(H)",
+      "D. 安培/米(A/m)"
+    ],
+    "answer": "B",
+    "explain": "磁感应强度单位特斯拉(T)，磁通单位韦伯(Wb)，磁场强度单位A/m",
+    "difficulty": 2
+  },
+  {
+    "id": 692,
+    "chapter": 5,
+    "section": 2,
+    "type": "matching",
+    "question": "请将磁场物理量与对应的单位连线。",
+    "options": {
+      "left": [
+        "磁通Φ",
+        "磁感应强度B",
+        "磁场强度H"
+      ],
+      "right": [
+        "Wb",
+        "T",
+        "A/m"
+      ]
+    },
+    "answer": "[[0,0],[1,1],[2,2]]",
+    "explain": "磁通Φ-Wb、磁感应强度B-T、磁场强度H-A/m",
+    "difficulty": 3
+  },
+  {
+    "id": 693,
+    "chapter": 5,
+    "section": 3,
+    "type": "single",
+    "question": "通电导体在磁场中受力的方向用（）判断",
+    "options": [
+      "A. 左手定则",
+      "B. 右手定则",
+      "C. 安培定则",
+      "D. 楞次定律"
+    ],
+    "answer": "A",
+    "explain": "左手定则：磁感线穿掌心四指指向电流方向，拇指指向为导体受力方向",
+    "difficulty": 2
+  },
+  {
+    "id": 694,
+    "chapter": 5,
+    "section": 3,
+    "type": "judge",
+    "question": "左手定则中伸开左手让磁感线穿过掌心、四指指向电流方向，则拇指所指方向为导体受力方向。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "左手定则用于判断磁场对载流导体作用力（电磁力）的方向",
+    "difficulty": 2
+  },
+  {
+    "id": 695,
+    "chapter": 5,
+    "section": 4,
+    "type": "judge",
+    "question": "铁磁性物质磁化后能大大增强磁场，因此电机、变压器的铁芯都采用铁磁性材料。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "铁磁材料磁导率高，磁化后磁感应强度大大增强",
+    "difficulty": 2
+  },
+  {
+    "id": 696,
+    "chapter": 5,
+    "section": 5,
+    "type": "single",
+    "question": "磁路欧姆定律中磁阻相当于电路欧姆定律中的（）",
+    "options": [
+      "A. 电动势",
+      "B. 电阻",
+      "C. 电流",
+      "D. 电压"
+    ],
+    "answer": "B",
+    "explain": "磁动势对应电动势、磁通对应电流、磁阻对应电阻",
+    "difficulty": 3
+  },
+  {
+    "id": 697,
+    "chapter": 6,
+    "section": 1,
+    "type": "single",
+    "question": "导体在磁场中做切割磁感线运动时导体中产生感应电动势的现象称为（）",
+    "options": [
+      "A. 电流的磁效应",
+      "B. 电磁感应",
+      "C. 自感现象",
+      "D. 涡流现象"
+    ],
+    "answer": "B",
+    "explain": "磁生电的现象为电磁感应现象，是发电机的基本原理",
+    "difficulty": 2
+  },
+  {
+    "id": 698,
+    "chapter": 6,
+    "section": 2,
+    "type": "single",
+    "question": "闭合电路中部分导体切割磁感线产生感应电流的方向用（）判断",
+    "options": [
+      "A. 左手定则",
+      "B. 右手定则",
+      "C. 安培定则",
+      "D. 楞次定律"
+    ],
+    "answer": "B",
+    "explain": "右手定则：磁感线穿过掌心拇指指向导体运动方向，四指指向感应电流方向",
+    "difficulty": 2
+  },
+  {
+    "id": 699,
+    "chapter": 6,
+    "section": 2,
+    "type": "single",
+    "question": "感应电流的磁场总是阻碍引起感应电流的磁通变化，这一规律称为（）",
+    "options": [
+      "A. 左手定则",
+      "B. 右手定则",
+      "C. 楞次定律",
+      "D. 安培定则"
+    ],
+    "answer": "C",
+    "explain": "楞次定律：感应电流的效果总是反抗产生感应电流的原因",
+    "difficulty": 2
+  },
+  {
+    "id": 700,
+    "chapter": 6,
+    "section": 3,
+    "type": "single",
+    "question": "长为L的导体以速度v垂直切割磁感应强度为B的匀强磁场，感应电动势e=（）",
+    "options": [
+      "A. BLv",
+      "B. BL/v",
+      "C. Bv/L",
+      "D. BL^2v"
+    ],
+    "answer": "A",
+    "explain": "公式e=BLv，B、L、v三者互相垂直时成立",
+    "difficulty": 2
+  },
+  {
+    "id": 701,
+    "chapter": 6,
+    "section": 3,
+    "type": "fill",
+    "question": "长0.5m的导体以10m/s的速度垂直切割0.8T的匀强磁场，感应电动势为____V。",
+    "options": [],
+    "answer": "4",
+    "explain": "e=BLv=0.8×0.5×10=4V",
+    "difficulty": 3
+  },
+  {
+    "id": 702,
+    "chapter": 6,
+    "section": 4,
+    "type": "single",
+    "question": "自感电动势的方向总是阻碍（）",
+    "options": [
+      "A. 电流的增加",
+      "B. 电流的变化",
+      "C. 电压的变化",
+      "D. 磁通的产生"
+    ],
+    "answer": "B",
+    "explain": "自感电动势总是阻碍导体（线圈）中电流的变化",
+    "difficulty": 3
+  },
+  {
+    "id": 703,
+    "chapter": 6,
+    "section": 4,
+    "type": "single",
+    "question": "日光灯镇流器是利用（）原理工作的",
+    "options": [
+      "A. 电磁感应（自感）",
+      "B. 电流的热效应",
+      "C. 光电效应",
+      "D. 化学效应"
+    ],
+    "answer": "A",
+    "explain": "镇流器利用自感在启动瞬间产生高电压点亮灯管并起限流作用",
+    "difficulty": 2
+  },
+  {
+    "id": 704,
+    "chapter": 6,
+    "section": 5,
+    "type": "judge",
+    "question": "互感现象中一个线圈的电流发生变化会在另一个线圈中产生感应电动势。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "互感是变压器的基本工作原理，两个磁耦合线圈之间存在互感",
+    "difficulty": 2
+  },
+  {
+    "id": 705,
+    "chapter": 7,
+    "section": 2,
+    "type": "single",
+    "question": "表征正弦交流电的三要素是（）",
+    "options": [
+      "A. 最大值、角频率（频率）、初相",
+      "B. 电压、电流、功率",
+      "C. 电阻、电感、电容",
+      "D. 有功功率、无功功率、视在功率"
+    ],
+    "answer": "A",
+    "explain": "三要素确定后正弦交流电即完全确定",
+    "difficulty": 1
+  },
+  {
+    "id": 706,
+    "chapter": 7,
+    "section": 2,
+    "type": "single",
+    "question": "我国工频交流电的频率为50Hz，其周期为（）",
+    "options": [
+      "A. 0.01s",
+      "B. 0.02s",
+      "C. 0.05s",
+      "D. 0.2s"
+    ],
+    "answer": "B",
+    "explain": "T=1/f=1/50=0.02s",
+    "difficulty": 2
+  },
+  {
+    "id": 707,
+    "chapter": 7,
+    "section": 2,
+    "type": "single",
+    "question": "市电220V指的是有效值，其最大值约为（）",
+    "options": [
+      "A. 220V",
+      "B. 311V",
+      "C. 380V",
+      "D. 110V"
+    ],
+    "answer": "B",
+    "explain": "Um=√2U=√2×220≈311V",
+    "difficulty": 2
+  },
+  {
+    "id": 708,
+    "chapter": 7,
+    "section": 2,
+    "type": "judge",
+    "question": "正弦交流电的有效值是最大值的√2倍。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "关系应为Um=√2U，即最大值是有效值的√2倍，有效值=最大值/√2",
+    "difficulty": 2
+  },
+  {
+    "id": 709,
+    "chapter": 7,
+    "section": 2,
+    "type": "fill",
+    "question": "正弦交流电压u=311sin(314t+30°)V的最大值为____V（填整数）。",
+    "options": [],
+    "answer": "311",
+    "explain": "由解析式读出Um=311V、ω=314rad/s、初相φ0=30°",
+    "difficulty": 2
+  },
+  {
+    "id": 710,
+    "chapter": 7,
+    "section": 3,
+    "type": "single",
+    "question": "正弦交流电常用的表示方法有解析式、波形图和（）",
+    "options": [
+      "A. 电路图",
+      "B. 相量图（旋转矢量图）",
+      "C. 实物图",
+      "D. 方框图"
+    ],
+    "answer": "B",
+    "explain": "三种表示法可互相转换，相量图便于分析同频率正弦量的相位关系",
+    "difficulty": 2
+  },
+  {
+    "id": 711,
+    "chapter": 7,
+    "section": 3,
+    "type": "judge",
+    "question": "两个同频率正弦量的相位差等于它们的初相之差。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "φ=φ1-φ0，相位差反映了它们到达最大值的先后",
+    "difficulty": 2
+  },
+  {
+    "id": 712,
+    "chapter": 8,
+    "section": 1,
+    "type": "single",
+    "question": "纯电阻电路中电压与电流的相位关系是（）",
+    "options": [
+      "A. 电压超前电流90°",
+      "B. 电压滞后电流90°",
+      "C. 同相位",
+      "D. 反相"
+    ],
+    "answer": "C",
+    "explain": "纯电阻电路中电压与电流同相，P=UI",
+    "difficulty": 1
+  },
+  {
+    "id": 713,
+    "chapter": 8,
+    "section": 2,
+    "type": "single",
+    "question": "纯电感电路中电流（）电压90°",
+    "options": [
+      "A. 超前",
+      "B. 滞后",
+      "C. 等于",
+      "D. 反相于"
+    ],
+    "answer": "B",
+    "explain": "电感电流滞后电压90°，电压超前电流90°",
+    "difficulty": 2
+  },
+  {
+    "id": 714,
+    "chapter": 8,
+    "section": 2,
+    "type": "single",
+    "question": "感抗XL与频率f的关系是（）",
+    "options": [
+      "A. XL=2πfL，随频率增大而增大",
+      "B. 与频率无关",
+      "C. 随频率增大而减小",
+      "D. XL=1/(2πfL)"
+    ],
+    "answer": "A",
+    "explain": "感抗与频率成正比，电感“通直流、阻交流”",
+    "difficulty": 2
+  },
+  {
+    "id": 715,
+    "chapter": 8,
+    "section": 2,
+    "type": "fill",
+    "question": "电感L=0.1H接在f=50Hz的交流电路中，感抗XL=____Ω（π取3.14）。",
+    "options": [],
+    "answer": "31.4",
+    "explain": "XL=2πfL=2×3.14×50×0.1=31.4Ω",
+    "difficulty": 3
+  },
+  {
+    "id": 716,
+    "chapter": 8,
+    "section": 3,
+    "type": "single",
+    "question": "纯电容电路中电流（）电压90°",
+    "options": [
+      "A. 超前",
+      "B. 滞后",
+      "C. 等于",
+      "D. 反相于"
+    ],
+    "answer": "A",
+    "explain": "电容电流超前电压90°，容抗与频率成反比",
+    "difficulty": 2
+  },
+  {
+    "id": 717,
+    "chapter": 8,
+    "section": 3,
+    "type": "single",
+    "question": "容抗XC与频率的关系是（）",
+    "options": [
+      "A. XC=1/(2πfC)，随频率增大而减小",
+      "B. 与频率成正比",
+      "C. 与频率无关",
+      "D. XC=2πfC"
+    ],
+    "answer": "A",
+    "explain": "容抗与频率成反比，电容“隔直流、通交流”",
+    "difficulty": 2
+  },
+  {
+    "id": 718,
+    "chapter": 8,
+    "section": 4,
+    "type": "single",
+    "question": "RL串联电路中R=30Ω、XL=40Ω，电路的总阻抗Z为（）",
+    "options": [
+      "A. 70Ω",
+      "B. 10Ω",
+      "C. 50Ω",
+      "D. 1200Ω"
+    ],
+    "answer": "C",
+    "explain": "Z=√(R²+XL²)=√(900+1600)=50Ω，注意不是代数相加",
+    "difficulty": 3
+  },
+  {
+    "id": 719,
+    "chapter": 8,
+    "section": 4,
+    "type": "judge",
+    "question": "RL串联电路中总电压等于电阻两端电压与电感两端电压的代数和。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "总电压是各部分电压的相量和，符合电压三角形关系UR=Ucosφ、UL=Usinφ",
+    "difficulty": 3
+  },
+  {
+    "id": 720,
+    "chapter": 8,
+    "section": 5,
+    "type": "single",
+    "question": "RLC串联电路发生谐振的条件是（）",
+    "options": [
+      "A. XL=XC",
+      "B. XL>XC",
+      "C. XL<XC",
+      "D. R=0"
+    ],
+    "answer": "A",
+    "explain": "感抗等于容抗时电路呈纯阻性发生串联谐振，f0=1/(2π√LC)",
+    "difficulty": 2
+  },
+  {
+    "id": 721,
+    "chapter": 8,
+    "section": 5,
+    "type": "single",
+    "question": "提高电路功率因数cosφ的意义是（）",
+    "options": [
+      "A. 增大电源容量",
+      "B. 提高电源利用率并减少线路损耗",
+      "C. 增大电路电流",
+      "D. 降低电源电压"
+    ],
+    "answer": "B",
+    "explain": "cosφ越高同一容量电源可输出的有功功率越大、线路电流越小损耗越低",
+    "difficulty": 2
+  },
+  {
+    "id": 722,
+    "chapter": 8,
+    "section": 5,
+    "type": "single",
+    "question": "交流电路的有功功率P等于（）",
+    "options": [
+      "A. UI",
+      "B. UIcosφ",
+      "C. UIsinφ",
+      "D. U²I"
+    ],
+    "answer": "B",
+    "explain": "P=UIcosφ（有功）、Q=UIsinφ（无功）、S=UI（视在）",
+    "difficulty": 2
+  },
+  {
+    "id": 723,
+    "chapter": 8,
+    "section": 5,
+    "type": "calc",
+    "question": "某感性负载接在220V交流电源上消耗有功功率880W、功率因数为0.5，求视在功率和电路电流。",
+    "options": [],
+    "answer": "S=1760VA；I=8A",
+    "explain": "S=P/cosφ=880/0.5=1760VA，I=S/U=1760/220=8A",
+    "difficulty": 3
+  },
+  {
+    "id": 724,
+    "chapter": 9,
+    "section": 1,
+    "type": "single",
+    "question": "RLC串联电路发生谐振时电路的阻抗（）",
+    "options": [
+      "A. 最小且为纯阻性",
+      "B. 最大",
+      "C. 趋于无穷大",
+      "D. 呈容性"
+    ],
+    "answer": "A",
+    "explain": "串联谐振时Z=R最小、电流最大，又称电压谐振",
+    "difficulty": 3
+  },
+  {
+    "id": 725,
+    "chapter": 9,
+    "section": 1,
+    "type": "single",
+    "question": "串联谐振时电感或电容两端电压与电路总电压的关系是（）",
+    "options": [
+      "A. 相等",
+      "B. 为总电压的Q倍",
+      "C. 为零",
+      "D. 为总电压的√2倍"
+    ],
+    "answer": "B",
+    "explain": "UL=UC=QU，Q为品质因数，故串联谐振又称电压谐振",
+    "difficulty": 3
+  },
+  {
+    "id": 726,
+    "chapter": 9,
+    "section": 1,
+    "type": "fill",
+    "question": "RLC串联电路中L=0.1H、C=10μF，谐振频率f0≈____Hz（保留整数）。",
+    "options": [],
+    "answer": "159",
+    "explain": "f0=1/(2π√LC)=1/(2π×10^-3)≈159Hz",
+    "difficulty": 4
+  },
+  {
+    "id": 727,
+    "chapter": 9,
+    "section": 2,
+    "type": "judge",
+    "question": "电感线圈与电容并联谐振时电路总阻抗最大、总电流最小，称为电流谐振。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "并联谐振时支路电流远大于总电流，又称电流谐振，应用于选频和滤波",
+    "difficulty": 3
+  },
+  {
+    "id": 728,
+    "chapter": 9,
+    "section": 2,
+    "type": "single",
+    "question": "电感线圈与电容器并联谐振又称为（）",
+    "options": [
+      "A. 电压谐振",
+      "B. 电流谐振",
+      "C. 串联谐振",
+      "D. 短路谐振"
+    ],
+    "answer": "B",
+    "explain": "并联谐振各支路电流近似相等且远大于总电流，故称电流谐振",
+    "difficulty": 2
+  },
+  {
+    "id": 729,
+    "chapter": 10,
+    "section": 1,
+    "type": "single",
+    "question": "对称三相交流电动势的最大值相等、频率相同、相位互差（）",
+    "options": [
+      "A. 90°",
+      "B. 120°",
+      "C. 180°",
+      "D. 360°"
+    ],
+    "answer": "B",
+    "explain": "三相对称电动势相位互差120°",
+    "difficulty": 1
+  },
+  {
+    "id": 730,
+    "chapter": 10,
+    "section": 1,
+    "type": "single",
+    "question": "三相四线制供电系统中线电压与相电压的关系是（）",
+    "options": [
+      "A. 线电压等于相电压",
+      "B. 线电压等于√3倍相电压",
+      "C. 线电压等于相电压的一半",
+      "D. 线电压等于√2倍相电压"
+    ],
+    "answer": "B",
+    "explain": "U线=√3U相，如线电压380V、相电压220V",
+    "difficulty": 2
+  },
+  {
+    "id": 731,
+    "chapter": 10,
+    "section": 1,
+    "type": "fill",
+    "question": "三相四线制中相电压为220V，则线电压为____V（保留整数）。",
+    "options": [],
+    "answer": "380",
+    "explain": "U线=√3×220≈380V，三相四线制可提供380V和220V两种电压",
+    "difficulty": 2
+  },
+  {
+    "id": 732,
+    "chapter": 10,
+    "section": 2,
+    "type": "single",
+    "question": "对称三相负载作三角形连接时线电流是相电流的（）",
+    "options": [
+      "A. √3倍",
+      "B. 3倍",
+      "C. 1/√3倍",
+      "D. 1倍"
+    ],
+    "answer": "A",
+    "explain": "I线=√3I相，三角形连接时相电压等于线电压",
+    "difficulty": 3
+  },
+  {
+    "id": 733,
+    "chapter": 10,
+    "section": 2,
+    "type": "judge",
+    "question": "三相负载作星形连接时无论负载是否对称都必须接中线。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "B",
+    "explain": "对称负载可不接中线；不对称负载必须接中线且中线上不得安装熔断器和开关",
+    "difficulty": 3
+  },
+  {
+    "id": 734,
+    "chapter": 10,
+    "section": 2,
+    "type": "single",
+    "question": "同一组三相对称负载在同一电源下，三角形连接时的线电流（功率）是星形连接时的（）",
+    "options": [
+      "A. √3倍",
+      "B. 3倍",
+      "C. 1/3倍",
+      "D. 相同"
+    ],
+    "answer": "B",
+    "explain": "U相△=U线，I线△=3I线γ，P△=3Pγ，大功率电动机常采用三角形接法",
+    "difficulty": 4
+  },
+  {
+    "id": 735,
+    "chapter": 10,
+    "section": 3,
+    "type": "single",
+    "question": "三相对称电路的有功功率P等于（）",
+    "options": [
+      "A. √3U线I线cosφ",
+      "B. U线I线",
+      "C. 3U线I线",
+      "D. √3U相I相cosφ"
+    ],
+    "answer": "A",
+    "explain": "P=√3U线I线cosφ（对称负载），cosφ为每相负载的功率因数",
+    "difficulty": 3
+  },
+  {
+    "id": 736,
+    "chapter": 10,
+    "section": 4,
+    "type": "single",
+    "question": "将电气设备正常情况下不带电的金属外壳与电网零线（中性线）连接称为（）",
+    "options": [
+      "A. 保护接地",
+      "B. 保护接零",
+      "C. 工作接地",
+      "D. 防雷接地"
+    ],
+    "answer": "B",
+    "explain": "接中性线为保护接零，直接与大地连接为保护接地",
+    "difficulty": 2
+  },
+  {
+    "id": 737,
+    "chapter": 10,
+    "section": 4,
+    "type": "judge",
+    "question": "在中性点直接接地的低压三相四线制系统中电气设备金属外壳应采取保护接零措施。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "TN系统中采用保护接零，故障时形成短路使保护装置迅速动作",
+    "difficulty": 3
+  },
+  {
+    "id": 738,
+    "chapter": 10,
+    "section": 5,
+    "type": "single",
+    "question": "变压器的基本工作原理是（）",
+    "options": [
+      "A. 电磁感应",
+      "B. 电流的热效应",
+      "C. 光电效应",
+      "D. 磁场对电流的作用力"
+    ],
+    "answer": "A",
+    "explain": "变压器利用互感（电磁感应）原理变换交流电压和电流",
+    "difficulty": 1
+  },
+  {
+    "id": 739,
+    "chapter": 10,
+    "section": 5,
+    "type": "calc",
+    "question": "变压器一次绕组2000匝、二次绕组100匝，一次侧接220V电压，二次侧电压为____V。",
+    "options": [],
+    "answer": "11",
+    "explain": "K=N1/N2=2000/100=20，U2=U1/K=220/20=11V",
+    "difficulty": 3
+  },
+  {
+    "id": 740,
+    "chapter": 10,
+    "section": 5,
+    "type": "single",
+    "question": "理想变压器变压比K=10，若一次电流为1A，则二次电流为（）",
+    "options": [
+      "A. 10A",
+      "B. 1A",
+      "C. 0.1A",
+      "D. 100A"
+    ],
+    "answer": "A",
+    "explain": "由I1/I2=N2/N1=1/K=0.1，得I2=10A，变压同时变流",
+    "difficulty": 3
+  },
+  {
+    "id": 741,
+    "chapter": 11,
+    "section": 1,
+    "type": "judge",
+    "question": "换路瞬间电容两端的电压和电感中的电流都不能突变。",
+    "options": [
+      "A. 正确",
+      "B. 错误"
+    ],
+    "answer": "A",
+    "explain": "换路定律：uC(0+)=uC(0-)、iL(0+)=iL(0-)",
+    "difficulty": 3
+  },
+  {
+    "id": 742,
+    "chapter": 11,
+    "section": 1,
+    "type": "single",
+    "question": "换路定律指出换路瞬间不能突变的量是（）",
+    "options": [
+      "A. 电容电流和电感电压",
+      "B. 电容电压和电感电流",
+      "C. 电阻两端电压",
+      "D. 电源电动势"
+    ],
+    "answer": "B",
+    "explain": "uC和iL不能突变，而电容电流、电感电压可以突变",
+    "difficulty": 3
+  },
+  {
+    "id": 743,
+    "chapter": 11,
+    "section": 2,
+    "type": "single",
+    "question": "RC电路瞬态过程进行的快慢由（）决定",
+    "options": [
+      "A. 时间常数τ=RC",
+      "B. 电源电压大小",
+      "C. 电阻的额定功率",
+      "D. 电容的耐压"
+    ],
+    "answer": "A",
+    "explain": "τ=RC，τ越大充放电越慢，一般认为(3~5)τ后过渡过程基本结束",
+    "difficulty": 2
+  },
+  {
+    "id": 744,
+    "chapter": 11,
+    "section": 2,
+    "type": "fill",
+    "question": "RC电路中R=10kΩ、C=100μF，时间常数τ=____s（填数字）。",
+    "options": [],
+    "answer": "1",
+    "explain": "τ=RC=10×10^3×100×10^-6=1s",
+    "difficulty": 3
   }
 ]

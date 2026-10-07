@@ -18,7 +18,7 @@ const { execFile } = require('child_process');
 const acc = require('./access.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.4.3.0';
+const VERSION = '1.4.4.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -387,6 +387,18 @@ const server = http.createServer(async (req, res) => {
       fs.stat(file, (err, st) => {
         if (err || !st.isFile()) { res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' }); res.end('<h1>404 Not Found</h1>'); return; }
         const ext = path.extname(file).toLowerCase();
+        const base = path.basename(file);
+        /* 版本号注入：html 与 sw.js 中的 __VERSION__ 占位符替换为当前版本，
+           使资源URL与PWA缓存名随版本升级自动变化，避免浏览器缓存旧版页面/脚本 */
+        if (ext === '.html' || base === 'sw.js') {
+          fs.readFile(file, 'utf8', (e2, txt) => {
+            if (e2) { res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('read error'); return; }
+            const out = txt.split('__VERSION__').join(VERSION);
+            res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/javascript; charset=utf-8', 'Cache-Control': 'no-cache' });
+            res.end(out);
+          });
+          return;
+        }
         res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
         fs.createReadStream(file).pipe(res);
       });

@@ -1,5 +1,5 @@
 /* 电闯关·电工大作战 — Service Worker（网页应用可安装/离线壳缓存） */
-const CACHE = 'dg-app-v1';
+const CACHE = 'dg-app-__VERSION__';
 const CORE = [
   './',
   './index.html',
