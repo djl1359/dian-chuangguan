@@ -1069,9 +1069,10 @@ async function loadChapterAnalysis(ch) {
       S.chapters = meta.chapters; S.levels = meta.levels; S.unit = meta.unit || '';
       S.settings = meta.settings || {};
       S.version = meta.version || '';
+      S.dbType = meta.dbType || '';
       window.GAME_SETTINGS = S.settings;
       const av = $('app-version');
-      if (av && meta.version) av.textContent = meta.version;
+      if (av && meta.version) av.textContent = meta.version + (meta.dbType ? ' · ' + meta.dbType : '');
       if (meta.unit) {
         S.gameName = meta.gameName || '电闯关·电工大作战';
         document.title = (meta.unit ? meta.unit + ' · ' : '') + S.gameName;
@@ -1082,7 +1083,7 @@ async function loadChapterAnalysis(ch) {
         const ul = $('unit-login');
         if (ul) ul.textContent = meta.unit;
       }
-      document.querySelectorAll('.copyright-line').forEach(el => { el.textContent = '河北省滦州市职业技术教育中心 空城流水老师利用豆包AI制做'; });
+      document.querySelectorAll('.copyright-line').forEach(el => { el.textContent = '河北省滦州市职业技术教育中心 空城流水老师利用豆包AI制做' + (meta.version ? '（' + meta.version + ' ' + (meta.dbType || '') + '）' : ''); });
       const chSel = $('q-filter-chapter');
       chSel.innerHTML = '<option value="">全部章节</option>' + meta.chapters.map(c => '<option value="' + c.id + '">第' + (c.id === 0 ? '0' : c.id) + '章 ' + c.name + '</option>').join('');
       const stuSel = $('ana-student-select');
@@ -1728,7 +1729,9 @@ async function loadChapterAnalysis(ch) {
           const ex = $('p-export'); if (ex) ex.disabled = false;
           pv.innerHTML = '<b style="color:var(--accent2)">' + esc(r.title) + '</b>　共 ' + r.total + ' 题<br>' +
             r.groups.map(g => '<div style="margin:6px 0"><b>' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
-              g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + esc(q.question) + (q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:180px;max-height:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff"></div>' : '') + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
+              g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + esc(q.question) +
+                (q.type === 'matching' ? '<div style="display:flex;gap:8px;margin:4px 0 4px 22px"><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.left ? q.options.left.map((l, li) => (li + 1) + '. ' + esc(l)).join('<br>') : '') + '</div><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.right ? q.options.right.map((r2, ri) => String.fromCharCode(65 + ri) + '. ' + esc(r2)).join('<br>') : '') + '</div></div>' : '') +
+                (q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:180px;max-height:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff"></div>' : '') + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
             '<div style="margin-top:8px;color:var(--dim)">导出 Word 后可在 WPS/Word 中打开打印。</div>';
         } catch (e) { pv.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
       };

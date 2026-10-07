@@ -68,8 +68,9 @@
           html += '<span style="display:inline-block;margin-left:4mm;border-bottom:1.5px solid #000;width:30mm;height:5mm;vertical-align:bottom"></span>';
         } else if (q.type === 'matching') {
           const o = q.options || {};
-          html += '<div style="margin:1mm 0 1mm 6mm">' + (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + l).join('　　') : '') + '</div>';
-          html += '<div style="margin:1mm 0 1mm 6mm">' + (Array.isArray(o.right) ? o.right.map((r, i) => String.fromCharCode(65 + i) + '. ' + r).join('　　') : '') + '</div>';
+          const lc = (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + esc(l)).join('<br/>') : '');
+          const rc = (Array.isArray(o.right) ? o.right.map((r, i) => String.fromCharCode(65 + i) + '. ' + esc(r)).join('<br/>') : '');
+          html += '<table style="width:92%;border-collapse:collapse;margin:1mm 0 1mm 6mm;font-size:11.5pt"><tr><td style="width:50%;border:1px solid #000;padding:1.5mm 3mm;vertical-align:top">' + lc + '</td><td style="width:50%;border:1px solid #000;padding:1.5mm 3mm;vertical-align:top">' + rc + '</td></tr></table>';
           html += '<div style="margin:1mm 0 1mm 6mm">连　线：＿＿＿＿＿＿＿＿＿＿＿＿</div>';
         } else if (q.type === 'calc') {
           html += '<div style="margin:1mm 0 1mm 6mm;font-size:11.5pt"><b>已知：</b><div style="border-bottom:1px solid #000;height:6mm;margin-left:12mm"></div><b>求：</b><div style="border-bottom:1px solid #000;height:6mm;margin-left:12mm"></div>' +

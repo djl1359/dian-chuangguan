@@ -18,7 +18,7 @@ const { execFile } = require('child_process');
 const acc = require('./store.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.4.4.0';
+const VERSION = '1.4.4.1';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -432,7 +432,7 @@ const server = http.createServer(async (req, res) => {
     }
     // 章节与关卡配置（含使用单位）
     if (p === '/api/meta') {
-      return sendJSON(res, 200, { chapters: CHAPTERS, levels: LEVELS, unit: db.settings.unit || '', gameName: db.settings.gameName || '电闯关·电工大作战', version: db.settings.version || 'V2.0', settings: db.settings || {} });
+      return sendJSON(res, 200, { chapters: CHAPTERS, levels: LEVELS, unit: db.settings.unit || '', gameName: db.settings.gameName || '电闯关·电工大作战', version: db.settings.version || 'V2.0', dbType: 'JSON数据库版', settings: db.settings || {} });
     }
     // 当前用户信息
     if (p === '/api/me' && req.method === 'GET') {
@@ -1633,8 +1633,13 @@ function paperOptsHtml(q) {
     const right = Array.isArray(o.right) ? o.right : [];
     const pairs = [];
     try { JSON.parse(q.answer || '[]').forEach(pr => pairs[pr[0]] = pr[1]); } catch (e) {}
-    return '<p style="margin:4px 0">' + left.map((l, i) => (i + 1) + '. ' + l).join('　　') + '</p>' +
-      '<p style="margin:4px 0">' + right.map((r, i) => String.fromCharCode(65 + i) + '. ' + r).join('　　') + '</p>' +
+    /* 两列对照排版：左列序号项 | 右列字母项 */
+    const lc = left.map((l, i) => (i + 1) + '. ' + l).join('<br/>');
+    const rc = right.map((r, i) => String.fromCharCode(65 + i) + '. ' + r).join('<br/>');
+    return '<table style="width:100%;border-collapse:collapse;margin:6px 0;font-size:12pt"><tr>' +
+      '<td style="width:50%;vertical-align:top;padding:4px 10px;border:1px solid #999">' + lc + '</td>' +
+      '<td style="width:50%;vertical-align:top;padding:4px 10px;border:1px solid #999">' + rc + '</td>' +
+      '</tr></table>' +
       (pairs.length ? '<p style="color:#666">配对参考答案：' + pairs.map((ri, li) => (li + 1) + '→' + String.fromCharCode(65 + (ri == null ? 0 : ri))).join('　') + '</p>' : '');
   }
   return '<p style="margin:2px 0">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]\s*/, '')).join('<br/>') : '') + '</p>';
