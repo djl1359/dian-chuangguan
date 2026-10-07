@@ -60,6 +60,9 @@
     /* 1.0.0.5：题库模板导出/试题导入/批量删除 */
     qImport: (format, content) => API.req('POST', '/api/questions/import', { format, content }),
     qBatchDelete: (ids) => API.req('POST', '/api/questions/admin/batch-delete', { ids }),
+    /* 1.4.3.0：图片OCR识别 / 网页抓题 */
+    ocr: (image) => API.req('POST', '/api/ocr', { image }),
+    fetchQuestions: (url) => API.req('POST', '/api/fetch-questions', { url }),
     /* 1.0.0.5：二进制文件下载（模板 CSV / 组卷 doc） */
     async download(url, method, body) {
       const headers = {};

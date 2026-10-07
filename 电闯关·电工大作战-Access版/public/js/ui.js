@@ -824,6 +824,13 @@ async function loadChapterAnalysis(ch) {
       '<option value="center">居中</option><option value="left">左对齐</option><option value="right">右对齐</option></select></div>' +
       '<div class="form-row" id="qf-size-row" style="display:none;margin-top:6px"><label style="font-size:12px;color:var(--dim)">图片大小（显示宽度，闯关/试卷/答题卡通用）</label><select id="qf-size" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' +
       '<option value="40">小（40%）</option><option value="60">中（60%）</option><option value="80">大（80%）</option><option value="100">原图（100%）</option></select></div></div>' +
+      '<div class="form-row" style="margin-top:4px;border-top:1px dashed var(--line);padding-top:6px">' +
+      '<button type="button" class="btn small" id="qf-ocr-btn">✂️ 截图/图片识别填入</button>' +
+      '<input type="file" id="qf-ocr-file" accept="image/*" style="display:none">' +
+      '<span style="font-size:11px;color:var(--dim);margin-left:6px">粘贴截图 Ctrl+V 或选择图片，自动识别文字填入表单</span></div>' +
+      '<div class="form-row" style="text-align:center"><img id="qf-ocr-preview" style="max-width:100%;max-height:150px;display:none;border:1px solid var(--line);border-radius:8px;background:#fff;object-fit:contain"></div>' +
+      '<div class="result-btns"><button class="btn" id="qf-ocr-run" style="display:none">🔍 识别并填入表单</button><button class="btn" id="qf-ocr-saveimg" style="display:none">🖼️ 保存为题图</button></div>' +
+      '<div class="msg" id="qf-ocr-msg" style="font-size:12px;color:var(--dim);margin:2px 0 6px"></div>' +
       '<div class="form-row" id="qf-opts-row"><label style="font-size:12px;color:var(--dim)">选项（每行一个，如：A. 50Hz；多选答案填字母如 A,C；填空题型不填选项）</label><textarea id="qf-options" rows="4" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.options && Array.isArray(q.options) ? q.options.join('\n') : '') + '</textarea></div>' +
       '<div class="form-row" id="qf-match-row" style="display:none">' +
       '<label style="font-size:12px;color:var(--dim)">连线题·左列（每行一项）</label><textarea id="qf-m-left" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.left || []).join('\n') : '') + '</textarea>' +
@@ -840,7 +847,7 @@ async function loadChapterAnalysis(ch) {
     };
     $('qf-type').onchange = syncForm;
     syncForm();
-    /* 题干图片：上传/预览/删除/对齐（1.4.0.0） */
+    /* 题干图片：上传/预览/删除/对齐/大小（1.4.0.0） */
     S.qfImage = (q && q.image) || '';
     S.qfAlign = (q && ['left', 'center', 'right'].includes(q.imageAlign)) ? q.imageAlign : 'center';
     S.qfSize = (q && Number(q.imgSize) >= 20 && Number(q.imgSize) <= 100) ? Number(q.imgSize) : 60;
@@ -868,6 +875,75 @@ async function loadChapterAnalysis(ch) {
       fr.readAsDataURL(f);
     };
     renderQfImg();
+    /* 1.4.3.0：截图/图片识别自动填入表单 */
+    let qfOcrB64 = '';
+    const qfOcrShow = (b64) => {
+      qfOcrB64 = b64;
+      const pv = $('qf-ocr-preview');
+      pv.src = b64; pv.style.display = '';
+      $('qf-ocr-run').style.display = '';
+      $('qf-ocr-saveimg').style.display = '';
+      $('qf-ocr-msg').textContent = '已载入图片，点击「🔍 识别并填入表单」自动识别；识别不准可手动修改表单';
+    };
+    $('qf-ocr-btn').onclick = () => { $('qf-ocr-file').click(); };
+    $('qf-ocr-file').onchange = () => {
+      const f = $('qf-ocr-file').files[0];
+      if (!f) return;
+      if (f.size > 15 * 1024 * 1024) { $('qf-ocr-msg').textContent = '图片过大（限15MB）'; return; }
+      const fr = new FileReader();
+      fr.onload = () => qfOcrShow(String(fr.result));
+      fr.readAsDataURL(f);
+    };
+    const qfPasteHandler = (e) => {
+      if (!document.getElementById('qf-ocr-file')) return;
+      const items = (e.clipboardData || {}).items || [];
+      for (const it of items) {
+        if (it.type && it.type.startsWith('image/')) {
+          const f = it.getAsFile();
+          if (!f) return;
+          const fr = new FileReader();
+          fr.onload = () => qfOcrShow(String(fr.result));
+          fr.readAsDataURL(f);
+          break;
+        }
+      }
+    };
+    document.addEventListener('paste', qfPasteHandler);
+    const qfCloseH = UIM.closeModal;
+    UIM.closeModal = () => { document.removeEventListener('paste', qfPasteHandler); UIM.closeModal = qfCloseH; qfCloseH(); };
+    $('qf-ocr-run').onclick = async () => {
+      if (!qfOcrB64) return;
+      $('qf-ocr-msg').textContent = '识别中…';
+      try {
+        const r = await API.ocr(qfOcrB64);
+        const ocrLines = (r.lines && r.lines.length ? r.lines.map(l => l.text || '').join('\n') : r.text) || '';
+        const qs = UIM.parseOcrQuestions(ocrLines, true);
+        if (!qs.length) { $('qf-ocr-msg').textContent = '未识别到题目文字，请换更清晰的截图或手动输入'; return; }
+        const it = qs[0];
+        $('qf-type').value = it.type; syncForm();
+        $('qf-question').value = it.question;
+        if (it.type === 'matching') {
+          $('qf-m-left').value = Array.isArray(it.options.left) ? it.options.left.join('\n') : '';
+          $('qf-m-right').value = Array.isArray(it.options.right) ? it.options.right.join('\n') : '';
+        } else {
+          $('qf-options').value = (it.options || []).join('\n');
+        }
+        $('qf-answer').value = it.answer || '';
+        $('qf-explain').value = it.explain || '';
+        $('qf-diff').value = String(it.difficulty || 3);
+        $('qf-ocr-msg').textContent = '已自动填入第 1 题（共识别 ' + qs.length + ' 题）。多题请用「导入试题 → 截图识别」批量导入；识别不准请手动修改后保存';
+      } catch (e) { $('qf-ocr-msg').textContent = e.message; }
+    };
+    $('qf-ocr-saveimg').onclick = async () => {
+      if (!qfOcrB64) return;
+      $('qf-ocr-msg').textContent = '保存题图中…';
+      try {
+        const r = await API.uploadQimg(qfOcrB64);
+        S.qfImage = r.url || r.path || '';
+        renderQfImg();
+        $('qf-ocr-msg').textContent = '题图已保存并应用到本题（可继续调整对齐/大小）';
+      } catch (e) { $('qf-ocr-msg').textContent = e.message; }
+    };
     $('qf-save').onclick = () => saveQuestion(q);
   }
   async function saveQuestion(q) {
@@ -1319,7 +1395,7 @@ async function loadChapterAnalysis(ch) {
       const u = S.qfImage;
       if (!u) return;
       try { await API.deleteQimg(u); } catch (e) { /* 文件不存在忽略 */ }
-      S.qfImage = ''; S.qfAlign = 'center'; S.qfSize = 60;
+      S.qfImage = ''; S.qfAlign = 'center';
       const box = $('qf-img-preview');
       if (box) box.innerHTML = '';
       const d = $('qf-img-del');
@@ -1336,20 +1412,272 @@ async function loadChapterAnalysis(ch) {
       } catch (e) { toast(e.message); }
     },
     openImportModal() {
-      openModal('<h3 style="margin-bottom:12px">📤 导入试题</h3>' +
-        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">格式</label><select id="imp-format" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"><option value="csv">CSV（推荐，与导出的模板一致）</option><option value="json">JSON</option></select></div>' +
-        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">粘贴试题内容（查重：与题库完全相同的题干会保留原题、跳过导入）</label><textarea id="imp-content" rows="10" placeholder="可先在 WPS/Excel 里按模板编辑后复制到此处…" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></textarea></div>' +
+      const chapterOpts = S.chapters.map(c => '<option value="' + c.id + '">第' + (c.id === 0 ? '0' : c.id) + '章 ' + esc(c.name) + '</option>').join('');
+      const inp = 'style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"';
+      openModal('<h3 style="margin-bottom:12px">📤 导入试题（文件 / 截图识别 / 网页抓题）</h3>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">' +
+        '<button class="imp-tab btn small primary" data-t="file">📄 选择CSV文件</button>' +
+        '<button class="imp-tab btn small" data-t="ocr">✂️ 截图识别</button>' +
+        '<button class="imp-tab btn small" data-t="web">🌐 网页抓题</button>' +
+        '<button class="imp-tab btn small" data-t="paste">📋 粘贴文本</button></div>' +
+        '<div id="imp-file">' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">格式</label><select id="imp-format" ' + inp + '><option value="csv">CSV（推荐，与导出的模板一致）</option><option value="json">JSON</option></select></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">选择本地 CSV 文件（查重：与题库完全相同的题干会保留原题、跳过导入）</label><input type="file" id="imp-file-input" accept=".csv,text/csv" ' + inp + '></div>' +
+        '<div id="imp-file-prev" style="font-size:12px;color:var(--dim);margin:6px 0;display:none"></div>' +
+        '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="imp-file-save">📥 导入所选文件</button></div></div>' +
+        '<div id="imp-ocr" style="display:none">' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">上传题目截图（支持选择文件 / 粘贴截图 Ctrl+V / 拖放图片到页面）</label><input type="file" id="imp-ocr-input" accept="image/*" ' + inp + '></div>' +
+        '<div class="form-row" style="text-align:center"><img id="imp-ocr-preview" style="max-width:100%;max-height:180px;display:none;border:1px solid var(--line);border-radius:8px;background:#fff;object-fit:contain"></div>' +
+        '<div class="result-btns"><button class="btn" id="imp-ocr-run" disabled>🔍 识别文字</button><button class="btn" id="imp-ocr-saveimg" disabled>🖼️ 保存为题图</button></div>' +
+        '<div class="form-row"><textarea id="imp-ocr-text" rows="6" placeholder="识别结果将显示在这里，可手动修改后点“解析为题目并编辑”…" ' + inp + '></textarea></div>' +
+        '<div class="result-btns"><button class="btn primary" id="imp-ocr-parse">🧩 解析为题目并编辑</button></div>' +
+        '<div id="imp-ocr-cards"></div></div>' +
+        '<div id="imp-web" style="display:none">' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">输入网页地址，自动提取网页中的题目（含选项与答案）</label><input id="imp-web-url" placeholder="https://…" ' + inp + '></div>' +
+        '<div class="result-btns"><button class="btn primary" id="imp-web-run">🌐 抓取题目</button></div>' +
+        '<div id="imp-web-info" style="font-size:12px;color:var(--dim);margin:6px 0"></div>' +
+        '<div id="imp-web-cards"></div></div>' +
+        '<div id="imp-paste" style="display:none">' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">粘贴试题内容（查重：与题库完全相同的题干会保留原题、跳过导入）</label><textarea id="imp-content" rows="10" placeholder="可先在 WPS/Excel 里按模板编辑后复制到此处…" ' + inp + '></textarea></div>' +
+        '<div class="result-btns"><button class="btn primary" id="imp-save">开始导入</button></div></div>' +
         '<div class="msg" id="imp-msg"></div>' +
-        '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="imp-save">开始导入</button></div>');
-      $('imp-save').onclick = async () => {
-        const content = $('imp-content').value;
-        if (!content.trim()) { $('imp-msg').textContent = '请粘贴导入内容'; return; }
+        '<div class="result-btns" style="margin-top:8px"><button class="btn ghost" onclick="UIM.closeModal()">关闭</button></div>');
+      const tabs = document.querySelectorAll('.imp-tab');
+      const panels = { file: $('imp-file'), ocr: $('imp-ocr'), web: $('imp-web'), paste: $('imp-paste') };
+      tabs.forEach(b => b.onclick = () => {
+        tabs.forEach(x => x.classList.remove('primary'));
+        b.classList.add('primary');
+        Object.keys(panels).forEach(k => { panels[k].style.display = (k === b.dataset.t) ? '' : 'none'; });
+      });
+      /* ---- 导入执行（共用） ---- */
+      async function doImport(format, content) {
         try {
-          const r = await API.qImport($('imp-format').value, content);
+          const r = await API.qImport(format, content);
           $('imp-msg').innerHTML = '<b style="color:var(--ok)">导入完成：新增 ' + r.added + ' 道</b>，重复跳过 ' + r.exists + ' 道，无效 ' + r.failed + ' 道' + (r.problems && r.problems.length ? '<br><span style="color:var(--danger)">' + esc(r.problems.join('<br>')) + '</span>' : '');
           loadQuestions();
         } catch (e) { $('imp-msg').textContent = e.message; }
+      }
+      /* ---- Tab1 选择CSV文件 ---- */
+      $('imp-file-input').onchange = () => {
+        const f = $('imp-file-input').files[0];
+        if (!f) return;
+        const fr = new FileReader();
+        fr.onload = () => {
+          S.impFileText = String(fr.result || '');
+          const rows = S.impFileText.split('\n').filter(l => l.trim() && !l.trim().startsWith('#')).length;
+          $('imp-file-prev').style.display = '';
+          $('imp-file-prev').textContent = '已选择：' + f.name + '（约 ' + rows + ' 行数据）';
+        };
+        fr.readAsText(f, 'utf-8');
       };
+      $('imp-file-save').onclick = () => {
+        if (!S.impFileText || !S.impFileText.trim()) { $('imp-msg').textContent = '请先选择 CSV 文件'; return; }
+        doImport($('imp-format').value, S.impFileText);
+      };
+      /* ---- Tab4 粘贴导入（原逻辑） ---- */
+      $('imp-save').onclick = () => {
+        const content = $('imp-content').value;
+        if (!content.trim()) { $('imp-msg').textContent = '请粘贴导入内容'; return; }
+        doImport($('imp-format').value, content);
+      };
+      /* ---- Tab2 截图识别 ---- */
+      let ocrImgB64 = '';
+      const showImg = (b64) => {
+        ocrImgB64 = b64;
+        const img = $('imp-ocr-preview');
+        img.src = b64; img.style.display = '';
+        $('imp-ocr-run').disabled = false;
+        $('imp-ocr-saveimg').disabled = false;
+        $('imp-ocr-text').value = '';
+      };
+      $('imp-ocr-input').onchange = () => {
+        const f = $('imp-ocr-input').files[0];
+        if (!f) return;
+        const fr = new FileReader();
+        fr.onload = () => showImg(String(fr.result));
+        fr.readAsDataURL(f);
+      };
+      const impPasteHandler = (e) => {
+        if (!document.getElementById('imp-ocr')) return;
+        const items = (e.clipboardData || {}).items || [];
+        for (const it of items) {
+          if (it.type && it.type.startsWith('image/')) {
+            const f = it.getAsFile();
+            if (!f) return;
+            const fr = new FileReader();
+            fr.onload = () => showImg(String(fr.result));
+            fr.readAsDataURL(f);
+            break;
+          }
+        }
+      };
+      document.addEventListener('paste', impPasteHandler);
+      const closeH = UIM.closeModal;
+      UIM.closeModal = () => { document.removeEventListener('paste', impPasteHandler); UIM.closeModal = closeH; closeH(); };
+      $('imp-ocr-run').onclick = async () => {
+        if (!ocrImgB64) return;
+        $('imp-msg').textContent = '识别中…';
+        try {
+          const r = await API.ocr(ocrImgB64);
+          $('imp-msg').textContent = '';
+          const ocrLines = (r.lines && r.lines.length ? r.lines.map(l => l.text || '').join('\n') : r.text) || '（未识别到文字）';
+          $('imp-ocr-text').value = ocrLines;
+        } catch (e) { $('imp-msg').textContent = e.message; }
+      };
+      $('imp-ocr-saveimg').onclick = async () => {
+        if (!ocrImgB64) return;
+        $('imp-msg').textContent = '保存题图中…';
+        try {
+          const r = await API.uploadQimg(ocrImgB64);
+          S.impImgPath = r.url || '';
+          $('imp-msg').textContent = '题图已保存：' + S.impImgPath + '（如需应用于题目，在下方“题图路径”里确认）';
+        } catch (e) { $('imp-msg').textContent = e.message; }
+      };
+      $('imp-ocr-parse').onclick = () => {
+        const qs = UIM.parseOcrQuestions($('imp-ocr-text').value || '', true);
+        if (!qs.length) { $('imp-msg').textContent = '未能从识别文本中解析出题目，请手动修改后再试'; return; }
+        UIM.renderQEditCards(qs, $('imp-ocr-cards'), chapterOpts, { withImg: true });
+        $('imp-msg').textContent = '已解析 ' + qs.length + ' 道题目，请核对后逐题“加入题库”';
+      };
+      /* ---- Tab3 网页抓题 ---- */
+      $('imp-web-run').onclick = async () => {
+        const url = $('imp-web-url').value.trim();
+        if (!url) { $('imp-msg').textContent = '请输入网页地址'; return; }
+        $('imp-web-info').textContent = '抓取中…';
+        $('imp-web-cards').innerHTML = '';
+        try {
+          const r = await API.fetchQuestions(url);
+          const nq = r.questions ? r.questions.length : 0;
+          $('imp-web-info').innerHTML = '已抓取网页（' + r.htmlLen + ' 字符），提取到 <b>' + nq + '</b> 道题目' + (r.images && r.images.length ? '；另有 ' + r.images.length + ' 张图片，可截图后到「截图识别」导入' : '') + (nq === 0 ? '<br><span style="color:#ff9f1a">⚠️ 该网页未提取到题目（可能需登录/会员，或题目为动态/图片加载）。请在浏览器打开此网页后<b>截图</b>，再到「截图识别」标签粘贴导入</span>' : '');
+          UIM.renderQEditCards(r.questions, $('imp-web-cards'), chapterOpts, {});
+        } catch (e) { $('imp-web-info').textContent = e.message; }
+      };
+    },
+    /* 1.4.3.0：把 OCR 识别文本/网页文本解析为题目列表（fromOcr=true 时先做 OCR 文本规范化：Windows OCR 会在字间插空格） */
+    parseOcrQuestions(text, fromOcr) {
+      let lines = String(text || '').split(/\n+/).map(s => s.replace(/\s+/g, ' ').trim()).filter(Boolean);
+      if (fromOcr) {
+        lines = lines.map(l => l
+          .replace(/([\u4e00-\u9fa5])\s+/g, '$1')
+          .replace(/\s+([,，.．、；;:：!！?？)）]|%|Hz|V|Ω|A|W)/g, '$1')
+          .replace(/\s+([A-Ha-h]\s*[.、．)）])/g, ' $1')
+        );
+      }
+      const out = [];
+      let cur = null;
+      const push = () => { if (cur && (cur.question || cur.options.length)) out.push(cur); };
+      for (let ln of lines) {
+        const mNum = ln.match(/^(\d{1,3})\s*[、.．)）。]\s*(.+)$/);
+        if (mNum) {
+          push();
+          cur = { question: mNum[2].replace(/[（(]\s*[）)]\s*$/, '').trim(), options: [], answer: '', explain: '' };
+          continue;
+        }
+        if (!cur) continue;
+        /* 选项行（可能一行含多个选项，如 "A. 50Hz B. 60Hz C. 100Hz"） */
+        if (/^[A-H]\s*[.、．)）]/.test(ln) || /(^|\s)[A-H]\s*[.、．)）]\s+\S/.test(ln)) {
+          const toks = ln.split(/(?=[A-H]\s*[.、．)）])/).filter(s => /^[A-H]\s*[.、．)）]/.test(s));
+          if (toks.length > 1) { toks.forEach(t => cur.options.push(t.replace(/^[A-H]\s*[.、．)）]\s*/, '').trim())); continue; }
+          cur.options.push(ln.replace(/^[A-H]\s*[.、．)）]\s*/, '').trim());
+          continue;
+        }
+        const mAns = ln.match(/^(?:答案|参考答案|正确答案|【答案】)\s*[:：]?\s*(.+)$/i);
+        if (mAns) { cur.answer = mAns[1].trim().replace(/^[（(]|[）)]$/g, ''); continue; }
+        if (cur.question && (cur.options.length || cur.answer)) cur.explain = (cur.explain ? cur.explain + ' ' : '') + ln;
+        else if (!cur.question) cur.question = ln;
+      }
+      push();
+      return out.map(x => {
+        let type = 'single';
+        let options = x.options;
+        const q = x.question.replace(/\s+/g, ' ').trim();
+        if (!options.length) {
+          if (/(正确|错误|对错|√|×)/.test(q) || /[（(]\s*[）)]\s*$/.test(q)) { type = 'judge'; options = ['正确', '错误']; }
+          else if (x.answer && x.answer.length <= 12) type = 'fill';
+          else type = 'calc';
+        }
+        let answer = x.answer;
+        if (type === 'single' && answer && !/^[A-H]$/i.test(answer)) {
+          const idx = x.options.findIndex(o => o === answer.trim());
+          if (idx >= 0) answer = String.fromCharCode(65 + idx);
+        }
+        if (type === 'judge' && answer) {
+          if (/^(对|正确|√|是|T)$/i.test(answer)) answer = 'A';
+          else if (/^(错|错误|×|否|F)$/i.test(answer)) answer = 'B';
+        }
+        return { type, question: q, options, answer, explain: x.explain || '', difficulty: (type === 'single' || type === 'judge') ? 2 : 3 };
+      }).filter(x => x.question && x.question.length > 3);
+    },
+    /* 1.4.3.0：渲染可编辑题目卡片（OCR/网页抓题共用），逐题"加入题库" */
+    renderQEditCards(qs, container, chapterOpts, opts) {
+      const withImg = !!(opts && opts.withImg);
+      const TYPE_OPTS = [['single', '单选'], ['judge', '判断'], ['multi', '多选'], ['fill', '填空'], ['matching', '连线'], ['calc', '计算']].map(t => '<option value="' + t[0] + '">' + t[1] + '</option>').join('');
+      const DIFF_OPTS = [1, 2, 3, 4, 5].map(n => '<option value="' + n + '">' + n + ' 星</option>').join('');
+      const inp = 'style="padding:7px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text);font-size:12px"';
+      container.innerHTML = qs.map((q, i) => {
+        let optTxt = '';
+        if (q.type === 'matching') {
+          optTxt = (q.options && q.options.left) ? '左:' + q.options.left.join('|') + ';右:' + q.options.right.join('|') : (Array.isArray(q.options) ? q.options.join('\n') : '');
+        } else optTxt = Array.isArray(q.options) ? q.options.join('\n') : '';
+        return '<div class="q-card" data-i="' + i + '" style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:rgba(4,10,30,.5)">' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">' +
+          '<select class="qc-type" ' + inp + '>' + TYPE_OPTS + '</select>' +
+          '<select class="qc-ch" ' + inp + '>' + chapterOpts + '</select>' +
+          '<input class="qc-sec" placeholder="节" value="1" ' + inp + ' style="width:52px;' + '">' +
+          '<select class="qc-diff" ' + inp + '>' + DIFF_OPTS + '</select></div>' +
+          '<div class="form-row"><textarea class="qc-q" rows="2" placeholder="题干" ' + inp.replace('padding:7px', 'padding:7px;width:100%') + '>' + esc(q.question) + '</textarea></div>' +
+          '<div class="form-row"><textarea class="qc-o" rows="2" placeholder="选项（每行一个；连线题用 左:…;右:…）" ' + inp.replace('padding:7px', 'padding:7px;width:100%') + '>' + esc(optTxt) + '</textarea></div>' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">' +
+          '<input class="qc-a" placeholder="答案（单选A；判断A/B；多选A,B；连线0-0;1-1；填空/计算直接填）" value="' + esc(q.answer || '') + '" ' + inp + ' style="flex:1;min-width:160px">' +
+          (withImg ? '<input class="qc-img" placeholder="题图路径（保存题图后自动填入）" value="' + esc(S.impImgPath || '') + '" ' + inp + ' style="flex:1;min-width:140px">' : '') +
+          '</div>' +
+          '<div class="form-row"><input class="qc-x" placeholder="解析（可选）" value="' + esc(q.explain || '') + '" ' + inp + ' style="width:100%"></div>' +
+          '<div class="result-btns" style="margin-top:6px"><button class="btn small primary qc-add">➕ 加入题库</button><button class="btn small qc-del">移除</button><span class="qc-st" style="font-size:12px;color:var(--dim);margin-left:8px"></span></div></div>';
+      }).join('');
+      container.querySelectorAll('.q-card').forEach(card => {
+        const i = parseInt(card.dataset.i, 10);
+        const q = qs[i];
+        card.querySelector('.qc-type').value = q.type;
+        card.querySelector('.qc-ch').value = (q.chapter != null ? q.chapter : 0);
+        card.querySelector('.qc-diff').value = q.difficulty || 3;
+        const st = card.querySelector('.qc-st');
+        const btnAdd = card.querySelector('.qc-add');
+        btnAdd.onclick = async () => {
+          const obj = UIM.collectQCard(card, withImg);
+          if (!obj.question.trim()) { st.textContent = '题干为空'; return; }
+          if (!obj.options || !obj.options.length) { st.textContent = '请填写选项（判断/填空/计算可留空）'; return; }
+          st.textContent = '提交中…';
+          try {
+            const r = await API.qAdd(obj);
+            st.textContent = '✓ 已加入（#' + r.id + '）';
+            btnAdd.disabled = true;
+            loadQuestions();
+          } catch (e) { st.textContent = e.message; }
+        };
+        card.querySelector('.qc-del').onclick = () => card.remove();
+      });
+    },
+    /* 1.4.3.0：收集题目卡片表单为提交对象 */
+    collectQCard(card, withImg) {
+      const type = card.querySelector('.qc-type').value;
+      const chapter = parseInt(card.querySelector('.qc-ch').value, 10) || 0;
+      const section = parseInt(card.querySelector('.qc-sec').value, 10) || 1;
+      const question = card.querySelector('.qc-q').value.trim();
+      const optsRaw = card.querySelector('.qc-o').value;
+      const answer = card.querySelector('.qc-a').value.trim();
+      const explain = card.querySelector('.qc-x').value.trim();
+      const difficulty = parseInt(card.querySelector('.qc-diff').value, 10) || 3;
+      let options = [];
+      if (type === 'matching') {
+        const m = optsRaw.match(/^左[:：](.+?)[;；]右[:：](.+)$/);
+        if (m) options = { left: m[1].split('|').map(s => s.trim()).filter(Boolean), right: m[2].split('|').map(s => s.trim()).filter(Boolean) };
+      } else options = optsRaw.split('\n').map(s => s.trim()).filter(Boolean);
+      const obj = { chapter, section, type, question, options, answer, explain, difficulty };
+      if (withImg) {
+        const p = card.querySelector('.qc-img').value.trim();
+        if (p) { obj.image = p; obj.imageAlign = 'center'; obj.imgSize = 60; }
+      }
+      return obj;
     },
     async qBatchDeleteAct() {
       const ids = Object.keys(S.qSel).map(Number);

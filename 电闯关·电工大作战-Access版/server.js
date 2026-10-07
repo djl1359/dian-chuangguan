@@ -14,10 +14,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { execFile } = require('child_process');
 const acc = require('./access.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.4.2.0';
+const VERSION = '1.4.3.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -266,6 +267,90 @@ const MIME = {
   '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.woff2': 'font/woff2',
   '.txt': 'text/plain; charset=utf-8', '.md': 'text/markdown; charset=utf-8'
 };
+
+/* 1.4.3.0：从网页 HTML 中提取题目（题干/选项/答案），供"网页抓题"使用 */
+function extractQuestionsFromHtml(html, baseUrl) {
+  const text = String(html || '')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>|<\/div>|<\/li>|<\/h[1-6]>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;|&#160;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&ldquo;|&rdquo;/g, '"')
+    .replace(/\u3000/g, ' ');
+  const lines = text.split(/\n+/).map(s => s.replace(/^\s+|\s+$/g, '')).filter(Boolean);
+  const out = [];
+  let cur = null;
+  for (const ln of lines) {
+    const mNum = ln.match(/^(\d{1,3})[、.．)）]\s*(.+)$/);
+    if (mNum) {
+      if (cur && (cur.question || cur.options.length)) out.push(cur);
+      cur = { num: parseInt(mNum[1], 10), question: mNum[2].replace(/[（(]\s*[）)]\s*$/, '').trim(), options: [], answer: '', type: '' };
+      continue;
+    }
+    if (!cur) continue;
+    const mOpt = ln.match(/^([A-H])[.、．)）]\s*(.+)$/);
+    if (mOpt && mOpt[2].trim().length > 1 && !/^(正确|错误|对|错|√|×|是|否)$/i.test(mOpt[2].trim())) {
+      cur.options.push({ k: mOpt[1].toUpperCase(), v: mOpt[2].trim() });
+      continue;
+    }
+    const mAns = ln.match(/^(?:答案|参考答案|正确答案|【答案】)\s*[:：]?\s*(.+)$/i);
+    if (mAns) { cur.answer = mAns[1].trim().replace(/^[（(]|[）)]$/g, ''); continue; }
+    const mTp = ln.match(/^(?:题型|类型)\s*[:：]\s*(.+)$/i);
+    if (mTp) { cur.type = mTp[1].trim(); continue; }
+    // 其余行：若已有完整题干/选项则并入说明；否则并入题干
+    if (cur.question && (cur.options.length || cur.answer)) cur.raw = (cur.raw || []).concat(ln);
+    else if (!cur.question) cur.question = ln;
+  }
+  if (cur && (cur.question || cur.options.length)) out.push(cur);
+  // 规范化：单选（≥2选项）、判断（无选项/选项为正确错误）、填空、简答（无选项）
+  return out.map(x => {
+    let type = 'single';
+    let options = x.options.map(o => o.v);
+    const q = x.question.replace(/\s+/g, ' ').trim();
+    if (!options.length) {
+      if (/(正确|错误|对错|√|×)/.test(q) || /[（(]\s*[）)]\s*$/.test(x.question)) { type = 'judge'; options = ['正确', '错误']; }
+      else if (x.answer && x.answer.length <= 12) type = 'fill';
+      else type = 'calc';
+    }
+    let answer = x.answer;
+    if (type === 'single' && answer && !/^[A-H]$/i.test(answer)) {
+      const idx = x.options.findIndex(o => o.v === answer.trim());
+      if (idx >= 0) answer = String.fromCharCode(65 + idx);
+    }
+    if (type === 'judge' && answer) {
+      if (/^(对|正确|√|是|T)$/i.test(answer)) answer = 'A';
+      else if (/^(错|错误|×|否|F)$/i.test(answer)) answer = 'B';
+    }
+    return { num: x.num, type, question: q, options, answer, explain: '', difficulty: type === 'single' || type === 'judge' ? 2 : 3 };
+  }).filter(x => x.question && x.question.length > 3);
+}
+/* 1.4.3.0：抓取远程网页（含重定向跟随，限制 2MB） */
+function fetchUrl(url, maxRedirects) {
+  const redirects = maxRedirects == null ? 3 : maxRedirects;
+  return new Promise((resolve, reject) => {
+    const mod = url.toLowerCase().startsWith('https') ? require('https') : require('http');
+    const req2 = mod.get(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36', 'Accept-Language': 'zh-CN,zh;q=0.9', 'Accept': 'text/html,application/xhtml+xml,*/*;q=0.8' },
+      timeout: 20000
+    }, (r) => {
+      if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) {
+        if (redirects <= 0) { reject(new Error('重定向次数过多')); return; }
+        const next = new URL(r.headers.location, url).toString();
+        r.resume();
+        return resolve(fetchUrl(next, redirects - 1));
+      }
+      if (r.statusCode >= 400) { reject(new Error('网页返回 HTTP ' + r.statusCode)); return; }
+      const ctype = r.headers['content-type'] || '';
+      let data = '';
+      r.setEncoding('utf8');
+      r.on('data', (c) => { data += c; if (data.length > 2 * 1024 * 1024) { r.destroy(); reject(new Error('页面过大（>2MB）')); } });
+      r.on('end', () => resolve({ html: data, contentType: ctype }));
+      r.on('error', reject);
+    });
+    req2.on('timeout', () => { req2.destroy(new Error('抓取超时')); });
+    req2.on('error', reject);
+  });
+}
 
 function sendJSON(res, code, obj) {
   const body = JSON.stringify(obj);
@@ -872,6 +957,82 @@ const server = http.createServer(async (req, res) => {
         await acc.appendLog(db.logs[db.logs.length - 1]);
       }
       return sendJSON(res, 200, { ok: 1, added: added.length, exists: exists.length, failed: problems.length, problems });
+    }
+    // ============ 1.4.3.0 图片OCR识别（Windows 中文OCR引擎） ============
+    // 教师-上传截图/图片 → OCR 识别文字（返回行级结果）
+    if (p === '/api/ocr' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const b64 = String(body.image || '');
+      const m = b64.match(/^data:image\/[a-zA-Z0-9.+-]+;base64,(.+)$/i);
+      const raw = m ? m[1] : b64;
+      const imgBuf = Buffer.from(raw, 'base64');
+      if (!imgBuf.length || imgBuf.length > 15 * 1024 * 1024) return sendJSON(res, 400, { err: '图片内容无效或过大（限15MB）' });
+      const wk = path.join(ROOT, 'ocr_worker.ps1');
+      if (!fs.existsSync(wk)) return sendJSON(res, 500, { err: '服务端缺少 ocr_worker.ps1，请更新服务端文件' });
+      const tmpImg = path.join(acc.DATA_DIR, '_ocr_tmp_' + Date.now() + '.png');
+      const outJson = path.join(acc.DATA_DIR, '_ocr_out_' + Date.now() + '.json');
+      fs.writeFileSync(tmpImg, imgBuf);
+      try {
+        await new Promise((resolve, reject) => {
+          execFile('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', wk, '-Image', tmpImg, '-Out', outJson], { timeout: 90000, windowsHide: true, maxBuffer: 10 * 1024 * 1024 }, (err) => err ? reject(err) : resolve());
+        });
+        let out = {};
+        try { out = JSON.parse(fs.readFileSync(outJson, 'utf8')); } catch (e) { /* 空 */ }
+        if (out.ok !== true) return sendJSON(res, 500, { err: 'OCR 识别失败：' + (out.err || '未知错误') });
+        db.logs.push({ t: Date.now(), op: '图片OCR识别（' + (out.lines || []).length + ' 行）', by: a.user.name });
+        await acc.appendLog(db.logs[db.logs.length - 1]);
+        return sendJSON(res, 200, { ok: 1, text: out.text || '', lines: out.lines || [] });
+      } catch (e) {
+        return sendJSON(res, 500, { err: 'OCR 执行失败：' + e.message });
+      } finally {
+        try { fs.unlinkSync(tmpImg); } catch (e2) { /* 忽略 */ }
+        try { fs.unlinkSync(outJson); } catch (e2) { /* 忽略 */ }
+      }
+    }
+    // 教师-保存题目截图到 qimg（返回可引用路径，配合 OCR 识别结果作题目配图）
+    if (p === '/api/qimg/upload' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const b64 = String(body.image || '');
+      const m = b64.match(/^data:image\/(png|jpe?g|gif|webp);base64,(.+)$/i);
+      if (!m) return sendJSON(res, 400, { err: '仅支持 PNG/JPG/GIF/WebP 图片' });
+      const buf = Buffer.from(m[2], 'base64');
+      if (!buf.length || buf.length > 15 * 1024 * 1024) return sendJSON(res, 400, { err: '图片无效或过大（限15MB）' });
+      const qimgDir = path.join(PUBLIC_DIR, 'qimg');
+      fs.mkdirSync(qimgDir, { recursive: true });
+      const ext = m[1].toLowerCase() === 'jpeg' ? 'jpg' : m[1].toLowerCase();
+      const name = 'ocr_' + Date.now() + '_' + Math.floor(Math.random() * 10000) + '.' + ext;
+      fs.writeFileSync(path.join(qimgDir, name), buf);
+      db.logs.push({ t: Date.now(), op: '上传题图 ' + name, by: a.user.name });
+      await acc.appendLog(db.logs[db.logs.length - 1]);
+      return sendJSON(res, 200, { ok: 1, path: 'qimg/' + name });
+    }
+    // 教师-网页抓题：抓取网页 → 提取题目 → 返回候选列表（含图片题清单）
+    if (p === '/api/fetch-questions' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const url = String(body.url || '').trim();
+      if (!/^https?:\/\/[^\s]+$/i.test(url)) return sendJSON(res, 400, { err: '请输入有效的网页地址（http/https 开头）' });
+      try {
+        const r = await fetchUrl(url, 3);
+        const qs = extractQuestionsFromHtml(r.html, url);
+        // 提取页面内图片地址（供"截图识别"二次使用）
+        const imgs = [];
+        const re = /<img[^>]+src=["']([^"']+)["']/gi;
+        let mm;
+        while ((mm = re.exec(r.html)) && imgs.length < 20) {
+          try { imgs.push(new URL(mm[1], url).toString()); } catch (e) { /* 忽略坏地址 */ }
+        }
+        db.logs.push({ t: Date.now(), op: '网页抓题 ' + url.slice(0, 60) + '（提取 ' + qs.length + ' 题）', by: a.user.name });
+        await acc.appendLog(db.logs[db.logs.length - 1]);
+        return sendJSON(res, 200, { ok: 1, url, questions: qs, images: imgs, htmlLen: r.html.length });
+      } catch (e) {
+        return sendJSON(res, 502, { err: '网页抓取失败：' + e.message });
+      }
     }
     // 教师-关卡题目数量 → 系统自动计算关卡时间（朗读时间+答题时间，1.0.0.5）
     if (p === '/api/levels/auto-time' && req.method === 'POST') {
@@ -1794,10 +1955,10 @@ acc.init().then(async () => {
     console.log('关卡配置初始化：题数 6/8/10/5，每题自动计时 ' + auto.levelTimeBase['1'] + '~' + auto.levelTimeBase['boss'] + ' 秒');
   }
   server.listen(PORT, '0.0.0.0', () => {
-    process.title = '电闯关服务端-JSON版 V' + VERSION;
+    process.title = '电闯关服务端-Access版 V' + VERSION;
     try { require('child_process').execSync('title ' + process.title, { stdio: 'ignore' }); } catch (e) {}
     console.log('============================================');
-    console.log('  电闯关·电工大作战 服务端已启动 (JSON 数据库)');
+    console.log('  电闯关·电工大作战 服务端已启动 (Access 数据库)');
     console.log('  版本       : ' + VERSION);
     console.log('  本机访问   : http://localhost:' + PORT);
     console.log('  局域网访问 : http://<本机IP>:' + PORT + '  (手机/其他电脑同WiFi可访问)');
