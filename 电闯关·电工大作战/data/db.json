@@ -6,12 +6,12 @@
       "salt": "9668710463a0f0e1",
       "pass": "928cf42193eec5baa17229c7a1060eb2b1d1dc8441754392282845ebd5d89b34",
       "role": "teacher",
-      "score": 0,
+      "score": 730,
       "reg": 1790361073164,
-      "lastLogin": 1791352874776,
-      "loginCount": 122,
-      "correct": 0,
-      "total": 0
+      "lastLogin": 1791354156882,
+      "loginCount": 123,
+      "correct": 4,
+      "total": 6
     },
     {
       "id": "1c4d7d34abbe97d2",
@@ -118,10 +118,34 @@
     "e9bbc3116ac533cbf42817286ead4beb": "37443a200f06c56b",
     "95cad37bd56c5cb9548d3d4e9b6717fa": "37443a200f06c56b",
     "8dc421221247630609b9d4274b2d2e76": "37443a200f06c56b",
-    "d145137c9c27e1a7b159bd542a76a719": "37443a200f06c56b"
+    "d145137c9c27e1a7b159bd542a76a719": "37443a200f06c56b",
+    "10405d69bdcd6436907b974cd7ab12b1": "37443a200f06c56b"
   },
-  "progress": {},
-  "wrongs": {},
+  "progress": {
+    "37443a200f06c56b": {
+      "12": {
+        "lv1": 1
+      }
+    }
+  },
+  "wrongs": {
+    "37443a200f06c56b": [
+      {
+        "qid": 328,
+        "chapter": 12,
+        "count": 1,
+        "last": 1791354897398,
+        "good": 0
+      },
+      {
+        "qid": 319,
+        "chapter": 12,
+        "count": 1,
+        "last": 1791354918947,
+        "good": 0
+      }
+    ]
+  },
   "memoryBest": {},
   "logs": [
     {
@@ -474,9 +498,84 @@
       "t": 1791353278439,
       "op": "导入试题 156 道（重复跳过 5，无效 0）",
       "by": "teacher"
+    },
+    {
+      "t": 1791354192668,
+      "op": "图片OCR识别（7 行）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791354196702,
+      "op": "图片OCR识别（7 行）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791354773453,
+      "op": "新增题目#745",
+      "by": "teacher"
+    },
+    {
+      "t": 1791354837462,
+      "op": "修改题目#745",
+      "by": "teacher"
     }
   ],
-  "answerLogs": [],
+  "answerLogs": [
+    {
+      "t": 1791354893940,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 327,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791354897396,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 328,
+      "chapter": 12,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1791354905890,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 336,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791354910083,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 326,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791354913466,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 333,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791354918946,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 319,
+      "chapter": 12,
+      "section": 1,
+      "correct": false
+    }
+  ],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
     "version": "1.4.4.0",

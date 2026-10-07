@@ -1,9 +1,9 @@
 /* ============================================================
- * 电闯关·电工大作战 — 服务端（零依赖 Node.js + JSON 数据库，1.0.0.5）
+ * 电闯关·电工大作战 — 服务端（零依赖 Node.js + Access 数据库）
  * 《电工技术基础与技能（第4版）》周绍敏主编 动作闯关游戏
  * 运行：node server.js   (或双击 start.bat / 电闯关服务端.exe)
- * 端口：8123（默认，可用环境变量 PORT 修改）
- * 数据：data/db.json（业务数据）+ data/questions.json（题库）
+ * 端口：8131（默认，可用环境变量 PORT 修改）
+ * 数据：data/dg_data.accdb（Access 数据库）+ data/questions.json（题库）
  * 1.0.0.4：服务端判分（试卷令牌 pt + HMAC 签名），客户端不再接触答案
  * 1.0.0.5：题库模板导出/导入查重/批量删除/难度标注；关卡题目数量与自动计时；
  *          按章节/难度/掌握情况组卷并导出 Word 可打印试卷；教师可修改游戏名称
@@ -17,7 +17,7 @@ const crypto = require('crypto');
 const { execFile } = require('child_process');
 const acc = require('./access.js');
 
-const PORT = process.env.PORT || 8123;
+const PORT = process.env.PORT || 8131;
 const VERSION = '1.4.4.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');

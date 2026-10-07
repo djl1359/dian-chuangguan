@@ -11122,5 +11122,24 @@
     "answer": "1",
     "explain": "τ=RC=10×10^3×100×10^-6=1s",
     "difficulty": 3
+  },
+  {
+    "id": 745,
+    "chapter": 2,
+    "section": 3,
+    "type": "single",
+    "question": "图示单口网络的短路电流Isc 等于（）",
+    "options": [
+      "A.1A",
+      "B.1.5A",
+      "C.3A",
+      "D.-1A"
+    ],
+    "answer": "A",
+    "explain": "根据I=U/R，I=6V/(2+4)Ω=1A",
+    "difficulty": 3,
+    "image": "qimg/q1791354310340_268.png",
+    "imageAlign": "center",
+    "imgSize": 80
   }
 ]
