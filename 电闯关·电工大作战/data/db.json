@@ -6,12 +6,12 @@
       "salt": "9668710463a0f0e1",
       "pass": "928cf42193eec5baa17229c7a1060eb2b1d1dc8441754392282845ebd5d89b34",
       "role": "teacher",
-      "score": 730,
+      "score": 890,
       "reg": 1790361073164,
-      "lastLogin": 1791354156882,
-      "loginCount": 123,
-      "correct": 4,
-      "total": 6
+      "lastLogin": 1791359515962,
+      "loginCount": 126,
+      "correct": 5,
+      "total": 7
     },
     {
       "id": "1c4d7d34abbe97d2",
@@ -119,7 +119,10 @@
     "95cad37bd56c5cb9548d3d4e9b6717fa": "37443a200f06c56b",
     "8dc421221247630609b9d4274b2d2e76": "37443a200f06c56b",
     "d145137c9c27e1a7b159bd542a76a719": "37443a200f06c56b",
-    "10405d69bdcd6436907b974cd7ab12b1": "37443a200f06c56b"
+    "10405d69bdcd6436907b974cd7ab12b1": "37443a200f06c56b",
+    "cdc8a2a89dc895875a69ea5f1fcbf3db": "37443a200f06c56b",
+    "80c3e37e87dd193a038b1b34d1944766": "37443a200f06c56b",
+    "688143c1d3693fd65f43e075bb890f30": "37443a200f06c56b"
   },
   "progress": {
     "37443a200f06c56b": {
@@ -574,11 +577,20 @@
       "chapter": 12,
       "section": 1,
       "correct": false
+    },
+    {
+      "t": 1791358182371,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
     }
   ],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.4.4.0",
+    "version": "1.4.4.1",
     "timeAdd": 5,
     "timeMatchAdd": 10,
     "levelQ": {
