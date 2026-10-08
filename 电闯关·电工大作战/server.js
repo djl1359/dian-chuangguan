@@ -816,7 +816,7 @@ const server = http.createServer(async (req, res) => {
       if (type) list = list.filter(x => x.type === type);
       if (kw) list = list.filter(x => qSearchText(x).toLowerCase().includes(kw));
       list.sort((a, b) => a.chapter - b.chapter || a.id - b.id);
-      return sendJSON(res, 200, { list, total: questions.length });
+      return sendJSON(res, 200, { list, total: list.length });
     }
     // 教师-上传题目图片（存 public/qimg/，返回相对路径）
     if (p === '/api/upload-qimg' && req.method === 'POST') {

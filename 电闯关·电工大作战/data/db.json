@@ -3,13 +3,13 @@
     {
       "id": "37443a200f06c56b",
       "name": "teacher",
-      "salt": "9668710463a0f0e1",
-      "pass": "928cf42193eec5baa17229c7a1060eb2b1d1dc8441754392282845ebd5d89b34",
+      "salt": "a286c53fa261838b",
+      "pass": "c32fc8e73cfe4999871da9f54e5f31ee20bbbfaf147c3a9afdf44e0beba0c021",
       "role": "teacher",
       "score": 650,
       "reg": 1790361073164,
-      "lastLogin": 1791359515962,
-      "loginCount": 126,
+      "lastLogin": 1791422523896,
+      "loginCount": 150,
       "correct": 5,
       "total": 15,
       "progress": {
@@ -22,17 +22,17 @@
       }
     },
     {
-      "id": "1c4d7d34abbe97d2",
-      "name": "student",
-      "salt": "ccb41100c2e87ec4",
-      "pass": "03c2922243e722fae4b3b5eb6b41006569ed7da18e5551ea0d2530ad88c884a9",
+      "id": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "salt": "eec4e6b23cc73f6b",
+      "pass": "f2162c73a9a03409ca846cdf2b6b36b855d9c0bc3a5fed2561d0bb6c53d8b175",
       "role": "student",
-      "score": 0,
-      "reg": 1791041078023,
-      "lastLogin": 1791206632870,
-      "loginCount": 13,
-      "correct": 0,
-      "total": 0
+      "score": 13378,
+      "reg": 1791417755923,
+      "lastLogin": 1791422419087,
+      "loginCount": 10,
+      "correct": 49,
+      "total": 55
     }
   ],
   "sessions": {
@@ -64,39 +64,25 @@
     "d488f84918188bcad03ff1bdfa2d2a03": "37443a200f06c56b",
     "8b887985a4ca9692d3f2c02ac568c1df": "37443a200f06c56b",
     "04bc689a25efff635f55a74744fee562": "37443a200f06c56b",
-    "928272b122126732af2b0e71c442eb67": "1c4d7d34abbe97d2",
     "702210c936c9db8dc6f75af33a25cefd": "37443a200f06c56b",
-    "2c0ba9699f83e08dbbd16a8d4ea938ff": "1c4d7d34abbe97d2",
     "b8f0c6a54992489a96edff9309edcc57": "37443a200f06c56b",
-    "4db3e016cfdf34c2b70d09c350c8bb13": "1c4d7d34abbe97d2",
-    "a285c79f91aaee1f5bad3475a50fd448": "1c4d7d34abbe97d2",
-    "d05596b87d53d902725184a74685aa3b": "1c4d7d34abbe97d2",
-    "2ae05980d5683fa3584a0558ec17017c": "1c4d7d34abbe97d2",
-    "00f4788550e6c554a13782f3a8eb228c": "1c4d7d34abbe97d2",
-    "34334fc389ecd2df64e28e4ae25be358": "1c4d7d34abbe97d2",
     "84580bc5ddacc31b23f4645b9faa7a66": "37443a200f06c56b",
     "788d67f867887b52e3402c39834daec2": "37443a200f06c56b",
     "ac4571331cbdc48d3443a01a4a148fb3": "37443a200f06c56b",
     "74d90aaa2d7600a583002af20bd0eddf": "37443a200f06c56b",
     "05d8fc81f86e5db455a26768ffd060d2": "37443a200f06c56b",
-    "6d138207398671f687c89d637546e72e": "1c4d7d34abbe97d2",
-    "1d9ad94369aa0242b38257fc201d2e9d": "1c4d7d34abbe97d2",
-    "890bfa9a0a299056c16a6b2f2592ef4a": "1c4d7d34abbe97d2",
     "0c41eee32f92e49967172608808fa084": "37443a200f06c56b",
     "9d38993bf273c63c75d2dea9d2ffb3a7": "37443a200f06c56b",
     "aaf7b9a31c8530ee625c819e3adb536d": "37443a200f06c56b",
     "155428e2e19236dd3bf7e1ef8d2f7de9": "37443a200f06c56b",
     "a42f9f213fdbcdeccda577ed53559adc": "37443a200f06c56b",
     "6dec25a648eb9ab9fc632013f893ebad": "37443a200f06c56b",
-    "6cf294fd2d3707cd947c8a0a1e48742a": "1c4d7d34abbe97d2",
     "f25be7adce10e0fc714a45f1f1b5a8ee": "37443a200f06c56b",
     "29c949483ddeb96d9b6550c750853435": "37443a200f06c56b",
     "ce82183f1240baf6f7af860f658d3a11": "37443a200f06c56b",
     "998dec7e9ad970173b1b1b43490d01f4": "37443a200f06c56b",
-    "45313f90c9e0b0b99f12ea4202095f6f": "1c4d7d34abbe97d2",
     "0f7c7db7cd095f5ed546f5744829effa": "37443a200f06c56b",
     "168ca7f67990f9ae6d67a0d3ca7d5fdc": "37443a200f06c56b",
-    "4cfd3f63738b0ea906edc05caa681f0d": "1c4d7d34abbe97d2",
     "961ec97a3bf4977f647198fa11e31d3d": "37443a200f06c56b",
     "a9eb37b05fd3b6de9433592fd1fe9cf0": "37443a200f06c56b",
     "3a295df9bd421092ceec7a493cd925d1": "37443a200f06c56b",
@@ -130,7 +116,42 @@
     "10405d69bdcd6436907b974cd7ab12b1": "37443a200f06c56b",
     "cdc8a2a89dc895875a69ea5f1fcbf3db": "37443a200f06c56b",
     "80c3e37e87dd193a038b1b34d1944766": "37443a200f06c56b",
-    "688143c1d3693fd65f43e075bb890f30": "37443a200f06c56b"
+    "688143c1d3693fd65f43e075bb890f30": "37443a200f06c56b",
+    "47873253234d7f852d8756ce84785b65": "37443a200f06c56b",
+    "9267f8de91e14d43f9cdbeaf7684be34": "dc589aaabe679e3e",
+    "b6605c65b6ed2cc7f42b309777da1912": "37443a200f06c56b",
+    "7035819b69fdd9801ee1a19b032f4cc5": "37443a200f06c56b",
+    "40b83bf80178a17f8e5561801b256acf": "37443a200f06c56b",
+    "4c2fd387631b31a493cf6e8dcac4f365": "37443a200f06c56b",
+    "21c071dab462788d8ba371cbe86f8233": "37443a200f06c56b",
+    "71bfe321285ad72179ef955e4e5e10cf": "37443a200f06c56b",
+    "cee589bd29e669df6731becdc0d2166f": "dc589aaabe679e3e",
+    "624596733e4920d4f15d2f4ea182bf1e": "37443a200f06c56b",
+    "22d25532867c6b8220e54dcf765856ce": "37443a200f06c56b",
+    "b9a00fb65987dfedef41b90e24af3536": "dc589aaabe679e3e",
+    "1a960516c49dcce63a5b2de58b9d0a1a": "37443a200f06c56b",
+    "76538affa3569ad4c61c85211afd8546": "37443a200f06c56b",
+    "693b6d0695cf6ec583d7684fbe916e6b": "37443a200f06c56b",
+    "04dd307e9d236aa570f557ef39074464": "dc589aaabe679e3e",
+    "73e728a80739c878eb20f8070c110a66": "dc589aaabe679e3e",
+    "619dcfde72331325bee79834fbc0ebd6": "37443a200f06c56b",
+    "5750edd13f8908acd400d7e538b9543f": "dc589aaabe679e3e",
+    "7af88638579331bacd80ea2fded63d53": "dc589aaabe679e3e",
+    "aee2ea5c5d2076d4020afd61445ca1d0": "37443a200f06c56b",
+    "7a0d6d30419f9861975ff1957d47960c": "37443a200f06c56b",
+    "fd24cefb6fc7543d0fe8d4e3bf659055": "37443a200f06c56b",
+    "ac07e07fdefb49ea82f57a783d5c8089": "37443a200f06c56b",
+    "1c6f80582f8c495c579fef078e555561": "37443a200f06c56b",
+    "564c8895841a2b02ca23cb1b6f4b701d": "dc589aaabe679e3e",
+    "6d0c65f54b3824815bd98e5959b6d9e7": "37443a200f06c56b",
+    "10b0eed5f9ec671f6533f277256c5244": "37443a200f06c56b",
+    "a74d4ae34650039f102794ac8c93004d": "dc589aaabe679e3e",
+    "6c98658cb56ae8a0ecfa0df06017cb29": "37443a200f06c56b",
+    "30023226487350eac26f42bb4e5b4f26": "37443a200f06c56b",
+    "a474f2fb8274c72ce7eb8993c134fe22": "37443a200f06c56b",
+    "19506ce226e476d0d1b7cd495be96acd": "dc589aaabe679e3e",
+    "38084da58df8939728238eceb712796c": "dc589aaabe679e3e",
+    "2f6f80ad37190ae83e955fb214aa2f67": "37443a200f06c56b"
   },
   "progress": {
     "37443a200f06c56b": {
@@ -142,6 +163,14 @@
       },
       "12": {
         "lv1": 1
+      }
+    },
+    "dc589aaabe679e3e": {
+      "0": {
+        "lv1": 3,
+        "lv2": 3,
+        "lv3": 3,
+        "boss": 2
       }
     }
   },
@@ -215,6 +244,36 @@
         "chapter": 12,
         "count": 1,
         "last": 1791375316731,
+        "good": 0
+      }
+    ],
+    "dc589aaabe679e3e": [
+      {
+        "qid": 5,
+        "chapter": 0,
+        "count": 2,
+        "last": 1791418408147,
+        "good": 1
+      },
+      {
+        "qid": 6,
+        "chapter": 0,
+        "count": 1,
+        "last": 1791418488415,
+        "good": 0
+      },
+      {
+        "qid": 589,
+        "chapter": 0,
+        "count": 2,
+        "last": 1791418703075,
+        "good": 1
+      },
+      {
+        "qid": 10,
+        "chapter": 0,
+        "count": 1,
+        "last": 1791418817041,
         "good": 0
       }
     ]
@@ -591,6 +650,91 @@
       "t": 1791354837462,
       "op": "修改题目#745",
       "by": "teacher"
+    },
+    {
+      "t": 1791416720560,
+      "op": "系统设置修改",
+      "by": "teacher",
+      "reason": "使用单位 河北省滦州市职业技术教育中心 → 测试单位A；游戏名称 电闯关·电工大作战 → 电闯关·电工大作战测试"
+    },
+    {
+      "t": 1791416724968,
+      "op": "系统设置修改",
+      "by": "teacher",
+      "reason": "使用单位 测试单位A → 河北省滦州市职业技术教育中心；游戏名称 电闯关·电工大作战测试 → 电闯关·电工大作战"
+    },
+    {
+      "t": 1791416987039,
+      "op": "新增题目#746",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417008255,
+      "op": "修改题目#746",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417036204,
+      "op": "删除题目#746",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417039255,
+      "op": "删除学生",
+      "name": "student",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417083213,
+      "op": "导入试题 1 道（重复跳过 1，无效 0）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417094489,
+      "op": "删除题目#746",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417339839,
+      "op": "创建/更新考试「【功能测试】电学基础测验」（12题/12分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417514479,
+      "op": "考试「【功能测试】电学基础测验」状态变更为 open",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417955471,
+      "op": "考试「【功能测试】电学基础测验」状态变更为 grading",
+      "by": "teacher"
+    },
+    {
+      "t": 1791417955539,
+      "op": "考试「【功能测试】电学基础测验」状态变更为 published",
+      "by": "teacher"
+    },
+    {
+      "t": 1791418078694,
+      "op": "系统设置修改",
+      "by": "teacher",
+      "reason": "普通题加时 5 秒；连线题加时 10 秒；关卡题数 入门7/进阶8/实战10/BOSS5，自动计时 每题26~28秒"
+    },
+    {
+      "t": 1791418081458,
+      "op": "系统设置修改",
+      "by": "teacher",
+      "reason": "普通题加时 5 秒；连线题加时 10 秒；关卡题数 入门6/进阶8/实战10/BOSS5，自动计时 每题26~28秒"
+    },
+    {
+      "t": 1791418110538,
+      "op": "教师修改账号（用户名/密码）",
+      "by": "teacher2"
+    },
+    {
+      "t": 1791418113124,
+      "op": "教师修改账号（用户名/密码）",
+      "by": "teacher"
     }
   ],
   "answerLogs": [
@@ -728,13 +872,508 @@
       "chapter": 12,
       "section": 1,
       "correct": false
+    },
+    {
+      "t": 1791418408076,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791418408134,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791418408197,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 5,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418474010,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418475607,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 594,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418477203,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 343,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418478804,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791418480406,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418482017,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791418486801,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 591,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418488412,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 6,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791418491187,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418492777,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 592,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418494382,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 594,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418495981,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791418702986,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 589,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791418703061,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 589,
+      "chapter": 0,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791418703139,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 589,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741094,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 3,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741133,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741180,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 595,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741229,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 344,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741273,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791418741319,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 591,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741364,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741409,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 590,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741471,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 592,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741514,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 597,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741570,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 343,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741620,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791418741670,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 9,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791418741716,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791418741764,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 8,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791418741816,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741868,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418741920,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 593,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791418817038,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 10,
+      "chapter": 0,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1791421671234,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 597,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791421698396,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791421700658,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791421914060,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 595,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422046339,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 344,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422047845,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 1,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422049251,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 594,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422050838,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 343,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422214338,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 594,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422215831,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 596,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422217259,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 597,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422218851,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 343,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422220335,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 7,
+      "chapter": 0,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791422468106,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 594,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422469343,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 4,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422471108,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 596,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422472336,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 592,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791422473441,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 2,
+      "chapter": 0,
+      "section": 1,
+      "correct": true
     }
   ],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
     "version": "1.4.4.2",
-    "timeAdd": 5,
-    "timeMatchAdd": 10,
+    "timeAdd": "5",
+    "timeMatchAdd": "10",
     "levelQ": {
       "1": 6,
       "2": 8,
@@ -742,13 +1381,364 @@
       "boss": 5
     },
     "levelTimeBase": {
-      "1": 25,
-      "2": 28,
-      "3": 27,
-      "boss": 27
+      "1": 26,
+      "2": 29,
+      "3": 28,
+      "boss": 28
     },
     "gameName": "电闯关·电工大作战"
   },
-  "exams": [],
-  "examAnswers": []
+  "exams": [
+    {
+      "id": "ex1f33fdb72700a323",
+      "title": "【功能测试】电学基础测验",
+      "subject": "电工技术基础与技能",
+      "className": "电一(1)班",
+      "grade": "",
+      "createdAt": 1791417339835,
+      "status": "published",
+      "questions": [
+        {
+          "id": 47,
+          "chapter": 2,
+          "section": 2,
+          "type": "single",
+          "question": "串联电路的主要特点是？",
+          "options": [
+            "A. 各元件电流处处相等",
+            "B. 各元件电压处处相等",
+            "C. 总电阻小于任一分电阻",
+            "D. 各元件功率相等"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 182,
+          "chapter": 7,
+          "section": 3,
+          "type": "single",
+          "question": "u=311sin(314t+30°)V，该交流电的有效值为？",
+          "options": [
+            "A. 311V",
+            "B. 220V",
+            "C. 314V",
+            "D. 155V"
+          ],
+          "answer": "B",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 649,
+          "chapter": 2,
+          "section": 4,
+          "type": "single",
+          "question": "识图：电流从电源正极流出后分为两路分别流过R1和R2，再汇合流回负极，则R1与R2的连接方式是（）",
+          "options": [
+            "A. 串联",
+            "B. 并联",
+            "C. 混联",
+            "D. 无法确定"
+          ],
+          "answer": "B",
+          "difficulty": 1,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 32,
+          "chapter": 1,
+          "section": 1,
+          "type": "single",
+          "question": "电路中形成持续电流的条件是？",
+          "options": [
+            "A. 只要有电源",
+            "B. 只要电路闭合",
+            "C. 有电源且电路闭合",
+            "D. 有自由电荷"
+          ],
+          "answer": "C",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 6,
+          "chapter": 0,
+          "section": 1,
+          "type": "single",
+          "question": "特别潮湿、金属容器内等危险场所，安全电压应选用？",
+          "options": [
+            "A. 36V",
+            "B. 24V",
+            "C. 12V",
+            "D. 220V"
+          ],
+          "answer": "C",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 481,
+          "chapter": 9,
+          "section": 1,
+          "type": "judge",
+          "question": "电力线路的强电工程中，一定要防止串联谐振的产生，否则会使线路上的电感或电容两端出现很高的电压而损坏电气设备。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 3,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 73,
+          "chapter": 2,
+          "section": 3,
+          "type": "judge",
+          "question": "用万用表欧姆档测量电路中的电阻时，被测电路必须先断电。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 113,
+          "chapter": 4,
+          "section": 3,
+          "type": "judge",
+          "question": "电容充电完毕（稳态）时，电路电流为零，电容电压等于电源电压。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 715,
+          "chapter": 8,
+          "section": 2,
+          "type": "fill",
+          "question": "电感L=0.1H接在f=50Hz的交流电路中，感抗XL=____Ω（π取3.14）。",
+          "options": [],
+          "answer": "31.4",
+          "difficulty": 3,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 587,
+          "chapter": 10,
+          "section": 4,
+          "type": "fill",
+          "question": "热继电器作电器过载保护主要依靠其内部的____的弯曲使触点动作。",
+          "options": [],
+          "answer": "双金属片",
+          "difficulty": 3,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 598,
+          "chapter": 0,
+          "section": 1,
+          "type": "matching",
+          "question": "请将常用电工工具与主要用途连线。",
+          "options": {
+            "left": [
+              "试电笔",
+              "电流表",
+              "万用表"
+            ],
+            "right": [
+              "验电",
+              "测电流",
+              "多用途测量"
+            ]
+          },
+          "answer": "[[0,0],[1,1],[2,2]]",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 607,
+          "chapter": 1,
+          "section": 1,
+          "type": "matching",
+          "question": "请将电路组成部分与对应的作用连线。",
+          "options": {
+            "left": [
+              "电源",
+              "负载",
+              "开关"
+            ],
+            "right": [
+              "提供电能",
+              "消耗电能",
+              "控制电路通断"
+            ]
+          },
+          "answer": "[[0,0],[1,1],[2,2]]",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        }
+      ],
+      "qcount": 12,
+      "totalScore": 12,
+      "createdBy": "teacher",
+      "publishedAt": 1791417955536,
+      "note": ""
+    }
+  ],
+  "examAnswers": [
+    {
+      "examId": "ex1f33fdb72700a323",
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "t": 1791417933605,
+      "objective": [
+        {
+          "id": 47,
+          "type": "single",
+          "given": "A",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 182,
+          "type": "single",
+          "given": "B",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 649,
+          "type": "single",
+          "given": "B",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 32,
+          "type": "single",
+          "given": "C",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 6,
+          "type": "single",
+          "given": "C",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 481,
+          "type": "judge",
+          "given": "A",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 73,
+          "type": "judge",
+          "given": "A",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 113,
+          "type": "judge",
+          "given": "A",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 715,
+          "type": "fill",
+          "given": "31.4",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 587,
+          "type": "fill",
+          "given": "双金属片",
+          "ok": true,
+          "score": 1
+        },
+        {
+          "id": 598,
+          "type": "matching",
+          "given": "",
+          "ok": false,
+          "score": 0
+        },
+        {
+          "id": 607,
+          "type": "matching",
+          "given": "",
+          "ok": false,
+          "score": 0
+        }
+      ],
+      "subjective": [
+        {
+          "id": 598,
+          "maxScore": 1,
+          "score": 1,
+          "graded": true
+        },
+        {
+          "id": 607,
+          "maxScore": 1,
+          "score": 1,
+          "graded": true
+        }
+      ],
+      "total": 12,
+      "status": "graded",
+      "img": ""
+    }
+  ]
 }

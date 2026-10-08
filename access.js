@@ -109,7 +109,7 @@ const DDL = [
   "CREATE TABLE memoryBest (userId TEXT(32), best LONG)",
   "CREATE TABLE logs (id COUNTER, t TEXT(20), op TEXT(200), who TEXT(50), name TEXT(50), reason TEXT(200))",
   "CREATE TABLE answer_logs (id COUNTER, t TEXT(20), userId TEXT(32), name TEXT(50), qid LONG, chapter LONG, [section] LONG, correct LONG)",
-  "CREATE TABLE questions (id LONG, chapter LONG, [section] LONG, type TEXT(10), question MEMO, options MEMO, answer MEMO, explain MEMO, difficulty LONG)",
+  "CREATE TABLE questions (id LONG, chapter LONG, [section] LONG, type TEXT(10), question MEMO, options MEMO, answer MEMO, explain MEMO, difficulty LONG, [image] TEXT(200), [imageAlign] TEXT(20), [imgSize] LONG)",
   "CREATE TABLE settings (id COUNTER, k TEXT(50), v MEMO)",
   "CREATE TABLE exams (id TEXT(32), title MEMO, subject MEMO, className TEXT(60), grade TEXT(30), createdAt TEXT(20), [status] TEXT(10), questions MEMO, qcount LONG, totalScore LONG, createdBy TEXT(50), publishedAt TEXT(20), [note] MEMO)",
   "CREATE TABLE exam_answers (id COUNTER, examId TEXT(32), userId TEXT(32), name TEXT(50), t TEXT(20), objective MEMO, subjective MEMO, total LONG, [status] TEXT(10), img MEMO)"
@@ -126,9 +126,9 @@ function buildTemplate() {
   });
 }
 function insertQuestionSQL(qq) {
-  return "INSERT INTO questions (id,chapter,[section],type,question,options,answer,explain,difficulty) VALUES (" +
+  return "INSERT INTO questions (id,chapter,[section],type,question,options,answer,explain,difficulty,[image],[imageAlign],[imgSize]) VALUES (" +
     esc(qq.id) + ',' + esc(qq.chapter) + ',' + esc(qq.section || 1) + ',' + esc(qq.type) + ',' + esc(qq.question) + ',' +
-    esc(JSON.stringify(qq.options || [])) + ',' + esc(qq.answer) + ',' + esc(qq.explain || '') + ',' + esc(qq.difficulty || 3) + ')';
+    esc(JSON.stringify(qq.options || [])) + ',' + esc(qq.answer) + ',' + esc(qq.explain || '') + ',' + esc(qq.difficulty || 3) + ',' + esc(qq.image || '') + ',' + esc(qq.imageAlign || 'center') + ',' + esc(qq.imgSize || 60) + ')';
 }
 function insertTeacherSQL() {
   const s = uid();
@@ -170,6 +170,13 @@ async function ensureQuestionDiff() {
     const f = tmpFile();
     await callWorker('exec', ['ALTER TABLE questions ADD COLUMN difficulty LONG'], f);
   } catch (e) { /* 列已存在等，忽略 */ }
+  /* 1.4.0.0：旧库 questions 表无 image/imageAlign/imgSize 列时补列（image 为 ACE 保留字，需方括号；逐个独立尝试，已存在则跳过） */
+  for (const sql of ['ALTER TABLE questions ADD COLUMN [image] TEXT(200)', 'ALTER TABLE questions ADD COLUMN [imageAlign] TEXT(20)', 'ALTER TABLE questions ADD COLUMN [imgSize] LONG']) {
+    try {
+      const f = tmpFile();
+      await callWorker('exec', [sql], f);
+    } catch (e) { /* 列已存在等，忽略 */ }
+  }
   // 1.0.0.5：旧库题目无难度标注时按题型自动填充默认值（single/judge=2、fill/matching=3、multi=4）
   try {
     const rows = await q("SELECT id, type FROM questions WHERE difficulty IS NULL OR difficulty <= 0");
@@ -240,9 +247,15 @@ async function loadAll() {
   state.questions = questions.map(x => {
     let opts = [];
     try { opts = JSON.parse(x.options || '[]'); } catch (e) { opts = []; }
-    return { id: x.id, chapter: x.chapter, section: x.section || 1, type: x.type, question: x.question, options: opts, answer: x.answer, explain: x.explain || '', difficulty: x.difficulty == null ? 3 : x.difficulty };
+    return { id: x.id, chapter: x.chapter, section: x.section || 1, type: x.type, question: x.question, options: opts, answer: x.answer, explain: x.explain || '', difficulty: x.difficulty == null ? 3 : x.difficulty, image: x.image || '', imageAlign: x.imageAlign || 'center', imgSize: x.imgSize || 60 };
   });
-  state.exams = examsRows.map(x => parseJSON(x.questions, []));
+  state.exams = examsRows.map(x => {
+    let qs = [];
+    try { qs = JSON.parse(x.questions || '[]'); } catch (e) { qs = []; }
+    return { id: x.id, title: x.title || '', subject: x.subject || '', className: x.className || '', grade: x.grade || '',
+      createdAt: parseInt(x.createdAt, 10) || 0, status: x.status || 'draft', questions: Array.isArray(qs) ? qs : [],
+      qcount: x.qcount || 0, totalScore: x.totalScore || 0, createdBy: x.createdBy || '', publishedAt: x.publishedAt || '', note: x.note || '' };
+  });
   state.examAnswers = examAnsRows.map(x => ({
     examId: x.examId, userId: x.userId, name: x.name || '', t: parseInt(x.t, 10) || 0,
     objective: parseJSON(x.objective, []), subjective: parseJSON(x.subjective, []),
@@ -308,7 +321,7 @@ function batchInsertQuestions(arr) {
 }
 function updateQuestion(qq) {
   return run(["UPDATE questions SET chapter=" + esc(qq.chapter) + ",[section]=" + esc(qq.section || 1) + ",type=" + esc(qq.type) + ",question=" + esc(qq.question) +
-    ",options=" + esc(JSON.stringify(qq.options || [])) + ",answer=" + esc(qq.answer) + ",difficulty=" + esc(qq.difficulty || 3) + ",explain=" + esc(qq.explain || '') + " WHERE id=" + esc(qq.id)]);
+    ",options=" + esc(JSON.stringify(qq.options || [])) + ",answer=" + esc(qq.answer) + ",difficulty=" + esc(qq.difficulty || 3) + ",explain=" + esc(qq.explain || '') + ",[image]=" + esc(qq.image || '') + ",[imageAlign]=" + esc(qq.imageAlign || 'center') + ",[imgSize]=" + esc(qq.imgSize || 60) + " WHERE id=" + esc(qq.id)]);
 }
 function deleteQuestion(id) {
   return run(["DELETE FROM questions WHERE id=" + esc(id)]);
@@ -324,7 +337,13 @@ async function ensureExamTables() {
   } catch (e) { /* 表已存在等，忽略 */ }
   try {
     const examsRows = await q("SELECT id, title, subject, className, grade, createdAt, [status], questions, qcount, totalScore, createdBy, publishedAt, [note] FROM exams");
-    state.exams = examsRows.map(x => parseJSON(x.questions, []));
+    state.exams = examsRows.map(x => {
+    let qs = [];
+    try { qs = JSON.parse(x.questions || '[]'); } catch (e) { qs = []; }
+    return { id: x.id, title: x.title || '', subject: x.subject || '', className: x.className || '', grade: x.grade || '',
+      createdAt: parseInt(x.createdAt, 10) || 0, status: x.status || 'draft', questions: Array.isArray(qs) ? qs : [],
+      qcount: x.qcount || 0, totalScore: x.totalScore || 0, createdBy: x.createdBy || '', publishedAt: x.publishedAt || '', note: x.note || '' };
+  });
   } catch (e) { /* 表不存在则跳过 */ }
   try {
     const examAnsRows = await q("SELECT examId, userId, name, t, objective, subjective, total, [status], img FROM exam_answers");

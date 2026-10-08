@@ -631,7 +631,7 @@
   }
   function drawPedestals() {
     const q = curQ();
-    if (!q || q.type === 'fill' || q.type === 'calc') return;
+    if (!q || q.type === 'fill' || q.type === 'calc' || q.type === 'matching') return;  /* 1.4.4.2-fix: matching options 为对象，跳过柱台避免 forEach 崩溃 */
     const n = q.options.length;
     const w = Math.min(170, VW / (n + 1) - 20);
     q.options.forEach((o, i) => {

@@ -159,6 +159,7 @@
     return (p.lv3 || 0) >= 1;
   }
   function renderMap() {
+    if (!S.me) return;  /* 1.4.4.2-fix: 会话未就绪时避免 S.me.progress 崩溃 */
     const g = $('map-grid');
     g.innerHTML = '';
     S.chapters.forEach((c, i) => {
