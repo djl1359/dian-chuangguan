@@ -18,7 +18,7 @@ const { execFile } = require('child_process');
 const acc = require('./store.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.4.4.2';
+const VERSION = '1.4.5.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -33,6 +33,10 @@ function answerMatch(user, correct) {
   const a = normText(user), b = normText(correct);
   if (!a || !b) return false;
   if (a === b) return true;
+  // 多空题：标准答案以中文分号分隔，学生答对任一分段即判对
+  if (b.includes('；')) {
+    return b.split('；').map(s => normText(s)).filter(Boolean).some(x => x === a);
+  }
   if (/^-?\d+(\.\d+)?$/.test(b) && /^-?\d+(\.\d+)?$/.test(a)) {
     const av = parseFloat(a), bv = parseFloat(b);
     if (bv === 0) return av === 0;
@@ -709,7 +713,7 @@ const server = http.createServer(async (req, res) => {
       const chapter = CHAPTERS.find(c => c.id === ch);
       if (!chapter) return sendJSON(res, 400, { err: '章节无效' });
       const chQs = questions.filter(x => x.chapter === ch);
-      const logs = db.answerLogs.filter(l => l.chapter === ch);
+      const logs = db.answerLogs.filter(l => l.chapter === ch && ((db.users.find(u => u.id === l.userId) || {}).role === 'student'));
       const sectionNames = SECTION_NAMES[ch] || [];
       // 每题聚合
       const qStats = chQs.map(qq => {
@@ -752,7 +756,7 @@ const server = http.createServer(async (req, res) => {
       if (!chapter) return sendJSON(res, 400, { err: '章节无效' });
       const sectionNames = SECTION_NAMES[ch] || [];
       const secQs = questions.filter(x => x.chapter === ch && (x.section || 1) === sec);
-      const logs = db.answerLogs.filter(l => l.chapter === ch && l.section === sec);
+      const logs = db.answerLogs.filter(l => l.chapter === ch && l.section === sec && ((db.users.find(u => u.id === l.userId) || {}).role === 'student'));
       const qStats = secQs.map(qq => {
         const ls = logs.filter(l => l.qid === qq.id);
         const okSet = new Set(), badSet = new Set();

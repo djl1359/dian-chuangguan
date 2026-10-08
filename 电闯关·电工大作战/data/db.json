@@ -8,8 +8,8 @@
       "role": "teacher",
       "score": 650,
       "reg": 1790361073164,
-      "lastLogin": 1791422523896,
-      "loginCount": 150,
+      "lastLogin": 1791431478000,
+      "loginCount": 153,
       "correct": 5,
       "total": 15,
       "progress": {
@@ -27,12 +27,12 @@
       "salt": "eec4e6b23cc73f6b",
       "pass": "f2162c73a9a03409ca846cdf2b6b36b855d9c0bc3a5fed2561d0bb6c53d8b175",
       "role": "student",
-      "score": 13378,
+      "score": 13514,
       "reg": 1791417755923,
-      "lastLogin": 1791422419087,
-      "loginCount": 10,
-      "correct": 49,
-      "total": 55
+      "lastLogin": 1791431681763,
+      "loginCount": 12,
+      "correct": 50,
+      "total": 56
     }
   ],
   "sessions": {
@@ -151,7 +151,12 @@
     "a474f2fb8274c72ce7eb8993c134fe22": "37443a200f06c56b",
     "19506ce226e476d0d1b7cd495be96acd": "dc589aaabe679e3e",
     "38084da58df8939728238eceb712796c": "dc589aaabe679e3e",
-    "2f6f80ad37190ae83e955fb214aa2f67": "37443a200f06c56b"
+    "2f6f80ad37190ae83e955fb214aa2f67": "37443a200f06c56b",
+    "9a879d97f31b403784bad519a5026fd4": "37443a200f06c56b",
+    "ace0d64c97d27697f6c802b23e6d0110": "37443a200f06c56b",
+    "602528d63c6eb0af2cc8a463d1761942": "dc589aaabe679e3e",
+    "60ee81de711b65eb46c9b6e88a2f3b0f": "37443a200f06c56b",
+    "4f71a54cb3037b7f910c72ea60195c12": "dc589aaabe679e3e"
   },
   "progress": {
     "37443a200f06c56b": {
@@ -171,7 +176,8 @@
         "lv2": 3,
         "lv3": 3,
         "boss": 2
-      }
+      },
+      "1": {}
     }
   },
   "wrongs": {
@@ -1366,6 +1372,15 @@
       "qid": 2,
       "chapter": 0,
       "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1791431792221,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 29,
+      "chapter": 1,
+      "section": 4,
       "correct": true
     }
   ],
