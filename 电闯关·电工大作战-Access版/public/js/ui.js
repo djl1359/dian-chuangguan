@@ -49,8 +49,11 @@
     clearTimeout(t._t);
     t._t = setTimeout(() => t.classList.remove('show'), ms || 2200);
   }
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/<\/?(?:sub|sup)>/gi, '\u0001$&\u0002')
+      .replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+      .replace(/\u0001(<\/?(?:sub|sup)>)\u0002/gi, '$1');
   }
   function fmtTime(t) {
     if (!t) return '—';
@@ -68,14 +71,21 @@
 
   /* 填空答案归一化判定（含纯数字容差 ±1%） */
   function normText(s) {
-    return String(s == null ? '' : s).trim().replace(/[\s_　]+/g, '').toLowerCase()
+    let t = String(s == null ? '' : s).trim().replace(/[\s_　]+/g, '').toLowerCase()
       .replace(/[Ａ-Ｚａ-ｚ０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+    /* 1.4.5.1：科学计数法归一 */
+    const SUP = { '⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁺':'+' };
+    t = t.replace(/(\d+(?:\.\d+)?)\s*[×x]\s*10\s*([⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+)/g, (m, a, b) => a + 'e' + b.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g, c => SUP[c]));
+    t = t.replace(/(^|[^0-9.×x])10\s*([⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+)/g, (m, a, b) => a + '1e' + b.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g, c => SUP[c]));
+    t = t.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g, c => SUP[c]);
+    t = t.replace(/(\d+(?:\.\d+)?)\s*[×x]\s*10\s*([+-]?\d+)/g, '$1e$2');
+    return t;
   }
   function answerMatch(user, correct) {
     const a = normText(user), b = normText(correct);
     if (!a || !b) return false;
     if (a === b) return true;
-    if (/^-?\d+(\.\d+)?$/.test(b) && /^-?\d+(\.\d+)?$/.test(a)) {
+    if (/^-?\d+(\.\d+)?([eE][+-]?\d+)?$/.test(b) && /^-?\d+(\.\d+)?([eE][+-]?\d+)?$/.test(a)) {
       const av = parseFloat(a), bv = parseFloat(b);
       if (bv === 0) return av === 0;
       return Math.abs(av - bv) / Math.abs(bv) <= 0.01;

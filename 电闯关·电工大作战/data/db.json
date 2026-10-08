@@ -8,8 +8,8 @@
       "role": "teacher",
       "score": 650,
       "reg": 1790361073164,
-      "lastLogin": 1791431478000,
-      "loginCount": 153,
+      "lastLogin": 1791439938159,
+      "loginCount": 155,
       "correct": 5,
       "total": 15,
       "progress": {
@@ -27,12 +27,12 @@
       "salt": "eec4e6b23cc73f6b",
       "pass": "f2162c73a9a03409ca846cdf2b6b36b855d9c0bc3a5fed2561d0bb6c53d8b175",
       "role": "student",
-      "score": 13514,
+      "score": 13667,
       "reg": 1791417755923,
-      "lastLogin": 1791431681763,
-      "loginCount": 12,
-      "correct": 50,
-      "total": 56
+      "lastLogin": 1791440144661,
+      "loginCount": 13,
+      "correct": 51,
+      "total": 57
     }
   ],
   "sessions": {
@@ -156,7 +156,10 @@
     "ace0d64c97d27697f6c802b23e6d0110": "37443a200f06c56b",
     "602528d63c6eb0af2cc8a463d1761942": "dc589aaabe679e3e",
     "60ee81de711b65eb46c9b6e88a2f3b0f": "37443a200f06c56b",
-    "4f71a54cb3037b7f910c72ea60195c12": "dc589aaabe679e3e"
+    "4f71a54cb3037b7f910c72ea60195c12": "dc589aaabe679e3e",
+    "6013712839091c39d56141cbf6f5f5a0": "37443a200f06c56b",
+    "23eeca2bc19836070be446b8f180f58e": "37443a200f06c56b",
+    "12a527250002786434ffd1183019a3bf": "dc589aaabe679e3e"
   },
   "progress": {
     "37443a200f06c56b": {
@@ -740,6 +743,16 @@
     {
       "t": 1791418113124,
       "op": "教师修改账号（用户名/密码）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791438799676,
+      "op": "删除考试「【功能测试】电学基础测验」",
+      "by": "teacher"
+    },
+    {
+      "t": 1791438853614,
+      "op": "创建/更新考试「【功能测试】电学基础测验」（34题/34分）",
       "by": "teacher"
     }
   ],
@@ -1382,11 +1395,20 @@
       "chapter": 1,
       "section": 4,
       "correct": true
+    },
+    {
+      "t": 1791440288918,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 347,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
     }
   ],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.4.4.2",
+    "version": "1.4.5.1",
     "timeAdd": "5",
     "timeMatchAdd": "10",
     "levelQ": {
@@ -1405,25 +1427,22 @@
   },
   "exams": [
     {
-      "id": "ex1f33fdb72700a323",
+      "id": "ex8d5c2734ea3e052d",
       "title": "【功能测试】电学基础测验",
       "subject": "电工技术基础与技能",
-      "className": "电一(1)班",
+      "className": "",
       "grade": "",
-      "createdAt": 1791417339835,
-      "status": "published",
+      "createdAt": 1791438853612,
+      "status": "draft",
       "questions": [
         {
-          "id": 47,
-          "chapter": 2,
-          "section": 2,
+          "id": 868,
+          "chapter": 1,
+          "section": 5,
           "type": "single",
-          "question": "串联电路的主要特点是？",
+          "question": "一只 220 V、40 W 的灯泡正常工作 10 h，消耗的电能为（ ）",
           "options": [
-            "A. 各元件电流处处相等",
-            "B. 各元件电压处处相等",
-            "C. 总电阻小于任一分电阻",
-            "D. 各元件功率相等"
+            "A. $0.4\\ \\mathrm{kW\\cdot h}$　　B. $4\\ \\mathrm{kW\\cdot h}$　　C. $400\\ \\mathrm{kW\\cdot h}$　　D. $0.04\\ \\mathrm{kW\\cdot h}$"
           ],
           "answer": "A",
           "difficulty": 2,
@@ -1433,16 +1452,13 @@
           "score": 1
         },
         {
-          "id": 182,
-          "chapter": 7,
-          "section": 3,
+          "id": 871,
+          "chapter": 1,
+          "section": 5,
           "type": "single",
-          "question": "u=311sin(314t+30°)V，该交流电的有效值为？",
+          "question": "关于额定功率，下列说法正确的是（ ）",
           "options": [
-            "A. 311V",
-            "B. 220V",
-            "C. 314V",
-            "D. 155V"
+            "A. 用电器的实际功率总等于额定功率　　B. 用电器在额定电压下工作时的功率叫额定功率　　C. 额定功率越大，耗电一定越多　　D. 额定功率与电压无关"
           ],
           "answer": "B",
           "difficulty": 2,
@@ -1452,16 +1468,155 @@
           "score": 1
         },
         {
-          "id": 649,
-          "chapter": 2,
+          "id": 358,
+          "chapter": 1,
           "section": 4,
           "type": "single",
-          "question": "识图：电流从电源正极流出后分为两路分别流过R1和R2，再汇合流回负极，则R1与R2的连接方式是（）",
+          "question": "通常电工术语“负载大小”是指（　）的大小。",
           "options": [
-            "A. 串联",
-            "B. 并联",
-            "C. 混联",
-            "D. 无法确定"
+            "A. 等效电阻",
+            "B. 实际电功率",
+            "C. 实际电压",
+            "D. 负载电流"
+          ],
+          "answer": "B",
+          "difficulty": 3,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 850,
+          "chapter": 1,
+          "section": 4,
+          "type": "single",
+          "question": "一只电阻两端电压由 4 V 增大到 8 V，则通过它的电流（ ）",
+          "options": [
+            "A. 不变　　B. 变为原来的 2 倍　　C. 变为原来的一半　　D. 变为原来的 4 倍"
+          ],
+          "answer": "B",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 354,
+          "chapter": 1,
+          "section": 2,
+          "type": "single",
+          "question": "通过一个电阻的电流是5A，经过4min，通过该电阻的一个截面的电荷是（　）。",
+          "options": [
+            "A. 20C",
+            "B. 50C",
+            "C. 1200C",
+            "D. 2000C"
+          ],
+          "answer": "C",
+          "difficulty": 3,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 803,
+          "chapter": 1,
+          "section": 2,
+          "type": "single",
+          "question": "电流 $5\\times10^{4}\\ \\mu\\mathrm{A}$ 等于（ ）",
+          "options": [
+            "A. $0.05\\ \\mathrm{A}$　　B. $0.5\\ \\mathrm{A}$　　C. $5\\ \\mathrm{A}$　　D. $50\\ \\mathrm{A}$"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 848,
+          "chapter": 1,
+          "section": 4,
+          "type": "single",
+          "question": "线性电阻的伏安特性曲线是（ ）",
+          "options": [
+            "A. 一条过原点的直线　　B. 一条曲线　　C. 一条平行于横轴的直线　　D. 一条平行于纵轴的直线"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 828,
+          "chapter": 1,
+          "section": 3,
+          "type": "single",
+          "question": "$0.5\\ \\mathrm{M\\Omega}$ 等于（ ）",
+          "options": [
+            "A. $500\\ \\Omega$　　B. $5000\\ \\Omega$　　C. $5\\times10^{5}\\ \\Omega$　　D. $5\\times10^{6}\\ \\Omega$"
+          ],
+          "answer": "C",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 762,
+          "chapter": 1,
+          "section": 1,
+          "type": "single",
+          "question": "一只电炉的电阻为 44 $\\Omega$，接在 220 V 电源上，它的电功率为（ ）",
+          "options": [
+            "A. $5\\ \\mathrm{W}$　　B. $110\\ \\mathrm{W}$　　C. $1100\\ \\mathrm{W}$　　D. $4840\\ \\mathrm{W}$"
+          ],
+          "answer": "C",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 461,
+          "chapter": 1,
+          "section": 2,
+          "type": "single",
+          "question": "电压的方向规定是由____端指向____端，即电位降方向。",
+          "options": [
+            "A. 高",
+            "B. 低",
+            "C. 正",
+            "D. 负",
+            "E. 低",
+            "F. 高",
+            "G. 负",
+            "H. 正"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 774,
+          "chapter": 1,
+          "section": 1,
+          "type": "judge",
+          "question": "电源短路时，电源输出的电流比正常工作时小。（ ）",
+          "options": [
+            "A. 正确",
+            "B. 错误"
           ],
           "answer": "B",
           "difficulty": 1,
@@ -1471,49 +1626,130 @@
           "score": 1
         },
         {
-          "id": 32,
+          "id": 617,
+          "chapter": 1,
+          "section": 3,
+          "type": "judge",
+          "question": "电阻值大的导体其电阻率一定也大。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "B",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 862,
+          "chapter": 1,
+          "section": 5,
+          "type": "judge",
+          "question": "电功率是表示电流做功快慢的物理量。（ ）",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 1,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 817,
+          "chapter": 1,
+          "section": 3,
+          "type": "judge",
+          "question": "导体的电阻由导体本身的性质决定，与导体两端电压和通过的电流无关。（ ）",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 1,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 348,
+          "chapter": 1,
+          "section": 3,
+          "type": "judge",
+          "question": "电阻元件的伏安特性曲线是过原点的直线时，称为线性元件。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 840,
+          "chapter": 1,
+          "section": 4,
+          "type": "judge",
+          "question": "由 $R=\\frac{U}{I}$ 可知，导体的电阻与它两端的电压成正比。（ ）",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "B",
+          "difficulty": 1,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 453,
+          "chapter": 1,
+          "section": 3,
+          "type": "judge",
+          "question": "某一贴片电阻表面上标注102，表示其阻值为1kΩ。",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 3,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 756,
           "chapter": 1,
           "section": 1,
-          "type": "single",
-          "question": "电路中形成持续电流的条件是？",
-          "options": [
-            "A. 只要有电源",
-            "B. 只要电路闭合",
-            "C. 有电源且电路闭合",
-            "D. 有自由电荷"
-          ],
-          "answer": "C",
-          "difficulty": 2,
-          "image": "",
-          "imageAlign": "center",
-          "imgSize": 60,
-          "score": 1
-        },
-        {
-          "id": 6,
-          "chapter": 0,
-          "section": 1,
-          "type": "single",
-          "question": "特别潮湿、金属容器内等危险场所，安全电压应选用？",
-          "options": [
-            "A. 36V",
-            "B. 24V",
-            "C. 12V",
-            "D. 220V"
-          ],
-          "answer": "C",
-          "difficulty": 2,
-          "image": "",
-          "imageAlign": "center",
-          "imgSize": 60,
-          "score": 1
-        },
-        {
-          "id": 481,
-          "chapter": 9,
-          "section": 1,
           "type": "judge",
-          "question": "电力线路的强电工程中，一定要防止串联谐振的产生，否则会使线路上的电感或电容两端出现很高的电压而损坏电气设备。",
+          "question": "电源短路时电流很大，会烧坏电源和导线。（ ）",
+          "options": [
+            "A. 正确",
+            "B. 错误"
+          ],
+          "answer": "A",
+          "difficulty": 1,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 627,
+          "chapter": 1,
+          "section": 5,
+          "type": "judge",
+          "question": "额定电压为220V的白炽灯接在110V电源上，消耗的功率为原来的1/4。",
           "options": [
             "A. 正确",
             "B. 错误"
@@ -1526,47 +1762,44 @@
           "score": 1
         },
         {
-          "id": 73,
-          "chapter": 2,
-          "section": 3,
+          "id": 757,
+          "chapter": 1,
+          "section": 1,
           "type": "judge",
-          "question": "用万用表欧姆档测量电路中的电阻时，被测电路必须先断电。",
+          "question": "焦耳定律 $Q=I^{2}Rt$ 可以用来计算任何用电器的发热量。（ ）",
           "options": [
             "A. 正确",
             "B. 错误"
           ],
           "answer": "A",
-          "difficulty": 2,
+          "difficulty": 1,
           "image": "",
           "imageAlign": "center",
           "imgSize": 60,
           "score": 1
         },
         {
-          "id": 113,
-          "chapter": 4,
-          "section": 3,
-          "type": "judge",
-          "question": "电容充电完毕（稳态）时，电路电流为零，电容电压等于电源电压。",
-          "options": [
-            "A. 正确",
-            "B. 错误"
-          ],
-          "answer": "A",
-          "difficulty": 2,
-          "image": "",
-          "imageAlign": "center",
-          "imgSize": 60,
-          "score": 1
-        },
-        {
-          "id": 715,
-          "chapter": 8,
-          "section": 2,
+          "id": 752,
+          "chapter": 1,
+          "section": 1,
           "type": "fill",
-          "question": "电感L=0.1H接在f=50Hz的交流电路中，感抗XL=____Ω（π取3.14）。",
+          "question": "$1\\ \\mathrm{kW\\cdot h}=$______$\\mathrm{J}$。",
           "options": [],
-          "answer": "31.4",
+          "answer": "$3.6\\times10^{6}$",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 302,
+          "chapter": 1,
+          "section": 3,
+          "type": "fill",
+          "question": "部分电路欧姆定律表达式为I=____（用U、R表示）。",
+          "options": [],
+          "answer": "U/R",
           "difficulty": 3,
           "image": "",
           "imageAlign": "center",
@@ -1574,13 +1807,139 @@
           "score": 1
         },
         {
-          "id": 587,
-          "chapter": 10,
+          "id": 748,
+          "chapter": 1,
+          "section": 1,
+          "type": "fill",
+          "question": "电路由电源、______、导线和开关四部分组成。",
+          "options": [],
+          "answer": "负载",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 861,
+          "chapter": 1,
+          "section": 5,
+          "type": "fill",
+          "question": "电流通过导体产生的热量用焦耳定律计算，公式是______。",
+          "options": [],
+          "answer": "$Q=I^{2}Rt$",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 857,
+          "chapter": 1,
+          "section": 5,
+          "type": "fill",
+          "question": "电功的单位是______，$1\\ \\mathrm{kW\\cdot h}=$______ J。",
+          "options": [],
+          "answer": "焦耳（J）；$3.6\\times10^{6}$",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 466,
+          "chapter": 1,
+          "section": 3,
+          "type": "fill",
+          "question": "由电路的功率平衡可知，电路中所有元件功率的代数总和为____。",
+          "options": [],
+          "answer": "零",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 765,
+          "chapter": 1,
+          "section": 1,
+          "type": "fill",
+          "question": "电路由电源、负载、导线和开关四部分组成，其中______是提供电能的装置。",
+          "options": [],
+          "answer": "电源",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 812,
+          "chapter": 1,
+          "section": 3,
+          "type": "fill",
+          "question": "电阻定律的表达式是______。",
+          "options": [],
+          "answer": "$R=\\rho\\frac{L}{S}$",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 465,
+          "chapter": 1,
           "section": 4,
           "type": "fill",
-          "question": "热继电器作电器过载保护主要依靠其内部的____的弯曲使触点动作。",
+          "question": "在实际生活中常常采用千瓦时（kWh）作为电能的单位，简称____。",
           "options": [],
-          "answer": "双金属片",
+          "answer": "度",
+          "difficulty": 1,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 814,
+          "chapter": 1,
+          "section": 3,
+          "type": "fill",
+          "question": "导体的电阻与长度成______，与横截面积成______。",
+          "options": [],
+          "answer": "正比；反比",
+          "difficulty": 2,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 369,
+          "chapter": 1,
+          "section": 4,
+          "type": "calc",
+          "question": "一个1kW、220V的电炉，正常工作时电流多大？如果不考虑温度对电阻的影响，把它接到110V的电压上，它的功率将是多少？",
+          "options": [],
+          "answer": "4.5A；250W",
+          "difficulty": 4,
+          "image": "",
+          "imageAlign": "center",
+          "imgSize": 60,
+          "score": 1
+        },
+        {
+          "id": 787,
+          "chapter": 1,
+          "section": 2,
+          "type": "calc",
+          "question": "已知电子的电荷量 $e=1.6\\times10^{-19}\\ \\mathrm{C}$，某电子管中 1 s 内通过横截面的电子数为 $6.25\\times10^{18}$ 个。求：电子管中的电流 $I$。 已知：$e=1.6\\times10^{-19}\\ \\mathrm{C}$，$n=6.25\\times10^{18}$，$t=1\\ \\mathrm{s}$ 求：电流 $I$ 解： 1 s 内通过横截面的电荷量 $q=ne=6.25\\times10^{18}\\times1.6\\times10^{-19}=1\\ \\mathrm{C}$。 $I=\\frac{q}{t}=\\frac{1}{1}=1\\ \\mathrm{A}$。 答：电子管中的电流为 $1\\ \\mathrm{A}$",
+          "options": [],
+          "answer": "1",
           "difficulty": 3,
           "image": "",
           "imageAlign": "center",
@@ -1588,172 +1947,40 @@
           "score": 1
         },
         {
-          "id": 598,
-          "chapter": 0,
-          "section": 1,
-          "type": "matching",
-          "question": "请将常用电工工具与主要用途连线。",
-          "options": {
-            "left": [
-              "试电笔",
-              "电流表",
-              "万用表"
-            ],
-            "right": [
-              "验电",
-              "测电流",
-              "多用途测量"
-            ]
-          },
-          "answer": "[[0,0],[1,1],[2,2]]",
-          "difficulty": 2,
+          "id": 809,
+          "chapter": 1,
+          "section": 3,
+          "type": "calc",
+          "question": "已知某铜导线长 $L=100\\ \\mathrm{m}$，电阻 $R=1.7\\ \\Omega$，铜的电阻率 $\\rho=0.017\\ \\Omega\\cdot\\mathrm{mm^{2}/m}$。求：导线的横截面积 $S$。 已知：$L=100\\ \\mathrm{m}$，$R=1.7\\ \\Omega$，$\\rho=0.017\\ \\Omega\\cdot\\mathrm{mm^{2}/m}$ 求：横截面积 $S$ 解： 由 $R=\\rho\\frac{L}{S}$ 得 $S=\\rho\\frac{L}{R}$， $S=0.017\\times\\frac{100}{1.7}=1\\ \\mathrm{mm^{2}}$。 答：导线的横截面积为 $1\\ \\mathrm{mm^{2}}$",
+          "options": [],
+          "answer": "1",
+          "difficulty": 3,
           "image": "",
           "imageAlign": "center",
           "imgSize": 60,
           "score": 1
         },
         {
-          "id": 607,
+          "id": 808,
           "chapter": 1,
-          "section": 1,
-          "type": "matching",
-          "question": "请将电路组成部分与对应的作用连线。",
-          "options": {
-            "left": [
-              "电源",
-              "负载",
-              "开关"
-            ],
-            "right": [
-              "提供电能",
-              "消耗电能",
-              "控制电路通断"
-            ]
-          },
-          "answer": "[[0,0],[1,1],[2,2]]",
-          "difficulty": 2,
+          "section": 3,
+          "type": "calc",
+          "question": "已知一根铝导线长 $L=100\\ \\mathrm{m}$，横截面积 $S=4\\ \\mathrm{mm^{2}}$，铝的电阻率 $\\rho=0.029\\ \\Omega\\cdot\\mathrm{mm^{2}/m}$。求：导线的电阻 $R$。 已知：$L=100\\ \\mathrm{m}$，$S=4\\ \\mathrm{mm^{2}}$，$\\rho=0.029\\ \\Omega\\cdot\\mathrm{mm^{2}/m}$ 求：导线电阻 $R$ 解： $R=\\rho\\frac{L}{S}=0.029\\times\\frac{100}{4}$， $R=0.725\\ \\Omega$。 答：导线的电阻为 $0.725\\ \\Omega$",
+          "options": [],
+          "answer": "0.725",
+          "difficulty": 3,
           "image": "",
           "imageAlign": "center",
           "imgSize": 60,
           "score": 1
         }
       ],
-      "qcount": 12,
-      "totalScore": 12,
+      "qcount": 34,
+      "totalScore": 34,
       "createdBy": "teacher",
-      "publishedAt": 1791417955536,
+      "publishedAt": "",
       "note": ""
     }
   ],
-  "examAnswers": [
-    {
-      "examId": "ex1f33fdb72700a323",
-      "userId": "dc589aaabe679e3e",
-      "name": "测试学生A",
-      "t": 1791417933605,
-      "objective": [
-        {
-          "id": 47,
-          "type": "single",
-          "given": "A",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 182,
-          "type": "single",
-          "given": "B",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 649,
-          "type": "single",
-          "given": "B",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 32,
-          "type": "single",
-          "given": "C",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 6,
-          "type": "single",
-          "given": "C",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 481,
-          "type": "judge",
-          "given": "A",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 73,
-          "type": "judge",
-          "given": "A",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 113,
-          "type": "judge",
-          "given": "A",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 715,
-          "type": "fill",
-          "given": "31.4",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 587,
-          "type": "fill",
-          "given": "双金属片",
-          "ok": true,
-          "score": 1
-        },
-        {
-          "id": 598,
-          "type": "matching",
-          "given": "",
-          "ok": false,
-          "score": 0
-        },
-        {
-          "id": 607,
-          "type": "matching",
-          "given": "",
-          "ok": false,
-          "score": 0
-        }
-      ],
-      "subjective": [
-        {
-          "id": 598,
-          "maxScore": 1,
-          "score": 1,
-          "graded": true
-        },
-        {
-          "id": 607,
-          "maxScore": 1,
-          "score": 1,
-          "graded": true
-        }
-      ],
-      "total": 12,
-      "status": "graded",
-      "img": ""
-    }
-  ]
+  "examAnswers": []
 }

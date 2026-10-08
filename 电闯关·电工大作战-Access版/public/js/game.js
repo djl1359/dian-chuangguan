@@ -252,10 +252,10 @@
     const ss = window.speechSynthesis;
     if (!ss) return;
     try { ss.cancel(); } catch (e) {}
-    let text = q.question;
+    let text = String(q.question).replace(/<[^>]*>/g, '');
     if (q.type === 'single' || q.type === 'judge' || q.type === 'multi') {
       (q.options || []).forEach((o, i) => {
-        text += '。' + LETTERS[i] + '，' + String(o).replace(/^[A-D][.．、]\s*/, '');
+        text += '。' + LETTERS[i] + '，' + String(o).replace(/<[^>]*>/g, '').replace(/^[A-D][.．、]\s*/, '');
       });
     } else if (q.type === 'fill' || q.type === 'calc') {
       text += '。请在输入框中填写答案';
@@ -878,7 +878,10 @@
   }
   const TYPE_NAME = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线' };
   /* 1.4.0.1：game.js 独立 IIFE 需自带 esc（与 exam.js 同款），否则答题渲染引用未定义报错 */
-  const esc = (x) => String(x == null ? '' : x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const esc = (x) => String(x == null ? '' : x)
+    .replace(/<\/?(?:sub|sup)>/gi, '\u0001$&\u0002')
+    .replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+    .replace(/\u0001(<\/?(?:sub|sup)>)\u0002/gi, '$1');
 
   /* ---------- BOSS 战准备：暂停 + 触控按钮拖拽调整 ---------- */
   function showBossReady() {
