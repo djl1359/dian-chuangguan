@@ -1,0 +1,63 @@
+电闯关·电工大作战 Docker 发布说明 — JSON数据库版 V1.4.5.1
+============================================================
+发布日期：2026-10-09
+
+一、本次发布内容
+------------------------------------------------------------
+在 1.4.5.1 基础上新增「JSON数据库版 Docker 部署形态」：
+
+1. Dockerfile
+   - 基础镜像 node:18-alpine（与 Windows 版 pkg 打包 node18 一致）
+   - 内置健康检查（/api/meta 探活）
+   - 端口 8123（环境变量 PORT 可改）
+
+2. docker-compose.yml
+   - 一键构建 + 启动
+   - 两个命名卷持久化数据（json-data → /app/data，qimg-data → /app/public/qimg）
+   - 容器自动重启（restart: unless-stopped）
+
+3. .dockerignore / start-docker.bat / README-Docker.txt
+   - 一键启动脚本 + 完整部署/备份/迁移说明
+
+4. server.js 跨平台兼容（源码微调，Windows 行为不变）
+   - /api/ocr 增加 process.platform 判断：非 Windows 环境返回明确提示
+     （"当前运行环境不支持图片OCR识别，请使用 Windows 服务端，
+       或改用截图上传/手动录入题目"），不再报莫名的 500
+
+二、验证结果（模拟容器环境实测）
+------------------------------------------------------------
+将 Docker 构建上下文（仅 server.js/store.js/data/public 四件套）
+放入干净目录、独立端口运行，逐项验证：
+
+  1. 服务启动          PASS   node server.js 正常监听
+  2. /api/meta         PASS   版本 1.4.5.1 / JSON数据库版 / 13 章节
+  3. 教师登录          PASS   teacher/123456（weakPass 提示正常）
+  4. 题库管理列表      PASS   2649 题
+  5. 学生列表          PASS   1 人
+  6. 考试列表          PASS   1 场（test1）
+  7. 闯关取题          PASS   第1章关1 抽 6 题
+  8. 首页静态页        PASS   index.html 正常返回
+  9. OCR 兼容分支      PASS   代码审查：非 win32 返回 501 明确提示（本机为
+                            Windows 无法实测 Linux 分支，逻辑为单行判断）
+
+三、功能差异（Docker 版 vs Windows 版）
+------------------------------------------------------------
+  ✅ 全部一致：闯关/章节地图/题库管理/学生管理/成绩分析/组卷阅卷/
+     答题卡/在线考试/CSV导入/截图上传题目图片/语音读题等
+  ⚠️ OCR 文字识别：Linux 容器无 PowerShell 中文 OCR 引擎，
+     调用返回明确提示，可改用截图上传图片或手动录入
+
+四、部署位置
+------------------------------------------------------------
+  E:\测试项目\发布文件-1.4.5.1-docker\电闯关-服务端-JSON版-Docker\
+  使用：双击 start-docker.bat 或 docker compose up -d --build
+
+五、说明
+------------------------------------------------------------
+- 本机未安装 Docker，镜像实际构建与容器运行需在装有 Docker 的环境
+  执行（start-docker.bat 或 compose 命令），上述验证为等价环境模拟。
+- Access 版因依赖 Windows PowerShell + ACE OLEDB 驱动，不提供
+  Docker 形态（Windows 版 exe/安装包不受影响）。
+
+版权：河北省滦州市职业技术教育中心 空城流水老师利用豆包AI制做
+仓库：https://github.com/djl1359/dian-chuangguan

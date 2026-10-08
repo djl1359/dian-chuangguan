@@ -986,6 +986,10 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/ocr' && req.method === 'POST') {
       const a = auth('teacher');
       if (a.err) return sendJSON(res, 401, { err: a.err });
+      // Docker/Linux 等非 Windows 环境无 PowerShell 中文OCR引擎，明确提示（Windows 行为不变）
+      if (process.platform !== 'win32') {
+        return sendJSON(res, 501, { err: '当前运行环境（' + process.platform + '）不支持图片OCR识别，请使用 Windows 服务端，或改用截图上传/手动录入题目' });
+      }
       const body = await readBody(req);
       const b64 = String(body.image || '');
       const m = b64.match(/^data:image\/[a-zA-Z0-9.+-]+;base64,(.+)$/i);

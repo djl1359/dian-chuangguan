@@ -1,0 +1,9 @@
+# 构建上下文排除项
+node_modules
+*.log
+.git
+.gitignore
+发布文件*
+*.exe
+*.zip
+data/uploads

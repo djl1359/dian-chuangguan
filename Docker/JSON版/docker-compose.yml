@@ -1,0 +1,29 @@
+# ============================================================
+# 电闯关·电工大作战 - JSON数据库版 Docker Compose 一键部署
+# 使用：docker compose up -d --build
+# 访问：http://localhost:8123
+# 数据持久化：命名卷 json-data（账号/成绩/题库/考试）、qimg-data（题目图片）
+# ============================================================
+services:
+  dian-chuangguan:
+    image: dian-chuangguan-json:1.4.5.1
+    build: .
+    container_name: dian-chuangguan
+    restart: unless-stopped
+    ports:
+      - "8123:8123"
+    environment:
+      - PORT=8123
+    volumes:
+      - json-data:/app/data
+      - qimg-data:/app/public/qimg
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8123/api/meta"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+volumes:
+  json-data:
+  qimg-data:
