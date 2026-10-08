@@ -8,8 +8,8 @@
       "role": "teacher",
       "score": 650,
       "reg": 1790361073164,
-      "lastLogin": 1791442268089,
-      "loginCount": 159,
+      "lastLogin": 1791442396951,
+      "loginCount": 160,
       "correct": 5,
       "total": 15,
       "progress": {
@@ -27,12 +27,12 @@
       "salt": "eec4e6b23cc73f6b",
       "pass": "f2162c73a9a03409ca846cdf2b6b36b855d9c0bc3a5fed2561d0bb6c53d8b175",
       "role": "student",
-      "score": 13667,
+      "score": 13811,
       "reg": 1791417755923,
       "lastLogin": 1791442038986,
       "loginCount": 14,
-      "correct": 51,
-      "total": 57
+      "correct": 53,
+      "total": 65
     }
   ],
   "sessions": {
@@ -164,7 +164,8 @@
     "ae02a50f46da45633b66881c80ffd98b": "37443a200f06c56b",
     "922e8ead43fc8be1934789bb0a076d8c": "37443a200f06c56b",
     "44967fa6965d21bf2d396499167b2739": "dc589aaabe679e3e",
-    "3fac443c1b2c008bcb146447d44d8c4c": "37443a200f06c56b"
+    "3fac443c1b2c008bcb146447d44d8c4c": "37443a200f06c56b",
+    "81cbfe6e0bc2c1224b11f83fd7759a7c": "37443a200f06c56b"
   },
   "progress": {
     "37443a200f06c56b": {
@@ -288,6 +289,48 @@
         "chapter": 0,
         "count": 1,
         "last": 1791418817041,
+        "good": 0
+      },
+      {
+        "qid": 603,
+        "chapter": 1,
+        "count": 1,
+        "last": 1791442364831,
+        "good": 0
+      },
+      {
+        "qid": 797,
+        "chapter": 1,
+        "count": 1,
+        "last": 1791442366380,
+        "good": 0
+      },
+      {
+        "qid": 821,
+        "chapter": 1,
+        "count": 1,
+        "last": 1791442368929,
+        "good": 0
+      },
+      {
+        "qid": 16,
+        "chapter": 1,
+        "count": 1,
+        "last": 1791442372409,
+        "good": 0
+      },
+      {
+        "qid": 456,
+        "chapter": 1,
+        "count": 1,
+        "last": 1791442373960,
+        "good": 0
+      },
+      {
+        "qid": 828,
+        "chapter": 1,
+        "count": 1,
+        "last": 1791442376782,
         "good": 0
       }
     ]
@@ -1419,6 +1462,78 @@
       "chapter": 1,
       "section": 3,
       "correct": true
+    },
+    {
+      "t": 1791442364828,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 603,
+      "chapter": 1,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1791442366378,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 797,
+      "chapter": 1,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1791442367769,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 817,
+      "chapter": 1,
+      "section": 3,
+      "correct": true
+    },
+    {
+      "t": 1791442368926,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 821,
+      "chapter": 1,
+      "section": 3,
+      "correct": false
+    },
+    {
+      "t": 1791442372407,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 16,
+      "chapter": 1,
+      "section": 3,
+      "correct": false
+    },
+    {
+      "t": 1791442373958,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 456,
+      "chapter": 1,
+      "section": 3,
+      "correct": false
+    },
+    {
+      "t": 1791442375531,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 803,
+      "chapter": 1,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1791442376780,
+      "userId": "dc589aaabe679e3e",
+      "name": "测试学生A",
+      "qid": 828,
+      "chapter": 1,
+      "section": 3,
+      "correct": false
     }
   ],
   "settings": {
