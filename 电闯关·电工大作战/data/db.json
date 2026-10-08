@@ -8,8 +8,8 @@
       "role": "teacher",
       "score": 650,
       "reg": 1790361073164,
-      "lastLogin": 1791442396951,
-      "loginCount": 160,
+      "lastLogin": 1791446257356,
+      "loginCount": 161,
       "correct": 5,
       "total": 15,
       "progress": {
@@ -29,8 +29,8 @@
       "role": "student",
       "score": 13811,
       "reg": 1791417755923,
-      "lastLogin": 1791442038986,
-      "loginCount": 14,
+      "lastLogin": 1791446321277,
+      "loginCount": 16,
       "correct": 53,
       "total": 65
     }
@@ -165,7 +165,10 @@
     "922e8ead43fc8be1934789bb0a076d8c": "37443a200f06c56b",
     "44967fa6965d21bf2d396499167b2739": "dc589aaabe679e3e",
     "3fac443c1b2c008bcb146447d44d8c4c": "37443a200f06c56b",
-    "81cbfe6e0bc2c1224b11f83fd7759a7c": "37443a200f06c56b"
+    "81cbfe6e0bc2c1224b11f83fd7759a7c": "37443a200f06c56b",
+    "0594d2b262df054187bb13631ad7452e": "dc589aaabe679e3e",
+    "aea619eb825bf6efdc3348f8d0107601": "37443a200f06c56b",
+    "bc6a9ea122c97a0d3cd72301edd766a1": "dc589aaabe679e3e"
   },
   "progress": {
     "37443a200f06c56b": {
@@ -811,6 +814,11 @@
     {
       "t": 1791441306703,
       "op": "创建/更新考试「【功能测试】电学基础测验」（39题/39分）",
+      "by": "teacher"
+    },
+    {
+      "t": 1791446296832,
+      "op": "考试「【功能测试】电学基础测验」状态变更为 open",
       "by": "teacher"
     }
   ],
@@ -1563,7 +1571,7 @@
       "className": "",
       "grade": "",
       "createdAt": 1791441306700,
-      "status": "draft",
+      "status": "open",
       "questions": [
         {
           "id": 17,

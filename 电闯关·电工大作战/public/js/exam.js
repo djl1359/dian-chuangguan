@@ -8,7 +8,7 @@
   const esc = (x) => String(x == null ? '' : x)
     .replace(/<\/?(?:sub|sup)>/gi, '\u0001$&\u0002')
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-    .replace(/\u0001(<\/?(?:sub|sup)>)\u0002/gi, '$1');').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    .replace(/\u0001(<\/?(?:sub|sup)>)\u0002/gi, '$1');
   const TYPE_NAME = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线', calc: '计算' };
   const STATUS_MAP = { draft: '草稿', open: '进行中', grading: '阅卷中', published: '已发布' };
   const STATUS_CLS = { draft: '', open: 'primary', grading: 'warn', published: 'ok' };
