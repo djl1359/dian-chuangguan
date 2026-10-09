@@ -1,11 +1,11 @@
 /* ===== 界面与流程控制 ===== */
 (function () {
   const S = { me: null, chapters: [], levels: [], curChapter: null, memoryQuiz: null, unit: '', gameName: '电闯关·电工大作战', qSel: {}, paper: { chapters: [], diffs: [], types: [], mastery: 'all', count: 20, includeAnswer: false } };
-  /* 分页状态：学生/题库/成绩分析/日志 */
+  /* 分页状态：学生/题库/成绩分析/日志（V1.5.0.0：加 school/gradeLevel/cls 学校年级班级筛选） */
   const PG = {
-    students: { page: 1, size: 20, kw: '', sort: 'name', grade: '' },
+    students: { page: 1, size: 20, kw: '', sort: 'name', grade: '', school: '', gradeLevel: '', cls: '' },
     questions: { page: 1, size: 20, sort: 'idAsc' },
-    analysis: { page: 1, size: 20, kw: '', sort: 'acc', grade: '' },
+    analysis: { page: 1, size: 20, kw: '', sort: 'acc', grade: '', school: '', gradeLevel: '', cls: '' },
     logs: { page: 1, size: 20 }
   };
   /* 工具条（查找/排序/筛选）渲染 */
@@ -110,9 +110,15 @@
     const msg = $('login-msg');
     if (!name || !pass) { msg.textContent = '请填写姓名和密码'; msg.className = 'msg err'; return; }
     if (isReg && pass !== $('login-pass2').value) { msg.textContent = '两次密码不一致'; msg.className = 'msg err'; return; }
+    /* V1.5.0.0：注册时收集 学校/年级/班级 */
+    const school = $('reg-school') ? $('reg-school').value.trim() : '';
+    const grade = $('reg-grade') ? $('reg-grade').value : '';
+    const cls = $('reg-class') ? $('reg-class').value.trim() : '';
+    if (isReg && !school) { msg.textContent = '请填写学校'; msg.className = 'msg err'; return; }
+    if (isReg && !grade) { msg.textContent = '请选择年级'; msg.className = 'msg err'; return; }
     msg.textContent = '请稍候…'; msg.className = 'msg';
     try {
-      const r = isReg ? await API.register(name, pass) : await API.login(name, pass);
+      const r = isReg ? await API.register(name, pass, school, grade, cls) : await API.login(name, pass);
       API.saveToken(r.token);
       S.me = r.user;
       msg.textContent = ''; msg.className = 'msg';
@@ -441,6 +447,19 @@
     loadAnalysis();
     loadLogs();
   }
+  /* V1.5.0.0：学校/年级/班级筛选下拉动态填充（stu=学生管理 / ana=成绩分析） */
+  function fillDimFilter(prefix, list) {
+    const defs = [['school', '学校'], ['grade', '年级'], ['class', '班级']];
+    defs.forEach(([key, label]) => {
+      const el = $(prefix + '-filter-' + key);
+      if (!el) return;
+      const cur = el.value;
+      const vals = [...new Set(list.map(u => String(u[key] || '').trim()).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'zh'));
+      el.innerHTML = '<option value="">全部' + label + '</option>' + vals.map(v => '<option value="' + esc(v) + '"' + (cur === v ? ' selected' : '') + '>' + esc(v) + '</option>').join('');
+      if (vals.indexOf(cur) < 0) el.value = '';
+    });
+  }
+
   async function loadStudents() {
     const p = $('student-list');
     p.innerHTML = '<div class="empty-tip">加载中…</div>';
@@ -451,6 +470,11 @@
       const kw = (PG.students.kw || '').toLowerCase();
       if (kw) list = list.filter(u => (u.name || '').toLowerCase().includes(kw));
       if (PG.students.grade) list = list.filter(u => gradeOfUser(u) === PG.students.grade);
+      /* V1.5.0.0：学校/年级/班级筛选（下拉选项由全部学生动态生成） */
+      fillDimFilter('stu', r.list);
+      if (PG.students.school) list = list.filter(u => (u.school || '') === PG.students.school);
+      if (PG.students.gradeLevel) list = list.filter(u => (u.grade || '') === PG.students.gradeLevel);
+      if (PG.students.cls) list = list.filter(u => (u.class || '') === PG.students.cls);
       const cmps = {
         name: (a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'zh'),
         score: (a, b) => (b.score || 0) - (a.score || 0),
@@ -468,11 +492,12 @@
         total: list.length
       }) +
         pagerHtml(list.length, PG.students, 'UIM.gotoStudents') +
-        '<table class="data-table"><tr><th>姓名</th><th>积分</th><th>答对/总数</th><th>正确率</th><th>等级</th><th>星星</th><th>通关章</th><th>错题</th><th>注册时间</th><th>最近登录</th><th>操作</th></tr>' +
+        '<table class="data-table"><tr><th>姓名</th><th>学校</th><th>年级</th><th>班级</th><th>积分</th><th>答对/总数</th><th>正确率</th><th>等级</th><th>星星</th><th>通关章</th><th>错题</th><th>注册时间</th><th>最近登录</th><th>操作</th></tr>' +
         pp.rows.map(u => {
           const g = gradeOfUser(u);
-          return '<tr><td><a class="stu-link" href="javascript:void(0)" onclick="UIM.viewStudent(\'' + u.id + '\',\'' + esc(u.name) + '\')">' + esc(u.name) + '</a></td><td>' + u.score + '</td><td>' + u.correct + '/' + u.total + '</td><td>' + (u.total ? Math.round(u.correct / u.total * 100) : 0) + '%</td><td style="color:' + (g === '优' ? 'var(--ok)' : g === '差' ? 'var(--danger)' : 'var(--accent2)') + ';font-weight:700">' + g + '</td><td>' + u.stars + '</td><td>' + u.cleared + '</td><td>' + u.wrongCount + '</td><td>' + fmtTime(u.reg) + '</td><td>' + fmtTime(u.lastLogin) + '</td>' +
+          return '<tr><td><a class="stu-link" href="javascript:void(0)" onclick="UIM.viewStudent(\'' + u.id + '\',\'' + esc(u.name) + '\')">' + esc(u.name) + '</a></td><td>' + esc(u.school || '—') + '</td><td>' + esc(u.grade || '—') + '</td><td>' + esc(u.class || '—') + '</td><td>' + u.score + '</td><td>' + u.correct + '/' + u.total + '</td><td>' + (u.total ? Math.round(u.correct / u.total * 100) : 0) + '%</td><td style="color:' + (g === '优' ? 'var(--ok)' : g === '差' ? 'var(--danger)' : 'var(--accent2)') + ';font-weight:700">' + g + '</td><td>' + u.stars + '</td><td>' + u.cleared + '</td><td>' + u.wrongCount + '</td><td>' + fmtTime(u.reg) + '</td><td>' + fmtTime(u.lastLogin) + '</td>' +
             '<td><div class="actions-row">' +
+            '<button class="btn small" onclick="UIM.editStu(\'' + u.id + '\')">编辑</button>' +
             '<button class="btn small" onclick="UIM.scoreModal(\'' + u.id + '\',\'' + esc(u.name) + '\')">加减分</button>' +
             '<button class="btn small" onclick="UIM.resetModal(\'' + u.id + '\',\'' + esc(u.name) + '\')">重置密码</button>' +
             '<button class="btn small danger" onclick="UIM.deleteUser(\'' + u.id + '\',\'' + esc(u.name) + '\')">删除</button>' +
@@ -509,8 +534,10 @@
     const p = $('class-analysis');
     p.innerHTML = '<div class="empty-tip">加载中…</div>';
     try {
-      const [r, users] = await Promise.all([API.classAnalysis(), API.users()]);
+      /* V1.5.0.0：按 学校/年级/班级 筛选统计 */
+      const [r, users] = await Promise.all([API.classAnalysis(PG.analysis.school, PG.analysis.gradeLevel, PG.analysis.cls), API.users()]);
       S.users = users.list || [];
+      fillDimFilter('ana', users.list || []);
       // 填充学生下拉（个人分析选择器）
       const stuSel = $('ana-student-select');
       const cur = stuSel.value;
@@ -547,6 +574,9 @@
         '<div class="stat-card"><div class="v">' + r.avgAcc + '%</div><div class="k">平均正确率</div></div>' + gradeCards +
         '</div>' +
         (PG.analysis.grade ? '<div class="q-meta" style="margin-top:6px">当前筛选：<b style="color:var(--accent)">' + PG.analysis.grade + '等</b> 学生 ' + rows.length + ' 人（点击上方等次数字可切换或取消）</div>' : '') +
+        ((PG.analysis.school || PG.analysis.gradeLevel || PG.analysis.cls) ? '<div class="q-meta" style="margin-top:2px">当前统计范围：' +
+          [PG.analysis.school ? '学校「' + esc(PG.analysis.school) + '」' : '', PG.analysis.gradeLevel ? '年级「' + esc(PG.analysis.gradeLevel) + '」' : '', PG.analysis.cls ? '班级「' + esc(PG.analysis.cls) + '」' : ''].filter(Boolean).join(' · ') +
+          '（' + rows.length + ' 人，可点「重置筛选」恢复全校）</div>' : '') +
         '<div class="grade-bar"><div class="g-优" style="width:' + (r.gradeCount['优'] / total * 100) + '%"></div><div class="g-良" style="width:' + (r.gradeCount['良'] / total * 100) + '%"></div><div class="g-中" style="width:' + (r.gradeCount['中'] / total * 100) + '%"></div><div class="g-差" style="width:' + (r.gradeCount['差'] / total * 100) + '%"></div></div>' +
         toolRowHtml(PG.analysis, {
           placeholder: '按姓名查找学生…',
@@ -618,7 +648,9 @@ async function loadChapterAnalysis(ch) {
     const box = $('ana-chapter');
     box.innerHTML = '<div class="empty-tip">加载中…</div>';
     try {
-      const r = await API.chapterAnalysis(ch);
+      /* V1.5.0.0：全班模式按 学校/年级/班级 筛选；个人模式不看筛选 */
+      const fS = S.anaStu ? '' : PG.analysis.school, fG = S.anaStu ? '' : PG.analysis.gradeLevel, fC = S.anaStu ? '' : PG.analysis.cls;
+      const r = await API.chapterAnalysis(ch, fS, fG, fC);
       let mch = null;
       if (S.anaStu) {
         const m = await API.mastery();
@@ -666,7 +698,9 @@ async function loadChapterAnalysis(ch) {
   }
   async function loadSectionAnalysis(ch, sec, cardEl) {
     try {
-      const r = await API.sectionAnalysis(ch, sec);
+      /* V1.5.0.0：全班模式按 学校/年级/班级 筛选；个人模式不看筛选 */
+      const fS = S.anaStu ? '' : PG.analysis.school, fG = S.anaStu ? '' : PG.analysis.gradeLevel, fC = S.anaStu ? '' : PG.analysis.cls;
+      const r = await API.sectionAnalysis(ch, sec, fS, fG, fC);
       if (!cardEl) return;
       const exist = cardEl.parentNode.querySelector('.sec-detail');
       if (exist) { exist.remove(); return; }
@@ -729,7 +763,9 @@ async function loadChapterAnalysis(ch) {
     const box = $('ana-mastery');
     box.innerHTML = '<div class="empty-tip">加载中…</div>';
     try {
-      const r = await API.mastery();
+      /* V1.5.0.0：全班模式按 学校/年级/班级 筛选；个人模式不看筛选 */
+      const fS = S.anaStu ? '' : PG.analysis.school, fG = S.anaStu ? '' : PG.analysis.gradeLevel, fC = S.anaStu ? '' : PG.analysis.cls;
+      const r = await API.mastery(fS, fG, fC);
       if (!r.list.length) { box.innerHTML = '<div class="empty-tip">暂无学生数据</div>'; return; }
       if (S.anaStu) {
         const u = r.list.find(x => x.id === S.anaStu);
@@ -1002,8 +1038,10 @@ async function loadChapterAnalysis(ch) {
 
   /* ---------- 事件绑定 ---------- */
   function bind() {
-    $('tab-login').onclick = () => { $('tab-login').classList.add('active'); $('tab-register').classList.remove('active'); $('login-pass2').style.display = 'none'; };
-    $('tab-register').onclick = () => { $('tab-register').classList.add('active'); $('tab-login').classList.remove('active'); $('login-pass2').style.display = ''; };
+    /* V1.5.0.0：注册 tab 显示 学校/年级/班级 字段，登录 tab 隐藏 */
+    const setRegFields = (show) => { document.querySelectorAll('.reg-field').forEach(el => el.style.display = show ? '' : 'none'); };
+    $('tab-login').onclick = () => { $('tab-login').classList.add('active'); $('tab-register').classList.remove('active'); $('login-pass2').style.display = 'none'; setRegFields(false); };
+    $('tab-register').onclick = () => { $('tab-register').classList.add('active'); $('tab-login').classList.remove('active'); $('login-pass2').style.display = ''; setRegFields(true); };
     $('btn-login').onclick = doLogin;
     $('login-pass').onkeydown = (e) => { if (e.key === 'Enter') doLogin(); };
 
@@ -1062,6 +1100,21 @@ async function loadChapterAnalysis(ch) {
         PG.analysis.kw = '';
         loadAnalysis();
       }
+    };
+    /* V1.5.0.0：学生管理/成绩分析 学校·年级·班级 筛选与重置 */
+    $('stu-filter-school').onchange = (e) => UIM.setStuSchool(e.target.value);
+    $('stu-filter-grade').onchange = (e) => UIM.setStuGradeLevel(e.target.value);
+    $('stu-filter-class').onchange = (e) => UIM.setStuCls(e.target.value);
+    $('stu-filter-reset').onclick = () => {
+      PG.students.school = ''; PG.students.gradeLevel = ''; PG.students.cls = ''; PG.students.page = 1;
+      loadStudents();
+    };
+    $('ana-filter-school').onchange = (e) => UIM.setAnaSchool(e.target.value);
+    $('ana-filter-grade').onchange = (e) => UIM.setAnaGradeLevel(e.target.value);
+    $('ana-filter-class').onchange = (e) => UIM.setAnaCls(e.target.value);
+    $('ana-filter-reset').onclick = () => {
+      PG.analysis.school = ''; PG.analysis.gradeLevel = ''; PG.analysis.cls = ''; PG.analysis.page = 1;
+      loadAnalysis();
     };
     $('ana-chapter-btn').onclick = () => loadChapterAnalysis(parseInt($('ana-chapter-select').value, 10));
     const bus = $('btn-unit-set');
@@ -1163,6 +1216,35 @@ async function loadChapterAnalysis(ch) {
     setStuKw(v) { PG.students.kw = v; PG.students.page = 1; loadStudents(); },
     setStuSort(v) { PG.students.sort = v; PG.students.page = 1; loadStudents(); },
     setStuGrade(v) { PG.students.grade = v; PG.students.page = 1; loadStudents(); },
+    /* V1.5.0.0：学生管理按 学校/年级/班级 筛选 */
+    setStuSchool(v) { PG.students.school = v; PG.students.page = 1; loadStudents(); },
+    setStuGradeLevel(v) { PG.students.gradeLevel = v; PG.students.page = 1; loadStudents(); },
+    setStuCls(v) { PG.students.cls = v; PG.students.page = 1; loadStudents(); },
+    /* V1.5.0.0：教师修改学生 学校/年级/班级 */
+    editStu(id) {
+      const u = S.users ? (S.users.find(x => x.id === id) || {}) : {};
+      const gOpts = ['一年级', '二年级', '三年级'].map(g => '<option value="' + g + '"' + (u.grade === g ? ' selected' : '') + '>' + g + '</option>').join('');
+      openModal('<h3 style="margin-bottom:12px">📝 编辑学生信息：' + esc(u.name || '') + '</h3>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">学校</label><input id="es-school" type="text" maxlength="60" value="' + esc(u.school || '') + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">年级</label><select id="es-grade" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"><option value="">— 请选择年级 —</option>' + gOpts + '</select></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">班级</label><input id="es-class" type="text" maxlength="30" value="' + esc(u.class || '') + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div class="msg" id="es-msg"></div>' +
+        '<div class="actions-row"><button class="btn primary" id="es-save" style="flex:1">保存</button><button class="btn ghost" onclick="closeModal()">取消</button></div>');
+      $('es-save').onclick = async () => {
+        const school = $('es-school').value.trim();
+        const grade = $('es-grade').value;
+        const cls = $('es-class').value.trim();
+        if (!school) { $('es-msg').textContent = '请填写学校'; return; }
+        $('es-save').disabled = true;
+        try {
+          await API.editUser(id, { school, grade, class: cls });
+          closeModal();
+          toast('学生信息已保存');
+          loadStudents();
+          if ($('ana-student-select') && S.anaStu === id) loadAnalysis();
+        } catch (e) { $('es-msg').textContent = e.message; $('es-save').disabled = false; }
+      };
+    },
     /* 题库管理：排序 */
     setQSort(v) { PG.questions.sort = v; PG.questions.page = 1; loadQuestions(); },
     /* 成绩分析：查找/排序/等次筛选 */
@@ -1189,6 +1271,10 @@ async function loadChapterAnalysis(ch) {
       }
       loadAnalysis();
     },
+    /* V1.5.0.0：成绩分析按 学校/年级/班级 分别统计 */
+    setAnaSchool(v) { PG.analysis.school = v; PG.analysis.page = 1; loadAnalysis(); },
+    setAnaGradeLevel(v) { PG.analysis.gradeLevel = v; PG.analysis.page = 1; loadAnalysis(); },
+    setAnaCls(v) { PG.analysis.cls = v; PG.analysis.page = 1; loadAnalysis(); },
     /* 点击学生姓名 → 跳转到成绩分析并查看其个人分析 */
     viewStudent(id, name) {
       if (!id && S.users && S.users.length) {

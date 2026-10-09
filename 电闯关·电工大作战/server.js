@@ -18,7 +18,7 @@ const { execFile } = require('child_process');
 const acc = require('./store.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION = '1.4.5.1';
+const VERSION = '1.5.0.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -186,7 +186,7 @@ function createToken(userId) {
   db.sessions[t] = userId;
   return t;
 }
-async function register(name, pass) {
+async function register(name, pass, school, grade, cls) {
   if (!name || !pass) return { err: '用户名和密码不能为空' };
   if (String(name).trim().length < 1 || String(name).trim().length > 16) return { err: '用户名长度应为 1~16 个字符' };
   if (String(pass).length < 4 || String(pass).length > 20) return { err: '密码长度应为 4~20 位' };
@@ -195,6 +195,10 @@ async function register(name, pass) {
   const user = {
     id: uid(), name: String(name).trim(), salt,
     pass: sha256(salt + pass), role: 'student',
+    /* V1.5.0.0：注册信息增加学校/年级/班级（默认学校为滦州职教中心） */
+    school: String(school || '').trim() || '河北省滦州市职业技术教育中心',
+    grade: String(grade || '').trim(),
+    class: String(cls || '').trim(),
     score: 0, reg: Date.now(), lastLogin: 0, loginCount: 0,
     correct: 0, total: 0
   };
@@ -225,10 +229,21 @@ function publicUser(u) {
   });
   return {
     id: u.id, name: u.name, role: u.role, score: u.score,
+    /* V1.5.0.0：学校/年级/班级随用户信息返回 */
+    school: u.school || '', grade: u.grade || '', class: u.class || '',
     reg: u.reg, lastLogin: u.lastLogin, loginCount: u.loginCount,
     correct: u.correct, total: u.total,
     progress, stars, cleared, memoryBest: db.memoryBest[u.id] || 0
   };
+}
+/* V1.5.0.0：成绩分析/学生统计按 学校、年级、班级 筛选学生集合 */
+function filteredStudents(q) {
+  let list = db.users.filter(u => u.role === 'student');
+  const school = q.get('school') || '', grade = q.get('grade') || '', cls = q.get('class') || '';
+  if (school) list = list.filter(u => (u.school || '') === school);
+  if (grade) list = list.filter(u => (u.grade || '') === grade);
+  if (cls) list = list.filter(u => (u.class || '') === cls);
+  return list;
 }
 function rankOf(score) {
   if (score >= 5000) return '电工技师';
@@ -428,7 +443,7 @@ const server = http.createServer(async (req, res) => {
     // 注册
     if (p === '/api/register' && req.method === 'POST') {
       const body = await readBody(req);
-      const user = await register(body.name, body.password);
+      const user = await register(body.name, body.password, body.school, body.grade, body.class);
       if (user.err) return sendJSON(res, 400, { err: user.err });
       const token = createToken(user.id);
       await acc.upsertSession(token, user.id);
@@ -625,10 +640,29 @@ const server = http.createServer(async (req, res) => {
       const list = db.users.filter(u => u.role === 'student').map(u => ({
         id: u.id, name: u.name, score: u.score, reg: u.reg, lastLogin: u.lastLogin,
         loginCount: u.loginCount, correct: u.correct, total: u.total,
+        /* V1.5.0.0：学校/年级/班级 */
+        school: u.school || '', grade: u.grade || '', class: u.class || '',
         stars: publicUser(u).stars, cleared: publicUser(u).cleared,
         wrongCount: (db.wrongs[u.id] || []).length
       })).sort((a, b) => b.score - a.score);
       return sendJSON(res, 200, { list });
+    }
+    // V1.5.0.0：教师修改学生信息（学校/年级/班级）
+    if (p === '/api/users/edit' && req.method === 'POST') {
+      const a = auth('teacher');
+      if (a.err) return sendJSON(res, 401, { err: a.err });
+      const body = await readBody(req);
+      const user = findUser(body.id);
+      if (!user) return sendJSON(res, 404, { err: '用户不存在' });
+      const before = (user.school || '') + '/' + (user.grade || '') + '/' + (user.class || '');
+      if (body.school !== undefined) user.school = String(body.school || '').trim();
+      if (body.grade !== undefined) user.grade = String(body.grade || '').trim();
+      if (body.class !== undefined) user.class = String(body.class || '').trim();
+      const after = (user.school || '') + '/' + (user.grade || '') + '/' + (user.class || '');
+      db.logs.push({ t: Date.now(), op: '修改学生信息 ' + before + ' → ' + after, name: user.name, by: a.user.name });
+      await acc.updateUser(user);
+      await acc.appendLog(db.logs[db.logs.length - 1]);
+      return sendJSON(res, 200, { ok: 1 });
     }
     // 重置密码
     if (p === '/api/users/reset' && req.method === 'POST') {
@@ -677,11 +711,11 @@ const server = http.createServer(async (req, res) => {
       await acc.appendLog(db.logs[db.logs.length - 1]);
       return sendJSON(res, 200, { user: publicUser(user) });
     }
-    // 成绩分析-群体
+    // 成绩分析-群体（V1.5.0.0：可按学校/年级/班级筛选统计）
     if (p === '/api/analysis/class') {
       const a = auth('teacher');
       if (a.err) return sendJSON(res, 401, { err: a.err });
-      const students = db.users.filter(u => u.role === 'student');
+      const students = filteredStudents(q);
       const rows = students.map(u => {
         const total = u.total || 0;
         const acc = total ? Math.round(u.correct / total * 100) : 0;
@@ -690,7 +724,9 @@ const server = http.createServer(async (req, res) => {
       const gradeCount = { 优: 0, 良: 0, 中: 0, 差: 0 };
       rows.forEach(r => gradeCount[r.grade]++);
       const avgAcc = rows.length ? Math.round(rows.reduce((s, r) => s + r.acc, 0) / rows.length) : 0;
-      return sendJSON(res, 200, { rows, gradeCount, avgAcc, count: rows.length });
+      /* V1.5.0.0：返回当前筛选条件（前端下拉回显） */
+      return sendJSON(res, 200, { rows, gradeCount, avgAcc, count: rows.length,
+        filter: { school: q.get('school') || '', grade: q.get('grade') || '', class: q.get('class') || '' } });
     }
     // 成绩分析-单人
     if (p === '/api/analysis/student') {
@@ -720,7 +756,9 @@ const server = http.createServer(async (req, res) => {
       const chapter = CHAPTERS.find(c => c.id === ch);
       if (!chapter) return sendJSON(res, 400, { err: '章节无效' });
       const chQs = questions.filter(x => x.chapter === ch);
-      const logs = db.answerLogs.filter(l => l.chapter === ch && ((db.users.find(u => u.id === l.userId) || {}).role === 'student'));
+      /* V1.5.0.0：按学校/年级/班级筛选答题日志 */
+      const eligible = new Set(filteredStudents(q).map(u => u.id));
+      const logs = db.answerLogs.filter(l => l.chapter === ch && eligible.has(l.userId));
       const sectionNames = SECTION_NAMES[ch] || [];
       // 每题聚合
       const qStats = chQs.map(qq => {
@@ -763,7 +801,9 @@ const server = http.createServer(async (req, res) => {
       if (!chapter) return sendJSON(res, 400, { err: '章节无效' });
       const sectionNames = SECTION_NAMES[ch] || [];
       const secQs = questions.filter(x => x.chapter === ch && (x.section || 1) === sec);
-      const logs = db.answerLogs.filter(l => l.chapter === ch && l.section === sec && ((db.users.find(u => u.id === l.userId) || {}).role === 'student'));
+      /* V1.5.0.0：按学校/年级/班级筛选答题日志 */
+      const eligible = new Set(filteredStudents(q).map(u => u.id));
+      const logs = db.answerLogs.filter(l => l.chapter === ch && l.section === sec && eligible.has(l.userId));
       const qStats = secQs.map(qq => {
         const ls = logs.filter(l => l.qid === qq.id);
         const okSet = new Set(), badSet = new Set();
@@ -788,7 +828,8 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/analysis/mastery') {
       const a = auth('teacher');
       if (a.err) return sendJSON(res, 401, { err: a.err });
-      const students = db.users.filter(u => u.role === 'student');
+      /* V1.5.0.0：可按学校/年级/班级筛选统计 */
+      const students = filteredStudents(q);
       const data = students.map(u => {
         const myLogs = db.answerLogs.filter(l => l.userId === u.id);
         const chs = CHAPTERS.map(c => {

@@ -26,7 +26,7 @@
     clearToken() { this.token = ''; localStorage.removeItem(TOKEN_KEY); },
 
     /* 学生/通用 */
-    register: (name, password) => API.req('POST', '/api/register', { name, password }),
+    register: (name, password, school, grade, cls) => API.req('POST', '/api/register', { name, password, school, grade, class: cls }),
     login: (name, password) => API.req('POST', '/api/login', { name, password }),
     me: () => API.req('GET', '/api/me'),
     meta: () => API.req('GET', '/api/meta'),
@@ -43,6 +43,8 @@
     users: () => API.req('GET', '/api/users'),
     resetPassword: (id, password) => API.req('POST', '/api/users/reset', { id, password }),
     deleteUser: (id) => API.req('DELETE', '/api/users', { id }),
+    /* V1.5.0.0：教师修改学生学校/年级/班级 */
+    editUser: (id, data) => API.req('POST', '/api/users/edit', Object.assign({ id }, data)),
     addScore: (id, delta, reason) => API.req('POST', '/api/score', { id, delta, reason }),
     qList: (params) => {
       const q = new URLSearchParams();
@@ -81,11 +83,19 @@
     /* 1.0.0.5：组卷生成 */
     paperGenerate: (opts) => API.req('POST', '/api/paper/generate', opts),
     logs: () => API.req('GET', '/api/logs'),
-    classAnalysis: () => API.req('GET', '/api/analysis/class'),
+    /* V1.5.0.0：成绩分析可按 学校/年级/班级 筛选 */
+    anaFilter: (school, grade, cls) => {
+      const q = new URLSearchParams();
+      if (school) q.set('school', school);
+      if (grade) q.set('grade', grade);
+      if (cls) q.set('class', cls);
+      return q.toString();
+    },
+    classAnalysis: (school, grade, cls) => API.req('GET', '/api/analysis/class?' + API.anaFilter(school, grade, cls)),
     studentAnalysis: (id) => API.req('GET', '/api/analysis/student?id=' + encodeURIComponent(id)),
-    chapterAnalysis: (chapter) => API.req('GET', '/api/analysis/chapter?chapter=' + chapter),
-    sectionAnalysis: (chapter, section) => API.req('GET', '/api/analysis/section?chapter=' + chapter + '&section=' + section),
-    mastery: () => API.req('GET', '/api/analysis/mastery'),
+    chapterAnalysis: (chapter, school, grade, cls) => API.req('GET', '/api/analysis/chapter?chapter=' + chapter + '&' + API.anaFilter(school, grade, cls)),
+    sectionAnalysis: (chapter, section, school, grade, cls) => API.req('GET', '/api/analysis/section?chapter=' + chapter + '&section=' + section + '&' + API.anaFilter(school, grade, cls)),
+    mastery: (school, grade, cls) => API.req('GET', '/api/analysis/mastery?' + API.anaFilter(school, grade, cls)),
     settings: () => API.req('GET', '/api/settings'),
     setUnit: (unit) => API.req('PUT', '/api/settings', { unit }),
     setSettings: (obj) => API.req('PUT', '/api/settings', obj),

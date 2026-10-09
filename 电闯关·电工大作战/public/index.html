@@ -34,6 +34,10 @@ if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').ca
       <div class="form-row"><input id="login-name" type="text" maxlength="16" placeholder="姓名 / 用户名"></div>
       <div class="form-row"><input id="login-pass" type="password" maxlength="20" placeholder="密码（注册自设，4~20位）"></div>
       <div class="form-row"><input id="login-pass2" type="password" maxlength="20" placeholder="确认密码（注册时填写）" style="display:none"></div>
+      <!-- V1.5.0.0：注册信息增加 学校/年级/班级（注册时显示） -->
+      <div class="form-row reg-field" style="display:none"><input id="reg-school" type="text" maxlength="60" value="河北省滦州市职业技术教育中心" placeholder="学校"></div>
+      <div class="form-row reg-field" style="display:none"><select id="reg-grade"><option value="">— 请选择年级 —</option><option value="一年级">一年级</option><option value="二年级">二年级</option><option value="三年级">三年级</option></select></div>
+      <div class="form-row reg-field" style="display:none"><input id="reg-class" type="text" maxlength="30" placeholder="班级（如：机电2301班，可后由老师修改）"></div>
       <div class="msg" id="login-msg"></div>
       <button class="btn primary big" id="btn-login">登 录</button>
       <p class="tip">教师账号：teacher　初始密码：123456（可在题库管理中查看提示）</p>
@@ -241,6 +245,13 @@ if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').ca
     <div class="tabs-body">
       <!-- 学生管理 -->
       <div class="tab-body" id="tab-students">
+        <!-- V1.5.0.0：按学校/年级/班级筛选学生 -->
+        <div class="filter-row" id="stu-filter-row">
+          <select id="stu-filter-school"><option value="">全部学校</option></select>
+          <select id="stu-filter-grade"><option value="">全部年级</option></select>
+          <select id="stu-filter-class"><option value="">全部班级</option></select>
+          <button class="btn small" id="stu-filter-reset">重置筛选</button>
+        </div>
         <div class="panel" id="student-list"></div>
       </div>
       <!-- 题库管理 -->
@@ -261,6 +272,13 @@ if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').ca
       <div class="tab-body" id="tab-analysis" style="display:none">
         <div class="filter-row">
           <select id="ana-student-select"><option value="">— 选择学生查看个人分析 —</option></select>
+        </div>
+        <!-- V1.5.0.0：按学校/年级/班级分别统计 -->
+        <div class="filter-row" id="ana-filter-row">
+          <select id="ana-filter-school"><option value="">全部学校</option></select>
+          <select id="ana-filter-grade"><option value="">全部年级</option></select>
+          <select id="ana-filter-class"><option value="">全部班级</option></select>
+          <button class="btn small" id="ana-filter-reset">重置筛选</button>
         </div>
         <div class="panel" id="class-analysis"></div>
         <div class="panel" id="student-analysis" style="display:none"></div>

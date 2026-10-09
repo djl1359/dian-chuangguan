@@ -102,7 +102,7 @@ function run(sqls) {
 
 /* ---------------- 建库 / 模板 / 初始化 ---------------- */
 const DDL = [
-  "CREATE TABLE users (id TEXT(32), name TEXT(50), salt TEXT(32), pass TEXT(64), role TEXT(10), score LONG, reg TEXT(20), lastLogin TEXT(20), loginCount LONG, correct LONG, total LONG)",
+  "CREATE TABLE users (id TEXT(32), name TEXT(50), salt TEXT(32), pass TEXT(64), role TEXT(10), score LONG, reg TEXT(20), lastLogin TEXT(20), loginCount LONG, correct LONG, total LONG, school TEXT(100), grade TEXT(20), [class] TEXT(30))",
   "CREATE TABLE sessions (token TEXT(64), userId TEXT(32), t TEXT(20))",
   "CREATE TABLE progress (userId TEXT(32), chapter LONG, lv TEXT(10), stars LONG)",
   "CREATE TABLE wrongs (userId TEXT(32), qid LONG, cnt LONG, good LONG, lastTime TEXT(20))",
@@ -191,6 +191,16 @@ async function ensureQuestionDiff() {
   } catch (e) { /* 表结构异常时忽略，查询接口按 null→3 兜底 */ }
 }
 
+/* V1.5.0.0：旧库 users 表补学校/年级/班级列（class 为 ACE 保留字需方括号；逐个尝试，已存在则忽略） */
+async function ensureUserCols() {
+  for (const sql of ['ALTER TABLE users ADD COLUMN school TEXT(100)', 'ALTER TABLE users ADD COLUMN grade TEXT(20)', 'ALTER TABLE users ADD COLUMN [class] TEXT(30)']) {
+    try {
+      const f = tmpFile();
+      await callWorker('exec', [sql], f);
+    } catch (e) { /* 列已存在等，忽略 */ }
+  }
+}
+
 async function ensureTeacher() {
   const rows = await q("SELECT id FROM users WHERE name='teacher' AND role='teacher'");
   if (!rows.length) await run([insertTeacherSQL()]);
@@ -223,7 +233,9 @@ async function loadAll() {
   state.users = users.map(u => ({
     id: u.id, name: u.name, salt: u.salt, pass: u.pass, role: u.role, score: u.score || 0,
     reg: parseInt(u.reg, 10) || 0, lastLogin: parseInt(u.lastLogin, 10) || 0,
-    loginCount: u.loginCount || 0, correct: u.correct || 0, total: u.total || 0
+    loginCount: u.loginCount || 0, correct: u.correct || 0, total: u.total || 0,
+    /* V1.5.0.0：学校/年级/班级 */
+    school: u.school || '', grade: u.grade || '', class: u.class || ''
   }));
   state.sessions = {};
   sessions.forEach(s => { state.sessions[s.token] = s.userId; });
@@ -267,13 +279,15 @@ function parseJSON(v, def) { try { return JSON.parse(v || 'null') == null ? def 
 
 /* ---------------- 业务增量落库 ---------------- */
 function insertUser(u) {
-  return run(["INSERT INTO users (id,name,salt,pass,role,score,reg,lastLogin,loginCount,correct,total) VALUES (" +
+  return run(["INSERT INTO users (id,name,salt,pass,role,score,reg,lastLogin,loginCount,correct,total,school,grade,[class]) VALUES (" +
     esc(u.id) + ',' + esc(u.name) + ',' + esc(u.salt) + ',' + esc(u.pass) + ',' + esc(u.role) + ',' + esc(u.score) + ',' +
-    esc(String(u.reg)) + ',' + esc(String(u.lastLogin)) + ',' + esc(u.loginCount) + ',' + esc(u.correct) + ',' + esc(u.total) + ')' ]);
+    esc(String(u.reg)) + ',' + esc(String(u.lastLogin)) + ',' + esc(u.loginCount) + ',' + esc(u.correct) + ',' + esc(u.total) + ',' +
+    esc(u.school || '') + ',' + esc(u.grade || '') + ',' + esc(u.class || '') + ')' ]);
 }
 function updateUser(u) {
   return run(["UPDATE users SET name=" + esc(u.name) + ",score=" + esc(u.score) + ",lastLogin=" + esc(String(u.lastLogin)) + ",loginCount=" + esc(u.loginCount) +
-    ",correct=" + esc(u.correct) + ",total=" + esc(u.total) + ",salt=" + esc(u.salt) + ",pass=" + esc(u.pass) + " WHERE id=" + esc(u.id)]);
+    ",correct=" + esc(u.correct) + ",total=" + esc(u.total) + ",salt=" + esc(u.salt) + ",pass=" + esc(u.pass) +
+    ",school=" + esc(u.school || '') + ",grade=" + esc(u.grade || '') + ",[class]=" + esc(u.class || '') + " WHERE id=" + esc(u.id)]);
 }
 function upsertSession(token, userId) {
   return run(["DELETE FROM sessions WHERE token=" + esc(token), "INSERT INTO sessions (token,userId,t) VALUES (" + esc(token) + ',' + esc(userId) + ',' + esc(nowStr()) + ')' ]);
@@ -396,6 +410,7 @@ async function init() {
   sweepTempFiles();
   await ensureDb();
   await ensureQuestionDiff();
+  await ensureUserCols();
   await ensureExamTables();
   await loadAll();
   await ensureTeacher();
