@@ -164,8 +164,7 @@
     q.options.forEach((o, i) => {
       const b = document.createElement('button');
       b.className = 'ab-btn';
-      b.innerHTML = '<b>' + LETTERS[i] + '</b> ' + escOpt(o);
-      b.dataset.idx = i;
+      b.innerHTML = '<b>' + LETTERS[i] + '</b> ' + escOpt(o);      b.dataset.idx = i;
       b.onclick = () => pick(i);
       box.appendChild(b);
     });
@@ -192,7 +191,8 @@
   }
   function escOpt(o) {
     let s = String(o).replace(/^[A-D][.．、]\s*/, '');
-    return s.length > 14 ? s.slice(0, 14) + '…' : s;
+    /* V1.5.1.0：选项支持公式/上下标渲染（不截断，按钮自适应换行） */
+    return mdMath(s);
   }
   function pick(i) {
     if (!state || state.phase !== 'play' || state.graded) return;
@@ -225,7 +225,7 @@
     $('q-no').textContent = '第 ' + (state.qi + 1) + ' / ' + cfg.q + ' 题';
     $('q-combo').textContent = state.combo >= 2 ? '连击 ×' + state.combo : '';
     const qImg = q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + '"><img src="' + q.image + '" class="q-quest-img" style="width:' + (q.imgSize || 60) + '%" alt="题干图片"></div>' : '';
-    $('q-text').innerHTML = esc(q.question) + qImg;
+    $('q-text').innerHTML = mdMath(q.question) + qImg;
     const hint = state.isBoss
       ? '答对电击BOSS（BOSS -1 血），答错 BOSS 回血！'
       : '答对电击消灭故障怪，答错或超时损失一颗心！';
@@ -252,10 +252,10 @@
     const ss = window.speechSynthesis;
     if (!ss) return;
     try { ss.cancel(); } catch (e) {}
-    let text = String(q.question).replace(/<[^>]*>/g, '');
+    let text = mdPlain(q.question);
     if (q.type === 'single' || q.type === 'judge' || q.type === 'multi') {
       (q.options || []).forEach((o, i) => {
-        text += '。' + LETTERS[i] + '，' + String(o).replace(/<[^>]*>/g, '').replace(/^[A-D][.．、]\s*/, '');
+        text += '。' + LETTERS[i] + '，' + mdPlain(o).replace(/^[A-D][.．、]\s*/, '');
       });
     } else if (q.type === 'fill' || q.type === 'calc') {
       text += '。请在输入框中填写答案';

@@ -1,0 +1,17 @@
+{
+  "name": "电闯关·电工大作战",
+  "short_name": "电闯关",
+  "description": "《电工技术基础与技能（第4版）》周绍敏 主编 · 动作闯关答题 · 网上考试",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a1f44",
+  "theme_color": "#1e88e5",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

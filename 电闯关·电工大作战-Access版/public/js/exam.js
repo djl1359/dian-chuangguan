@@ -60,18 +60,18 @@
       html += '<div style="font-size:12.5pt;font-weight:bold;margin:3mm 0 1.5mm">' + no2[t] + '、' + TYPE_NAME[t] + '（共 ' + arr.length + ' 题，每题 ' + (arr[0].score || 1) + ' 分，共 ' + sc + ' 分）' + tip[t] + '</div>';
       arr.forEach(q => {
         no++;
-        html += '<div style="margin:2mm 0;page-break-inside:avoid"><b>' + no + '.</b> ' + esc(q.question);
+        html += '<div style="margin:2mm 0;page-break-inside:avoid"><b>' + no + '.</b> ' + mdMath(q.question);
         if (q.image) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:1mm 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:120mm;max-height:70mm;object-fit:contain;border:1px solid #ccc;background:#fff"></div>';
         if (q.type === 'single' || q.type === 'multi') {
-          html += '<div style="margin:1mm 0 1mm 6mm">' + (q.options || []).map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]\s*/, '')).join('　　') + '</div>';
+          html += '<div style="margin:1mm 0 1mm 6mm">' + (q.options || []).map((o, i) => String.fromCharCode(65 + i) + '. ' + mdMath(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('　　') + '</div>';
         } else if (q.type === 'judge') {
           html += '<span style="margin-left:8mm">（　　　　）</span>';
         } else if (q.type === 'fill') {
           html += '<span style="display:inline-block;margin-left:4mm;border-bottom:1.5px solid #000;width:30mm;height:5mm;vertical-align:bottom"></span>';
         } else if (q.type === 'matching') {
           const o = q.options || {};
-          const lc = (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + esc(l)).join('<br/>') : '');
-          const rc = (Array.isArray(o.right) ? o.right.map((r, i) => String.fromCharCode(65 + i) + '. ' + esc(r)).join('<br/>') : '');
+          const lc = (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + mdMath(l)).join('<br/>') : '');
+          const rc = (Array.isArray(o.right) ? o.right.map((r, i) => String.fromCharCode(65 + i) + '. ' + mdMath(r)).join('<br/>') : '');
           html += '<table style="width:92%;border-collapse:collapse;margin:1mm 0 1mm 6mm;font-size:11.5pt"><tr><td style="width:50%;border:1px solid #000;padding:1.5mm 3mm;vertical-align:top">' + lc + '</td><td style="width:50%;border:1px solid #000;padding:1.5mm 3mm;vertical-align:top">' + rc + '</td></tr></table>';
           html += '<div style="margin:1mm 0 1mm 6mm">连　线：＿＿＿＿＿＿＿＿＿＿＿＿</div>';
         } else if (q.type === 'calc') {
@@ -82,9 +82,9 @@
         if (includeAnswer) {
           if (q.type === 'matching') {
             let pairs = []; try { pairs = JSON.parse(q.answer || '[]'); } catch (e) {}
-            html += '<div style="margin-top:1mm;color:#a00;font-size:10.5pt">参考答案：<b>' + pairs.map((pr, i) => (i + 1) + '→' + String.fromCharCode(65 + (pr[1] == null ? 0 : pr[1]))).join('　') + '</b>' + (q.explain ? '<br/>解析：' + esc(q.explain) : '') + '</div>';
+            html += '<div style="margin-top:1mm;color:#a00;font-size:10.5pt">参考答案：<b>' + pairs.map((pr, i) => (i + 1) + '→' + String.fromCharCode(65 + (pr[1] == null ? 0 : pr[1]))).join('　') + '</b>' + (q.explain ? '<br/>解析：' + mdMath(q.explain) : '') + '</div>';
           } else {
-            html += '<div style="margin-top:1mm;color:#a00;font-size:10.5pt">参考答案：<b>' + esc(q.answer) + '</b>' + (q.explain ? '<br/>解析：' + esc(q.explain) : '') + '</div>';
+            html += '<div style="margin-top:1mm;color:#a00;font-size:10.5pt">参考答案：<b>' + esc(q.answer) + '</b>' + (q.explain ? '<br/>解析：' + mdMath(q.explain) : '') + '</div>';
           }
         }
         html += '</div>';
@@ -540,7 +540,7 @@
       list.forEach(q => {
         const checked = qids.has(q.id) ? 'checked' : '';
         html += '<tr><td><input type="checkbox" data-qid="' + q.id + '" ' + checked + '></td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + (TYPE_NAME[q.type] || q.type) + '</td>' +
-          '<td>' + esc(q.question) + '</td><td>' + '★'.repeat(Math.max(1, Math.min(5, q.difficulty || 3))) + '</td></tr>';
+          '<td>' + mdMath(q.question) + '</td><td>' + '★'.repeat(Math.max(1, Math.min(5, q.difficulty || 3))) + '</td></tr>';
       });
       html += '</table>';
       box.innerHTML = html;
@@ -923,7 +923,7 @@
           selHtml = '<div style="font-size:11px;color:var(--dim);margin-top:4px">主观题（' + TYPE_NAME[q.type] + '）由教师在阅卷端批改，无需填写。</div>';
         }
         html += '<div style="border-top:1px dashed var(--line);padding:5px 0;font-size:12px">' +
-          '<b>' + (i + 1) + '.</b> ' + esc(q.question) + (q.image ? '<div style="margin:4px 0;text-align:' + (q.imageAlign || 'center') + '"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:90%;max-height:120px;object-fit:contain;border-radius:8px;background:#fff"></div>' : '') + ' <span class="chip" style="font-size:10px">' + (TYPE_NAME[q.type] || q.type) + '</span>' + selHtml + '</div>';
+          '<b>' + (i + 1) + '.</b> ' + mdMath(q.question) + (q.image ? '<div style="margin:4px 0;text-align:' + (q.imageAlign || 'center') + '"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:90%;max-height:120px;object-fit:contain;border-radius:8px;background:#fff"></div>' : '') + ' <span class="chip" style="font-size:10px">' + (TYPE_NAME[q.type] || q.type) + '</span>' + selHtml + '</div>';
       });
       html += '</div>';
       box.innerHTML = html;
@@ -988,13 +988,13 @@
             const s2 = (ans.subjective || []).find(x => String(x.id) === String(q.id));
             if (o) {
               const ansTxt = o.given || '未涂';
-              html += '<tr><td>' + no + '</td><td>' + (TYPE_NAME[q.type] || q.type) + '</td><td>' + esc(q.question) + '</td><td>' + esc(ansTxt) + '</td>' +
+              html += '<tr><td>' + no + '</td><td>' + (TYPE_NAME[q.type] || q.type) + '</td><td>' + mdMath(q.question) + '</td><td>' + esc(ansTxt) + '</td>' +
                 '<td>' + (o.ok ? '<span style="color:#1a7f37">✓ 正确</span>' : '<span style="color:#c00">✗ 错误</span>') + '</td><td>' + (o.ok ? '+' + q.score : '0') + '</td></tr>';
             } else if (s2) {
-              html += '<tr><td>' + no + '</td><td>' + (TYPE_NAME[q.type] || q.type) + '</td><td>' + esc(q.question) + '</td>' +
+              html += '<tr><td>' + no + '</td><td>' + (TYPE_NAME[q.type] || q.type) + '</td><td>' + mdMath(q.question) + '</td>' +
                 '<td colspan="2">' + (s2.graded ? '已批改：' + s2.score + ' / ' + s2.maxScore + ' 分' : '待教师批改') + '</td><td>' + (s2.graded ? s2.score : '—') + '</td></tr>';
             } else {
-              html += '<tr><td>' + no + '</td><td>' + (TYPE_NAME[q.type] || q.type) + '</td><td>' + esc(q.question) + '</td><td colspan="3" style="color:var(--dim)">未作答</td></tr>';
+              html += '<tr><td>' + no + '</td><td>' + (TYPE_NAME[q.type] || q.type) + '</td><td>' + mdMath(q.question) + '</td><td colspan="3" style="color:var(--dim)">未作答</td></tr>';
             }
           });
           html += '</table>';

@@ -18,11 +18,66 @@ const { execFile } = require('child_process');
 const acc = require('./access.js');
 
 const PORT = process.env.PORT || 8123;   // 双版端口统一 8123（V1.4.4.1 起）
-const VERSION = '1.5.0.0';
+const VERSION = '1.5.1.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
 const PAPER_SECRET = crypto.randomBytes(32);
+
+/* ============ 统一富文本渲染（与前端 api.js mdMath 同规则，供 Word 导出） ============ */
+function latexHtml(l) {
+  let t = String(l == null ? '' : l);
+  t = t.replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷').replace(/\\pm/g, '±')
+    .replace(/\\approx/g, '≈').replace(/\\leq/g, '≤').replace(/\\geq/g, '≥').replace(/\\neq/g, '≠')
+    .replace(/\\infty/g, '∞').replace(/\\propto/g, '∝').replace(/\\angle/g, '∠').replace(/\\deg/g, '°')
+    .replace(/\\mu/g, 'μ').replace(/\\Omega/g, 'Ω').replace(/\\omega/g, 'ω').replace(/\\pi/g, 'π')
+    .replace(/\\varphi/g, 'φ').replace(/\\phi/g, 'φ').replace(/\\Phi/g, 'Φ').replace(/\\alpha/g, 'α')
+    .replace(/\\beta/g, 'β').replace(/\\gamma/g, 'γ').replace(/\\Gamma/g, 'Γ').replace(/\\delta/g, 'δ')
+    .replace(/\\Delta/g, 'Δ').replace(/\\theta/g, 'θ').replace(/\\Theta/g, 'Θ').replace(/\\lambda/g, 'λ')
+    .replace(/\\Lambda/g, 'Λ').replace(/\\rho/g, 'ρ').replace(/\\sigma/g, 'σ').replace(/\\Sigma/g, 'Σ')
+    .replace(/\\varepsilon/g, 'ε').replace(/\\eta/g, 'η').replace(/\\kappa/g, 'κ').replace(/\\tau/g, 'τ')
+    .replace(/\\xi/g, 'ξ').replace(/\\zeta/g, 'ζ').replace(/\\psi/g, 'ψ').replace(/\\chi/g, 'χ').replace(/\\nu/g, 'ν')
+    .replace(/\\mathrm\{([^}]*)\}/g, '$1').replace(/\\text\{([^}]*)\}/g, '$1').replace(/\\operatorname\{([^}]*)\}/g, '$1').replace(/\\rm\{([^}]*)\}/g, '$1')
+    .replace(/\\sqrt\[([^\]]+)\]\{([^}]*)\}/g, '$1√($2)').replace(/\\sqrt\{([^}]*)\}/g, '√($1)')
+    .replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, '<sup>$1</sup>⁄<sub>$2</sub>').replace(/\\dfrac\{([^}]*)\}\{([^}]*)\}/g, '<sup>$1</sup>⁄<sub>$2</sub>')
+    .replace(/\\sp\{([^}]*)\}/g, '<sup>$1</sup>').replace(/\\sb\{([^}]*)\}/g, '<sub>$1</sub>')
+    .replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>').replace(/\^([0-9A-Za-z])/g, '<sup>$1</sup>')
+    .replace(/_\{([^}]*)\}/g, '<sub>$1</sub>').replace(/_([0-9A-Za-z])/g, '<sub>$1</sub>')
+    .replace(/\\([a-zA-Z]+)/g, '').replace(/[{}]/g, '');
+  return t;
+}
+function mdMath(s) {
+  if (s == null) return '';
+  let t = String(s);
+  const prot = [];
+  const keep = (m) => { prot.push(m); return '\u0001P' + (prot.length - 1) + '\u0001'; };
+  t = t.replace(/<(sup|sub|b|strong|i|em|code|u|span)(\s[^>]*)?>[\s\S]*?<\/\1>|<br\s*\/?>/gi, m => keep(m));
+  t = t.replace(/<a(\s[^>]*)?>[\s\S]*?<\/a>/gi, m => {
+    if (/href\s*=\s*["']?https?:\/\//i.test(m)) return keep(m);
+    return m;
+  });
+  t = t.replace(/\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)/g, (m, a, b, c) => keep(latexHtml(a || b || c)));
+  /* 2.5) 裸 LaTeX（无 $ 包裹的历史数据）：\times10^{-3} / \frac{}{} / \mu_r 等 */
+  t = t.replace(/(?:\\[a-zA-Z]+(?:\{[^{}]*\}){0,2})(?:(?:[0-9.]*)(?:\^\{[^{}]*\}|_\{[^{}]*\}|\^[0-9A-Za-z]|_[0-9A-Za-z]))*/g, m => keep(latexHtml(m)));
+  t = t.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺⁽⁾ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖʳˢᵗᵘᵛʷˣʸᶻ]+)/g, m => keep('<sup>' + m + '</sup>'));
+  t = t.replace(/([₀₁₂₃₄₅₆₇₈₉ₐₑₓᵢⱼₙₚᵣᵤᵥ]+)/g, m => keep('<sub>' + m + '</sub>'));
+  t = t.replace(/\*\*([^*]+)\*\*/g, (m, a) => keep('<b>' + a + '</b>'));
+  t = t.replace(/(^|[^*])\*([^*\n]+)\*/g, (m, a, b) => a + keep('<i>' + b + '</i>'));
+  t = t.replace(/~~([^~\n]+)~~/g, (m, a) => keep('<s>' + a + '</s>'));
+  t = t.replace(/`([^`\n]+)`/g, (m, a) => keep('<code>' + a + '</code>'));
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, (m, a, u) => keep('<a href="' + u + '" target="_blank" rel="noopener">' + a + '</a>'));
+  t = t.split('\n').map(line => {
+    if (/^#{1,4}\s+/.test(line)) return keep('<b>' + line.replace(/^#{1,4}\s*/, '') + '</b>');
+    if (/^[-*]\s+/.test(line)) return keep('• ' + line.replace(/^[-*]\s+/, ''));
+    if (/^>\s?/.test(line)) return keep('<i>' + line.replace(/^>\s?/, '') + '</i>');
+    if (/^\d+[.、]\s+/.test(line)) return keep('&nbsp;&nbsp;' + line.replace(/^\d+[.、]\s+/, ''));
+    return line;
+  }).join('\n');
+  t = t.replace(/\n/g, m => keep('<br>'));
+  t = t.replace(/&(?!#\d+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  t = t.replace(/\u0001P(\d+)\u0001/g, (m, i) => prot[parseInt(i, 10)] || '');
+  return t;
+}
 
 /* 填空题答案匹配（与前端 Norm.answerMatch 同规则） */
 function normText(s) {
@@ -1477,6 +1532,17 @@ const server = http.createServer(async (req, res) => {
         db.settings.levelTimeBase = auto.levelTimeBase;
         reasons.push('关卡题数 入门' + lq['1'] + '/进阶' + lq['2'] + '/实战' + lq['3'] + '/BOSS' + lq['boss'] + '，自动计时 每题' + auto.levelTimeBase['1'] + '~' + auto.levelTimeBase['boss'] + '秒');
       }
+      /* 1.5.1.0：结算表扬/鼓励文案（教师可配置，闯关结算时显示） */
+      const praiseKeys = { praiseGood: '优秀表扬', praiseNice: '良好鼓励', praisePass: '通关鼓励', praiseFail: '失败鼓励' };
+      for (const k of Object.keys(praiseKeys)) {
+        if (k in body) {
+          const v = String(body[k] || '').trim();
+          if (v.length > 60) return sendJSON(res, 400, { err: praiseKeys[k] + '文案过长（60字以内）' });
+          db.settings[k] = v;
+          await acc.setSetting(k, v);
+          if (v) reasons.push(praiseKeys[k] + '已更新');
+        }
+      }
       if (reasons.length) {
         db.logs.push({ t: Date.now(), op: '系统设置修改', by: a.user.name, reason: reasons.join('；') });
         await acc.appendLog(db.logs[db.logs.length - 1]);
@@ -1690,15 +1756,15 @@ function paperOptsHtml(q) {
     const pairs = [];
     try { JSON.parse(q.answer || '[]').forEach(pr => pairs[pr[0]] = pr[1]); } catch (e) {}
     /* 两列对照排版：左列序号项 | 右列字母项 */
-    const lc = left.map((l, i) => (i + 1) + '. ' + l).join('<br/>');
-    const rc = right.map((r, i) => String.fromCharCode(65 + i) + '. ' + r).join('<br/>');
+    const lc = left.map((l, i) => (i + 1) + '. ' + mdMath(l)).join('<br/>');
+    const rc = right.map((r, i) => String.fromCharCode(65 + i) + '. ' + mdMath(r)).join('<br/>');
     return '<table style="width:100%;border-collapse:collapse;margin:6px 0;font-size:12pt"><tr>' +
       '<td style="width:50%;vertical-align:top;padding:4px 10px;border:1px solid #999">' + lc + '</td>' +
       '<td style="width:50%;vertical-align:top;padding:4px 10px;border:1px solid #999">' + rc + '</td>' +
       '</tr></table>' +
       (pairs.length ? '<p style="color:#666">配对参考答案：' + pairs.map((ri, li) => (li + 1) + '→' + String.fromCharCode(65 + (ri == null ? 0 : ri))).join('　') + '</p>' : '');
   }
-  return '<p style="margin:2px 0">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]\s*/, '')).join('<br/>') : '') + '</p>';
+  return '<p style="margin:2px 0">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + mdMath(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('<br/>') : '') + '</p>';
 }
 /* 生成 Word/WPS 可打印 .doc（Word 兼容 HTML） */
 /* 1.0.0.6 试卷排版：按题型分组、答题空间、计算题已知/求/解/答 */
@@ -1758,11 +1824,11 @@ function paperToDoc(r, includeAnswer) {
     html += '<h3>' + typeNo[g.type] + '、' + typeName[g.type] + '（共 ' + g.questions.length + ' 题）' + typeTip[g.type] + '</h3>';
     g.questions.forEach(q => {
       no++;
-      html += '<div class="q"><b>' + no + '.</b> ' + escH(q.question);
+      html += '<div class="q"><b>' + no + '.</b> ' + mdMath(q.question);
       const qimg = qimgDataUri(q.image);
       if (qimg) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:6px 0"><img src="' + qimg + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:80mm;object-fit:contain"/></div>';
       if (q.type === 'single' || q.type === 'multi') {
-        html += '<div class="opts">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]s*/, '')).join('　　') : '') + '</div>';
+        html += '<div class="opts">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + mdMath(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('　　') : '') + '</div>';
       } else if (q.type === 'judge') {
         html += '<span class="judge-blank">（&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;）</span>';
       } else if (q.type === 'fill') {
@@ -1779,7 +1845,7 @@ function paperToDoc(r, includeAnswer) {
         if (q.type === 'matching') {
           html += '<div class="ans">' + paperOptsHtml(q) + '</div>';
         } else {
-          html += '<div class="ans">参考答案：<b>' + escH(q.answer) + '</b>' + (q.explain ? '<br/>解析：' + escH(q.explain) : '') + '</div>';
+          html += '<div class="ans">参考答案：<b>' + escH(q.answer) + '</b>' + (q.explain ? '<br/>解析：' + mdMath(q.explain) : '') + '</div>';
         }
       }
       html += '</div>';
@@ -1840,19 +1906,19 @@ function examToDoc(r, includeAnswer) {
     html += '<h3>' + no2[g.type] + '、' + typeName[g.type] + '（共 ' + g.questions.length + ' 题，每题 ' + (g.questions[0] ? g.questions[0].score : 1) + ' 分，共 ' + sc + ' 分）' + typeTip[g.type] + '</h3>';
     g.questions.forEach(q => {
       no++;
-      html += '<div class="q"><span class="no">' + no + '.</span> ' + escH(q.question);
+      html += '<div class="q"><span class="no">' + no + '.</span> ' + mdMath(q.question);
       const qimg2 = qimgDataUri(q.image);
       if (qimg2) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:6px 0"><img src="' + qimg2 + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:80mm;object-fit:contain"/></div>';
       if (q.type === 'single' || q.type === 'multi') {
-        html += '<div class="opts">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + String(o).replace(/^[A-Za-z][.、．]\s*/, '')).join('　　') : '') + '</div>';
+        html += '<div class="opts">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + mdMath(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('　　') : '') + '</div>';
       } else if (q.type === 'judge') {
         html += '<span class="judge-blank">（&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;）</span>';
       } else if (q.type === 'fill') {
         html += '<span class="fill-blank"></span>';
       } else if (q.type === 'matching') {
         const o = q.options || {};
-        html += '<div class="opts">' + (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + l).join('　　') : '') + '</div>' +
-          '<div class="opts">' + (Array.isArray(o.right) ? o.right.map((rr, i) => String.fromCharCode(65 + i) + '. ' + rr).join('　　') : '') + '</div>';
+        html += '<div class="opts">' + (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + mdMath(l)).join('　　') : '') + '</div>' +
+          '<div class="opts">' + (Array.isArray(o.right) ? o.right.map((rr, i) => String.fromCharCode(65 + i) + '. ' + mdMath(rr)).join('　　') : '') + '</div>';
       } else if (q.type === 'calc') {
         html += '<div class="calc-frame"><b>已知：</b><span class="calc-line"></span><b>求：</b><span class="calc-line"></span>' +
           '<b>解：</b><span class="calc-line"></span><span class="calc-line"></span><span class="calc-line"></span><b>答：</b><span class="calc-line"></span></div>';
@@ -1860,9 +1926,9 @@ function examToDoc(r, includeAnswer) {
       if (includeAnswer) {
         if (q.type === 'matching') {
           let pairs = []; try { pairs = JSON.parse(q.answer || '[]'); } catch (e) {}
-          html += '<div class="ans">参考答案：<b>' + pairs.map((pr, li) => (li + 1) + '→' + String.fromCharCode(65 + (pr[1] == null ? 0 : pr[1]))).join('　') + '</b>' + (q.explain ? '<br/>解析：' + escH(q.explain) : '') + '</div>';
+          html += '<div class="ans">参考答案：<b>' + pairs.map((pr, li) => (li + 1) + '→' + String.fromCharCode(65 + (pr[1] == null ? 0 : pr[1]))).join('　') + '</b>' + (q.explain ? '<br/>解析：' + mdMath(q.explain) : '') + '</div>';
         } else {
-          html += '<div class="ans">参考答案：<b>' + escH(q.answer) + '</b>' + (q.explain ? '<br/>解析：' + escH(q.explain) : '') + '</div>';
+          html += '<div class="ans">参考答案：<b>' + escH(q.answer) + '</b>' + (q.explain ? '<br/>解析：' + mdMath(q.explain) : '') + '</div>';
         }
       }
       html += '</div>';
@@ -1937,7 +2003,7 @@ function cardToDoc(r) {
     let subNo = singles.length + judges.length;
     subs.forEach(q => {
       subNo++;
-      html += '<div class="sub-item"><div class="q"><b>' + subNo + '.</b> ' + escH(q.question) + '（' + q.score + ' 分）';
+      html += '<div class="sub-item"><div class="q"><b>' + subNo + '.</b> ' + mdMath(q.question) + '（' + q.score + ' 分）';
       const qimg3 = qimgDataUri(q.image);
       if (qimg3) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + qimg3 + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:70mm;object-fit:contain"/></div>';
       html += '</div>';
@@ -1945,8 +2011,8 @@ function cardToDoc(r) {
         html += '<div class="sub-lines"><div></div><div></div></div>';
       } else if (q.type === 'matching') {
         const o = q.options || {};
-        html += '<div style="font-size:10.5pt;margin:2px 0 2px 8px">' + (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + l).join('　　') : '') + '</div>' +
-          '<div style="font-size:10.5pt;margin:2px 0 4px 8px">' + (Array.isArray(o.right) ? o.right.map((rr, i) => String.fromCharCode(65 + i) + '. ' + rr).join('　　') : '') + '</div>' +
+        html += '<div style="font-size:10.5pt;margin:2px 0 2px 8px">' + (Array.isArray(o.left) ? o.left.map((l, i) => (i + 1) + '. ' + mdMath(l)).join('　　') : '') + '</div>' +
+          '<div style="font-size:10.5pt;margin:2px 0 4px 8px">' + (Array.isArray(o.right) ? o.right.map((rr, i) => String.fromCharCode(65 + i) + '. ' + mdMath(rr)).join('　　') : '') + '</div>' +
           '<div class="sub-lines"><div></div><div></div></div>';
       } else if (q.type === 'calc') {
         html += '<div class="calc-frame"><b>已知：</b><span class="calc-line"></span><b>求：</b><span class="calc-line"></span><b>解：</b><span class="calc-line"></span><span class="calc-line"></span><span class="calc-line"></span><b>答：</b><span class="calc-line"></span></div>';

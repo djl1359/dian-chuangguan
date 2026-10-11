@@ -236,11 +236,12 @@
     $('result-title').textContent = res.pass ? '🎉 通关成功！' : '💥 闯关失败';
     $('result-title').className = 'result-title' + (res.pass ? '' : ' fail');
     $('result-stars').innerHTML = res.pass ? '★★★'.slice(0, res.stars * 2) + '☆'.repeat(Math.max(0, 3 - res.stars) * 2) : '—';
+    const st = S.settings || {};
     const praise = res.pass
-      ? (res.acc >= 90 || res.stars === 3 ? '🎉 太棒了！几乎全对，你就是电学小达人！' :
-         res.acc >= 75 || res.stars === 2 ? '👍 表现不错！再细心一点，就能冲击三星！' :
-         '💪 成功通关！多练几关，星星会越来越多！')
-      : '🌟 别灰心！看看错题本，调整策略再来挑战！';
+      ? (res.acc >= 90 || res.stars === 3 ? (st.praiseGood || '🎉 太棒了！几乎全对，你就是电学小达人！') :
+         res.acc >= 75 || res.stars === 2 ? (st.praiseNice || '👍 表现不错！再细心一点，就能冲击三星！') :
+         (st.praisePass || '💪 成功通关！多练几关，星星会越来越多！'))
+      : (st.praiseFail || '🌟 别灰心！看看错题本，调整策略再来挑战！');
     const pr = $('result-praise');
     if (pr) { pr.textContent = praise; pr.className = 'result-praise' + (res.pass ? '' : ' fail'); }
     $('result-score').textContent = res.score;
@@ -290,7 +291,7 @@
   }
   function wrongCard(q) {
     const correctLetters = String(q.answer || '');
-    let body = '<div class="q-body">[' + esc(TYPE_NAME[q.type]) + ' · 第' + q.chapter + '章] ' + esc(q.question) + '</div>';
+    let body = '<div class="q-body">[' + esc(TYPE_NAME[q.type]) + ' · 第' + q.chapter + '章] ' + mdMath(q.question) + '</div>';
     if (q.type === 'fill') {
       body += '<div class="opts">答案：<span class="right">' + esc(q.answer) + '</span></div>';
     } else {
@@ -526,7 +527,7 @@
         pagerHtml(list.length, PG.questions, 'UIM.gotoQuestions') +
         '<table class="data-table"><tr><th style="width:28px"><input type="checkbox" id="qsel-all" onclick="UIM.qSelAll(this)"></th><th>ID</th><th>章</th><th>节</th><th>题型</th><th>题干</th><th>难度</th><th>答案</th><th>操作</th></tr>' +
         pp.rows.map(q =>
-          '<tr><td style="width:28px"><input type="checkbox" data-qid="' + q.id + '"' + (S.qSel[q.id] ? ' checked' : '') + ' onchange="UIM.qSelOne(' + q.id + ',this)"></td><td>' + q.id + '</td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + TYPE_NAME[q.type] + '</td><td style="max-width:200px">' + (q.image ? '<span class="qimg-tag" title="含题干图片">🖼</span> ' : '') + esc(q.question) + '</td><td>' + UIM.diffStar(q.difficulty) + '</td><td>' + (q.type === 'matching' ? '配对' : esc(String(q.answer))) + '</td>' +
+          '<tr><td style="width:28px"><input type="checkbox" data-qid="' + q.id + '"' + (S.qSel[q.id] ? ' checked' : '') + ' onchange="UIM.qSelOne(' + q.id + ',this)"></td><td>' + q.id + '</td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + TYPE_NAME[q.type] + '</td><td style="max-width:200px">' + (q.image ? '<span class="qimg-tag" title="含题干图片">🖼</span> ' : '') + mdMath(q.question) + '</td><td>' + UIM.diffStar(q.difficulty) + '</td><td>' + (q.type === 'matching' ? '配对' : mdMath(String(q.answer))) + '</td>' +
           '<td><div class="actions-row"><button class="btn small" onclick="UIM.editQ(' + q.id + ')">编辑</button><button class="btn small danger" onclick="UIM.delQ(' + q.id + ')">删除</button></div></td></tr>').join('') + '</table>';
     } catch (e) { p.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
   }
@@ -573,6 +574,9 @@
         '<div class="stat-card"><div class="v">' + r.count + '</div><div class="k">学生人数</div></div>' +
         '<div class="stat-card"><div class="v">' + r.avgAcc + '%</div><div class="k">平均正确率</div></div>' + gradeCards +
         '</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">' +
+        '<button class="btn small" onclick="UIM.openWeak()">📉 薄弱知识点（全班正确率&lt;60%）</button>' +
+        '<button class="btn small" onclick="UIM.weakToPaper()">📝 用薄弱题组卷</button></div>' +
         (PG.analysis.grade ? '<div class="q-meta" style="margin-top:6px">当前筛选：<b style="color:var(--accent)">' + PG.analysis.grade + '等</b> 学生 ' + rows.length + ' 人（点击上方等次数字可切换或取消）</div>' : '') +
         ((PG.analysis.school || PG.analysis.gradeLevel || PG.analysis.cls) ? '<div class="q-meta" style="margin-top:2px">当前统计范围：' +
           [PG.analysis.school ? '学校「' + esc(PG.analysis.school) + '」' : '', PG.analysis.gradeLevel ? '年级「' + esc(PG.analysis.gradeLevel) + '」' : '', PG.analysis.cls ? '班级「' + esc(PG.analysis.cls) + '」' : ''].filter(Boolean).join(' · ') +
@@ -635,7 +639,7 @@
             '<div style="margin:6px 0 0 12px"><b>' + esc(s.name) + '</b>：答对 ' + s.correct + '/' + s.answered + '（' + (s.answered ? Math.round(s.correct / s.answered * 100) : 0) + '%）</div>' +
             s.questions.map(q => {
               const mark = q.answered ? (q.ok === q.answered ? '&#9989;' : (q.ok > 0 ? '&#9888;&#65039; 部分' : '&#10060;')) : '—';
-              return '<div style="margin:2px 0 2px 24px;font-size:12px">' + mark + ' #' + q.id + ' ' + esc(q.question) + '（答对 ' + q.ok + '/' + q.answered + '）</div>';
+              return '<div style="margin:2px 0 2px 24px;font-size:12px">' + mark + ' #' + q.id + ' ' + mdMath(q.question) + '（答对 ' + q.ok + '/' + q.answered + '）</div>';
             }).join('')
           ).join('');
           return '<div class="ana-title" style="margin-top:14px">第' + (ch.chapter === 0 ? '0' : ch.chapter) + '章 ' + esc(ch.name) + '：' + (ch.answered ? ch.acc + '%' : '—') + '（答对 ' + ch.correct + '/' + ch.answered + '）</div>' + secHtml;
@@ -753,7 +757,7 @@ async function loadChapterAnalysis(ch) {
       wrongHtml = '答错：' + (qq.wrongUsers.length ? qq.wrongUsers.map(n => '<span class="chip bad">' + esc(n) + '</span>').join('') : '<span class="chip" style="color:var(--dim)">无</span>');
     }
     return '<div class="qrow">' +
-      '<div class="q-text">#' + qq.id + ' ' + esc(qq.question) + '</div>' +
+      '<div class="q-text">#' + qq.id + ' ' + mdMath(qq.question) + '</div>' +
       '<div class="q-meta">' + (TYPE_NAME[qq.type] || qq.type) + ' · ' + (gradeSet ? '筛选正确率' : '全班正确率') + ' <b style="color:var(--accent)">' + a + '</b> · 答对 ' + qq.correct + ' / 答错 ' + qq.wrong + '</div>' +
       '<div>' + correctHtml + '</div>' +
       '<div>' + wrongHtml + '</div>' +
@@ -790,7 +794,7 @@ async function loadChapterAnalysis(ch) {
             '<div style="margin:6px 0 0 14px"><b>' + esc(s.name) + '</b>：答对 ' + s.correct + '/' + s.answered + '（' + (s.answered ? Math.round(s.correct / s.answered * 100) : 0) + '%）</div>' +
             s.questions.map(q => {
               const mark = q.answered ? (q.ok === q.answered ? '✅' : (q.ok > 0 ? '⚠️ 部分' : '❌')) : '—';
-              return '<div style="margin:2px 0 2px 26px;font-size:12px">' + mark + ' #' + q.id + ' ' + esc(q.question) + '（答对 ' + q.ok + '/' + q.answered + '）</div>';
+              return '<div style="margin:2px 0 2px 26px;font-size:12px">' + mark + ' #' + q.id + ' ' + mdMath(q.question) + '（答对 ' + q.ok + '/' + q.answered + '）</div>';
             }).join('')
           ).join('');
           return '<details class="m-fold" data-ch="' + ch.chapter + '"><summary>第' + (ch.chapter === 0 ? '0' : ch.chapter) + '章 ' + esc(ch.name) + '：' + (ch.answered ? ch.acc + '%' : '—') + '（答对 ' + ch.correct + '/' + ch.answered + '）</summary>' + secHtml + '</details>';
@@ -849,7 +853,89 @@ async function loadChapterAnalysis(ch) {
   function closeModal() { $('modal').style.display = 'none'; }
 
   /* 题目表单（新增/编辑） */
+  /* ============ V1.5.1.0 题目编辑器富文本工具条 ============ */
+  function mdToolbarCss() {
+    if (document.getElementById('md-toolbar-css')) return;
+    const st = document.createElement('style');
+    st.id = 'md-toolbar-css';
+    st.textContent = '.md-toolbar{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0;align-items:center}'
+      + '.md-tb,.md-tb-sel{padding:2px 8px;font-size:12px;border:1px solid var(--line);border-radius:6px;background:rgba(4,10,30,.6);color:var(--text);cursor:pointer}'
+      + '.md-tb:hover{background:rgba(30,60,120,.6)}.md-tb-sp{flex:1}'
+      + '.md-preview{border:1px dashed var(--accent2);border-radius:8px;padding:8px;background:rgba(4,10,30,.4);color:var(--text);font-size:14px;line-height:1.7;margin-top:4px;word-break:break-word}';
+    document.head.appendChild(st);
+  }
+  function mdInsert(ta, txt) {
+    const s = ta.selectionStart || 0, e = ta.selectionEnd || 0;
+    ta.value = ta.value.slice(0, s) + txt + ta.value.slice(e);
+    const np = s + txt.length;
+    ta.focus(); try { ta.setSelectionRange(np, np); } catch (err) {}
+    ta.dispatchEvent(new Event('input'));
+  }
+  function mdWrap(ta, open, close, sample) {
+    const s = ta.selectionStart || 0, e = ta.selectionEnd || 0;
+    const sel = ta.value.slice(s, e);
+    const body = sel || sample || '内容';
+    const ins = open + body + close;
+    ta.value = ta.value.slice(0, s) + ins + ta.value.slice(e);
+    const np = s + open.length + (sel ? sel.length : ((sample || '内容').length));
+    ta.focus(); try { ta.setSelectionRange(np, np); } catch (err) {}
+    ta.dispatchEvent(new Event('input'));
+  }
+  function toggleMdPreview(id, on) {
+    const ta = document.getElementById(id);
+    const pv = document.getElementById('pv-' + id);
+    if (!ta || !pv) return;
+    if (on) {
+      pv.innerHTML = (id === 'qf-options') ? (ta.value.split('\n').filter(Boolean).map(l => '<div style="margin:2px 0">' + mdMath(l) + '</div>').join('')) : mdMath(ta.value);
+      ta.style.display = 'none'; pv.style.display = '';
+    } else {
+      ta.style.display = ''; pv.style.display = 'none';
+    }
+    const qf = document.querySelector('.md-tb-pv[data-id="' + id + '"][data-pv="1"]');
+    const src = document.querySelector('.md-tb-pv[data-id="' + id + '"][data-pv="0"]');
+    if (qf) qf.style.display = on ? 'none' : '';
+    if (src) src.style.display = on ? '' : 'none';
+  }
+  function mdToolbarHTML(id) {
+    const wrap = (open, close, label, sample) => '<button type="button" class="md-tb" data-id="' + id + '" data-open="' + open + '" data-close="' + close + '" data-sample="' + (sample || '') + '" title="插入 ' + label + '">' + label + '</button>';
+    const sym = (ch) => '<button type="button" class="md-tb" data-id="' + id + '" data-ins="' + ch + '" title="插入 ' + ch + '">' + ch + '</button>';
+    const greek = ['Ω', 'μ', 'φ', 'π', 'α', 'β', 'γ', 'δ', 'θ', 'λ', 'ρ', 'σ', 'ω', 'ε', 'Δ', 'Σ', 'Φ', 'Λ'];
+    return '<div class="md-toolbar">' +
+      wrap('<sup>', '</sup>', '上标', '2') +
+      wrap('<sub>', '</sub>', '下标', '1') +
+      '<button type="button" class="md-tb" data-id="' + id + '" data-ins="<sup>分子</sup>⁄<sub>分母</sub>" title="插入分数">分数</button>' +
+      wrap('√(', ')', '根号', 'x') +
+      '<select class="md-tb-sel" data-id="' + id + '" title="插入希腊字母"><option value="">希腊…</option>' + greek.map(g => '<option value="' + g + '">' + g + '</option>').join('') + '</select>' +
+      ['×', '÷', '·', '°', 'μA', '∠', '≈', '≠', '≤', '≥', '±'].map(sym).join('') +
+      '<button type="button" class="md-tb" data-id="' + id + '" data-ins="mm<sup>2</sup>" title="插入 mm²">mm²</button>' +
+      '<span class="md-tb-sp"></span>' +
+      '<button type="button" class="md-tb md-tb-pv" data-id="' + id + '" data-pv="1" title="预览渲染效果">👁 预览</button>' +
+      '<button type="button" class="md-tb md-tb-pv" data-id="' + id + '" data-pv="0" title="返回源码编辑" style="display:none">✏️ 源码</button>' +
+      '</div>';
+  }
+  function bindMdToolbars() {
+    document.querySelectorAll('.md-tb').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.dataset.id, ta = document.getElementById(id);
+        if (!ta) return;
+        if (btn.dataset.pv !== undefined) { toggleMdPreview(id, btn.dataset.pv === '1'); return; }
+        if (btn.dataset.ins !== undefined) { mdInsert(ta, btn.dataset.ins); return; }
+        mdWrap(ta, btn.dataset.open || '', btn.dataset.close || '', btn.dataset.sample || '');
+      };
+    });
+    document.querySelectorAll('.md-tb-sel').forEach(sel => {
+      sel.onchange = () => {
+        if (sel.value) {
+          const ta = document.getElementById(sel.dataset.id);
+          if (ta) mdInsert(ta, sel.value);
+          sel.value = '';
+        }
+      };
+    });
+  }
+
   function questionForm(q) {
+    mdToolbarCss();
     const chapters = S.chapters.map(c => '<option value="' + c.id + '"' + (q && q.chapter === c.id ? ' selected' : '') + '>第' + (c.id === 0 ? '0' : c.id) + '章 ' + c.name + '</option>').join('');
     const typeOpts = { single: '单选', judge: '判断', multi: '多选', fill: '填空', matching: '连线', calc: '计算' };
     const typeSel = Object.keys(typeOpts).map(t => '<option value="' + t + '"' + (q && q.type === t ? ' selected' : '') + '>' + typeOpts[t] + '</option>').join('');
@@ -859,7 +945,8 @@ async function loadChapterAnalysis(ch) {
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">所属章节</label><select id="qf-chapter" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' + chapters + '</select></div>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">节（成绩分析用，1~20）</label><input id="qf-section" type="number" min="1" max="20" value="' + (q ? (q.section || 1) : 1) + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题型</label><select id="qf-type" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' + typeSel + '</select></div>' +
-      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题干</label><textarea id="qf-question" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + esc(q ? q.question : '') + '</textarea></div>' +
+      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题干（支持公式与上下标，见工具条；也支持 Markdown：**加粗** *斜体* `代码`）</label>' + mdToolbarHTML('qf-question') +
+      '<textarea id="qf-question" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + esc(q ? q.question : '') + '</textarea><div id="pv-qf-question" class="md-preview" style="display:none"></div></div>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">题干图片（可选，≤3MB；电路图、实物图、符号图等，答题时随题干显示）</label>' +
       '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
       '<button type="button" class="btn small" onclick="document.getElementById(\'qf-img-file\').click()">📷 上传图片</button>' +
@@ -878,13 +965,14 @@ async function loadChapterAnalysis(ch) {
       '<div class="form-row" style="text-align:center"><img id="qf-ocr-preview" style="max-width:100%;max-height:150px;display:none;border:1px solid var(--line);border-radius:8px;background:#fff;object-fit:contain"></div>' +
       '<div class="result-btns"><button class="btn" id="qf-ocr-run" style="display:none">🔍 识别并填入表单</button><button class="btn" id="qf-ocr-saveimg" style="display:none">🖼️ 保存为题图</button></div>' +
       '<div class="msg" id="qf-ocr-msg" style="font-size:12px;color:var(--dim);margin:2px 0 6px"></div>' +
-      '<div class="form-row" id="qf-opts-row"><label style="font-size:12px;color:var(--dim)">选项（每行一个，如：A. 50Hz；多选答案填字母如 A,C；填空题型不填选项）</label><textarea id="qf-options" rows="4" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.options && Array.isArray(q.options) ? q.options.join('\n') : '') + '</textarea></div>' +
+      '<div class="form-row" id="qf-opts-row"><label style="font-size:12px;color:var(--dim)">选项（每行一个，如：A. 50Hz；多选答案填字母如 A,C；填空题型不填选项）</label>' + mdToolbarHTML('qf-options') +
+      '<textarea id="qf-options" rows="4" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.options && Array.isArray(q.options) ? q.options.join('\n') : '') + '</textarea><div id="pv-qf-options" class="md-preview" style="display:none"></div></div>' +
       '<div class="form-row" id="qf-match-row" style="display:none">' +
-      '<label style="font-size:12px;color:var(--dim)">连线题·左列（每行一项）</label><textarea id="qf-m-left" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.left || []).join('\n') : '') + '</textarea>' +
-      '<label style="font-size:12px;color:var(--dim);margin-top:6px">右列（每行一项，数量与左列一致）</label><textarea id="qf-m-right" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.right || []).join('\n') : '') + '</textarea>' +
+      '<label style="font-size:12px;color:var(--dim)">连线题·左列（每行一项）</label>' + mdToolbarHTML('qf-m-left') + '<textarea id="qf-m-left" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.left || []).join('\n') : '') + '</textarea>' +
+      '<label style="font-size:12px;color:var(--dim);margin-top:6px">右列（每行一项，数量与左列一致）</label>' + mdToolbarHTML('qf-m-right') + '<textarea id="qf-m-right" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' && q.options ? (q.options.right || []).join('\n') : '') + '</textarea>' +
       '<label style="font-size:12px;color:var(--dim);margin-top:6px">配对（每行一对：左序号-右序号，从0开始，如 0-0、1-3）</label><textarea id="qf-m-pairs" rows="3" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + (q && q.type === 'matching' ? String(q.answer).replace(/\[\[/g, '').replace(/\]\]/g, '').split('],[').map(s => s.replace(',', '-')).join('\n') : '') + '</textarea></div>' +
       '<div class="form-row"><label style="font-size:12px;color:var(--dim)">答案（单选/判断填字母如 A；多选填 A,C；填空/计算填答案文本，计算题填最终结果数值如 30；连线题在下方配对区填写）</label><input id="qf-answer" type="text" value="' + esc(q ? q.answer : '') + '"></div>' +
-      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">难度等级（1 最易 ~ 5 最难）</label><select id="qf-diff" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' + [1,2,3,4,5].map(n => '<option value="' + n + '"' + ((q ? q.difficulty : 3) === n ? ' selected' : '') + '>' + n + ' 星' + (n === 1 ? '（易）' : n === 5 ? '（难）' : '') + '</option>').join('') + '</select></div>' +'<div class="form-row"><label style="font-size:12px;color:var(--dim)">解析（可选）</label><input id="qf-explain" type="text" value="' + esc(q ? q.explain : '') + '"></div>' +
+      '<div class="form-row"><label style="font-size:12px;color:var(--dim)">难度等级（1 最易 ~ 5 最难）</label><select id="qf-diff" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' + [1,2,3,4,5].map(n => '<option value="' + n + '"' + ((q ? q.difficulty : 3) === n ? ' selected' : '') + '>' + n + ' 星' + (n === 1 ? '（易）' : n === 5 ? '（难）' : '') + '</option>').join('') + '</select></div>' +'<div class="form-row"><label style="font-size:12px;color:var(--dim)">解析（可选，支持公式/上下标/Markdown）</label>' + mdToolbarHTML('qf-explain') + '<textarea id="qf-explain" rows="2" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">' + esc(q ? q.explain : '') + '</textarea></div>' +
       '<div class="msg" id="qf-msg"></div>' +
       '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="qf-save">保存</button></div>');
     const syncForm = () => {
@@ -894,6 +982,7 @@ async function loadChapterAnalysis(ch) {
     };
     $('qf-type').onchange = syncForm;
     syncForm();
+    bindMdToolbars();
     /* 题干图片：上传/预览/删除/对齐/大小（1.4.0.0） */
     S.qfImage = (q && q.image) || '';
     S.qfAlign = (q && ['left', 'center', 'right'].includes(q.imageAlign)) ? q.imageAlign : 'center';
@@ -1135,6 +1224,7 @@ async function loadChapterAnalysis(ch) {
       S.version = meta.version || '';
       S.dbType = meta.dbType || '';
       window.GAME_SETTINGS = S.settings;
+      window.__DB_ACCESS = !!meta.dbType && String(meta.dbType).indexOf('Access') >= 0;
       const av = $('app-version');
       if (av && meta.version) av.textContent = meta.version + (meta.dbType ? ' · ' + meta.dbType : '');
       if (meta.unit) {
@@ -1275,6 +1365,55 @@ async function loadChapterAnalysis(ch) {
     setAnaSchool(v) { PG.analysis.school = v; PG.analysis.page = 1; loadAnalysis(); },
     setAnaGradeLevel(v) { PG.analysis.gradeLevel = v; PG.analysis.page = 1; loadAnalysis(); },
     setAnaCls(v) { PG.analysis.cls = v; PG.analysis.page = 1; loadAnalysis(); },
+    /* V1.5.1.0：薄弱知识点视图 + 一键组卷联动 */
+    async openWeak() {
+      try {
+        const m = await API.mastery(PG.analysis.school, PG.analysis.gradeLevel, PG.analysis.cls);
+        const agg = new Map();
+        (m.list || []).forEach(u => (u.chapters || []).forEach(c => (c.sections || []).forEach(s => (s.questions || []).forEach(q => {
+          if (!q.answered) return;
+          const k = c.chapter + '_' + (s.id || s.name) + '_' + q.id;
+          if (!agg.has(k)) agg.set(k, { ch: c.chapter, chName: c.name, sec: s.name, qid: q.id, q: q.question, ok: 0, n: 0 });
+          const e = agg.get(k); e.ok += q.ok; e.n += q.answered;
+        }))));
+        const weak = [...agg.values()].filter(e => e.n > 0 && (e.ok / e.n) < 0.6).sort((a, b) => (a.ok / a.n) - (b.ok / b.n));
+        if (!weak.length) {
+          openModal('<h3>📉 薄弱知识点</h3><div class="empty-tip">当前统计范围内没有正确率低于 60% 的题目，很棒！</div>' +
+            '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">关闭</button></div>');
+          return;
+        }
+        const byCh = {};
+        weak.forEach(e => { (byCh[e.ch] = byCh[e.ch] || []).push(e); });
+        const html = Object.keys(byCh).sort((a, b) => a - b).map(ch => {
+          const items = byCh[ch];
+          return '<details open><summary><b>第' + (ch === '0' ? '0' : ch) + '章 ' + esc(items[0].chName) + '</b>（薄弱题 ' + items.length + ' 道）</summary>' +
+            items.map(e => '<div style="margin:4px 0 4px 16px;font-size:12.5px"><b style="color:var(--danger)">' + Math.round(e.ok / e.n * 100) + '%</b> · #' + e.qid + ' [' + esc(e.sec) + '] ' + mdMath(e.q) + '（答对 ' + e.ok + '/' + e.n + '）</div>').join('') +
+            '</details>';
+        }).join('');
+        openModal('<h3>📉 薄弱知识点（全班正确率 &lt;60%，共 ' + weak.length + ' 道）</h3>' +
+          '<div style="max-height:55vh;overflow:auto;font-size:13px;line-height:1.8">' + html + '</div>' +
+          '<div class="result-btns"><button class="btn primary" id="wk-paper">📝 用薄弱题组卷</button><button class="btn ghost" onclick="UIM.closeModal()">关闭</button></div>');
+        S.weakChapters = Object.keys(byCh).map(Number);
+        S.weakCount = weak.length;
+        $('wk-paper').onclick = () => { UIM.closeModal(); UIM.weakToPaper(); };
+      } catch (e) { toast(e.message); }
+    },
+    weakToPaper() {
+      const b = [...document.querySelectorAll('.teacher-tabs .tab-btn')].find(t => t.dataset.tab === 'paper');
+      if (b) b.click();
+      setTimeout(() => {
+        const P = S.paper;
+        if (Array.isArray(S.weakChapters) && S.weakChapters.length) P.chapters = S.weakChapters.slice();
+        P.mastery = 'weak';
+        P.count = Math.max(1, Math.min(200, S.weakCount || 20));
+        UIM.renderPaperTab();
+        const pv = $('p-preview');
+        if (pv) pv.innerHTML = '<div class="empty-tip">正在用薄弱题组卷…</div>';
+        const btn = $('p-build');
+        if (btn) btn.click();
+        toast('已按薄弱知识点自动组卷');
+      }, 60);
+    },
     /* 点击学生姓名 → 跳转到成绩分析并查看其个人分析 */
     viewStudent(id, name) {
       if (!id && S.users && S.users.length) {
@@ -1382,9 +1521,16 @@ async function loadChapterAnalysis(ch) {
       };
     },
     openUnitModal() {
+      const st = S.settings || {};
+      const pv = (k, def) => esc(st[k] || def);
       openModal('<h3 style="margin-bottom:12px">⚙️ 系统设置</h3>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">游戏名称（页面标题与首页显示，20字以内）</label><input id="um-game" type="text" value="' + esc(S.gameName || '电闯关·电工大作战') + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">使用单位（页面标题显示，40字以内）</label><input id="um-unit" type="text" value="' + esc(S.unit || '') + '" placeholder="输入使用单位名称" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div style="font-size:12px;color:var(--dim);margin:8px 0 4px">—— 闯关结算表扬/鼓励文案（60字以内，留空使用默认）——</div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">优秀表扬（答对率≥90% 或三星）</label><input id="um-praise-good" type="text" value="' + pv('praiseGood', '🎉 太棒了！几乎全对，你就是电学小达人！') + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">良好鼓励（答对率≥75% 或二星）</label><input id="um-praise-nice" type="text" value="' + pv('praiseNice', '👍 表现不错！再细心一点，就能冲击三星！') + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">通关鼓励（通过但低于良好）</label><input id="um-praise-pass" type="text" value="' + pv('praisePass', '💪 成功通关！多练几关，星星会越来越多！') + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
+        '<div class="form-row"><label style="font-size:12px;color:var(--dim)">失败鼓励（未通过）</label><input id="um-praise-fail" type="text" value="' + pv('praiseFail', '🌟 别灰心！看看错题本，调整策略再来挑战！') + '" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
         '<div class="msg" id="um-msg"></div>' +
         '<div class="result-btns"><button class="btn ghost" onclick="UIM.closeModal()">取消</button><button class="btn primary" id="um-save">保存</button></div>');
       $('um-save').onclick = async () => {
@@ -1393,7 +1539,13 @@ async function loadChapterAnalysis(ch) {
         if (!unit) { $('um-msg').textContent = '单位名称不能为空'; return; }
         if (!gameName) { $('um-msg').textContent = '游戏名称不能为空'; return; }
         try {
-          await API.setSettings({ unit, gameName });
+          await API.setSettings({
+            unit, gameName,
+            praiseGood: $('um-praise-good').value.trim(),
+            praiseNice: $('um-praise-nice').value.trim(),
+            praisePass: $('um-praise-pass').value.trim(),
+            praiseFail: $('um-praise-fail').value.trim()
+          });
           S.unit = unit; S.gameName = gameName;
           closeModal();
           toast('系统设置已保存，页面标题将同步显示');
@@ -1433,7 +1585,7 @@ async function loadChapterAnalysis(ch) {
         '<div style="margin:6px 0 0 14px"><b>' + esc(s.name) + '</b>：答对 ' + s.correct + '/' + s.answered + '（' + (s.answered ? Math.round(s.correct / s.answered * 100) : 0) + '%）</div>' +
         s.questions.map(q => {
           const mark = q.answered ? (q.ok === q.answered ? '✅' : (q.ok > 0 ? '⚠️ 部分' : '❌')) : '—';
-          return '<div style="margin:2px 0 2px 26px;font-size:12px">' + mark + ' #' + q.id + ' ' + esc(q.question) + '（答对 ' + q.ok + '/' + q.answered + '）</div>';
+          return '<div style="margin:2px 0 2px 26px;font-size:12px">' + mark + ' #' + q.id + ' ' + mdMath(q.question) + '（答对 ' + q.ok + '/' + q.answered + '）</div>';
         }).join('')
       ).join('');
       zone.innerHTML = '<details class="m-fold" open data-ch="' + ch + '"><summary>第' + (ch === 0 ? '0' : ch) + '章 ' + esc(c.name) + '：' + c.acc + '%（答对 ' + c.correct + '/' + c.answered + '）</summary>' + secHtml + '</details>';
@@ -1513,6 +1665,7 @@ async function loadChapterAnalysis(ch) {
       const chapterOpts = S.chapters.map(c => '<option value="' + c.id + '">第' + (c.id === 0 ? '0' : c.id) + '章 ' + esc(c.name) + '</option>').join('');
       const inp = 'style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)"';
       openModal('<h3 style="margin-bottom:12px">📤 导入试题（文件 / 截图识别 / 网页抓题）</h3>' +
+        '<div style="font-size:12px;color:var(--accent2);margin:-4px 0 8px">💡 题干/选项/解析支持 Markdown 与公式：**加粗**、*斜体*、`代码`、$x^{2}$（上下标）、&lt;sup&gt;/&lt;sub&gt; 等，导入后自动规范渲染。</div>' +
         '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">' +
         '<button class="imp-tab btn small primary" data-t="file">📄 选择CSV文件</button>' +
         '<button class="imp-tab btn small" data-t="ocr">✂️ 截图识别</button>' +
@@ -1547,12 +1700,39 @@ async function loadChapterAnalysis(ch) {
         b.classList.add('primary');
         Object.keys(panels).forEach(k => { panels[k].style.display = (k === b.dataset.t) ? '' : 'none'; });
       });
-      /* ---- 导入执行（共用） ---- */
+      /* ---- 导入执行（共用；V1.5.1.0：CSV 大文件分批写入，Access 版提速且带遮罩） ---- */
       async function doImport(format, content) {
-        try {
-          const r = await API.qImport(format, content);
-          $('imp-msg').innerHTML = '<b style="color:var(--ok)">导入完成：新增 ' + r.added + ' 道</b>，重复跳过 ' + r.exists + ' 道，无效 ' + r.failed + ' 道' + (r.problems && r.problems.length ? '<br><span style="color:var(--danger)">' + esc(r.problems.join('<br>')) + '</span>' : '');
+        let added = 0, exists = 0, failed = 0;
+        const problems = [];
+        const fin = (r) => {
+          added += (r.added || 0); exists += (r.exists || 0); failed += (r.failed || 0);
+          if (r.problems && r.problems.length) problems.push(...r.problems);
+        };
+        const done = () => {
+          $('imp-msg').innerHTML = '<b style="color:var(--ok)">导入完成：新增 ' + added + ' 道</b>，重复跳过 ' + exists + ' 道，无效 ' + failed + ' 道' + (problems.length ? '<br><span style="color:var(--danger)">' + esc(problems.slice(0, 20).join('<br>')) + '</span>' : '');
           loadQuestions();
+        };
+        try {
+          if (format === 'csv') {
+            const lines = String(content).split('\n');
+            const head = (lines[0] || '').trim();
+            const dataLines = lines.slice(1).filter(l => l.trim() && !l.trim().startsWith('#'));
+            const CH = 100;
+            const chunks = [];
+            for (let i = 0; i < dataLines.length; i += CH) chunks.push(dataLines.slice(i, i + CH));
+            if (chunks.length > 1) {
+              $('imp-msg').innerHTML = 'CSV 共 ' + dataLines.length + ' 行，正在分批导入（' + CH + ' 行/批，共 ' + chunks.length + ' 批）…';
+              for (let i = 0; i < chunks.length; i++) {
+                $('imp-msg').innerHTML = '正在导入第 ' + (i + 1) + ' / ' + chunks.length + ' 批（已新增 ' + added + ' 道）…';
+                fin(await API.qImport(format, head + '\n' + chunks[i].join('\n')));
+              }
+            } else {
+              fin(await API.qImport(format, content));
+            }
+          } else {
+            fin(await API.qImport(format, content));
+          }
+          done();
         } catch (e) { $('imp-msg').textContent = e.message; }
       }
       /* ---- Tab1 选择CSV文件 ---- */
@@ -1806,7 +1986,7 @@ async function loadChapterAnalysis(ch) {
         '<option value="good"' + (P.mastery === 'good' ? ' selected' : '') + '>掌握较好（全班正确率 ≥60%）</option></select></div>' +
         '<div class="form-row"><label style="font-size:12px;color:var(--dim)">出题数量（1~200）</label><input id="p-count" type="number" min="1" max="200" value="' + P.count + '" style="width:120px;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
         '<div class="form-row"><label style="display:inline-flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" id="p-ans"> 试卷含参考答案与解析（不打勾 = 纯试题卷，供学生作答）</label></div>' +
-        '<div class="result-btns" style="margin:10px 0"><button class="btn primary" id="p-build">🎯 生成试卷</button><button class="btn" id="p-export" disabled>📥 导出 Word/WPS 打印</button></div>' +
+        '<div class="result-btns" style="margin:10px 0"><button class="btn primary" id="p-build">🎯 生成试卷</button><button class="btn" id="p-export" disabled>📥 导出 Word/WPS 打印</button><button class="btn" id="p-export-pdf" disabled>📄 导出 PDF（打印版）</button></div>' +
         '<div id="p-preview" style="font-size:13px;line-height:1.9"></div>';
       const collect = () => {
         P.chapters = [...document.querySelectorAll('.p-ch:checked')].map(x => parseInt(x.value, 10));
@@ -1824,10 +2004,11 @@ async function loadChapterAnalysis(ch) {
           const r = await API.paperGenerate({ chapters: P.chapters, difficulties: P.diffs, types: P.types, mastery: P.mastery, count: P.count });
           S.paperTitle = r.title; S.paperGroups = r.groups; S.paperTotal = r.total;
           const ex = $('p-export'); if (ex) ex.disabled = false;
+          const ex2 = $('p-export-pdf'); if (ex2) ex2.disabled = false;
           pv.innerHTML = '<b style="color:var(--accent2)">' + esc(r.title) + '</b>　共 ' + r.total + ' 题<br>' +
             r.groups.map(g => '<div style="margin:6px 0"><b>' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
-              g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + esc(q.question) +
-                (q.type === 'matching' ? '<div style="display:flex;gap:8px;margin:4px 0 4px 22px"><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.left ? q.options.left.map((l, li) => (li + 1) + '. ' + esc(l)).join('<br>') : '') + '</div><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.right ? q.options.right.map((r2, ri) => String.fromCharCode(65 + ri) + '. ' + esc(r2)).join('<br>') : '') + '</div></div>' : '') +
+              g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + mdMath(q.question) +
+                (q.type === 'matching' ? '<div style="display:flex;gap:8px;margin:4px 0 4px 22px"><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.left ? q.options.left.map((l, li) => (li + 1) + '. ' + mdMath(l)).join('<br>') : '') + '</div><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.right ? q.options.right.map((r2, ri) => String.fromCharCode(65 + ri) + '. ' + mdMath(r2)).join('<br>') : '') + '</div></div>' : '') +
                 (q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:180px;max-height:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff"></div>' : '') + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
             '<div style="margin-top:8px;color:var(--dim)">导出 Word 后可在 WPS/Word 中打开打印。</div>';
         } catch (e) { pv.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
@@ -1842,6 +2023,59 @@ async function loadChapterAnalysis(ch) {
           setTimeout(() => URL.revokeObjectURL(a.href), 3000);
           toast('试卷已导出，可用 Word/WPS 打开打印');
         } catch (e) { toast(e.message); }
+      };
+      /* V1.5.1.0：导出 PDF（浏览器打印版，另存为 PDF） */
+      $('p-export-pdf').onclick = () => {
+        collect();
+        if (!S.paperGroups || !S.paperGroups.length) { toast('请先生成试卷'); return; }
+        const unit = S.unit || '';
+        const gameName = S.gameName || '电闯关·电工大作战';
+        const typeName = { single: '单选题', judge: '判断题', multi: '多选题', fill: '填空题', matching: '连线题', calc: '计算题' };
+        const typeNo = { single: '一', judge: '二', multi: '三', fill: '四', matching: '五', calc: '六' };
+        const typeTip = {
+          single: '（每题只有一个正确答案）', judge: '（判断对错，正确打“√”，错误打“×”）',
+          multi: '（每题有两个或两个以上正确答案，多选、少选、错选均不得分）', fill: '（将正确答案填写在横线上）',
+          matching: '（将左列内容与右列对应的选项用线连接）', calc: '（请按“已知、求、解、答”四步作答）'
+        };
+        let no = 0;
+        const body = S.paperGroups.map(g => {
+          const sc = g.questions.reduce((s, q) => s + (q.score || 1), 0);
+          return '<h3>' + (typeNo[g.type] || '') + '、' + (typeName[g.type] || g.type) + '（共 ' + g.questions.length + ' 题，每题 ' + (g.questions[0] ? (g.questions[0].score || 1) : 1) + ' 分，共 ' + sc + ' 分）' + (typeTip[g.type] || '') + '</h3>' +
+            g.questions.map(q => {
+              no++;
+              let s = '<div class="q"><b>' + no + '.</b> ' + mdMath(q.question);
+              if (q.image) s += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:6px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:80mm;object-fit:contain;border:1px solid #ccc;background:#fff"></div>';
+              if (q.type === 'single' || q.type === 'multi') s += '<div class="opts">' + (q.options || []).map((o, i) => String.fromCharCode(65 + i) + '. ' + mdMath(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('　　') + '</div>';
+              else if (q.type === 'judge') s += '<span class="judge-blank">（　　　　　　）</span>';
+              else if (q.type === 'fill') s += '<span class="fill-blank"></span>';
+              else if (q.type === 'matching') s += '<div style="display:flex;gap:6mm;margin:4px 0 4px 8mm"><div style="flex:1">' + ((q.options || {}).left || []).map((l, i) => (i + 1) + '. ' + mdMath(l)).join('<br>') + '</div><div style="flex:1">' + ((q.options || {}).right || []).map((rr, i) => String.fromCharCode(65 + i) + '. ' + mdMath(rr)).join('<br>') + '</div></div><div style="margin:2mm 0 2mm 8mm">连线：＿＿＿＿＿＿＿＿＿＿＿＿</div>';
+              else if (q.type === 'calc') s += '<div class="calc"><b>已知：</b><div class="cline"></div><b>求：</b><div class="cline"></div><b>解：</b><div class="cline"></div><div class="cline"></div><div class="cline"></div><b>答：</b><div class="cline"></div></div>';
+              if (P.includeAnswer) s += '<div class="ans">参考答案：<b>' + mdMath(q.answer) + '</b>' + (q.explain ? '　解析：' + mdMath(q.explain) : '') + '</div>';
+              return s + '</div>';
+            }).join('');
+        }).join('');
+        const w = window.open('', '_blank');
+        if (!w) { toast('请允许浏览器弹出新窗口'); return; }
+        w.document.write('<html><head><meta charset="utf-8"><title>' + esc(S.paperTitle || '试卷') + '</title><style>' +
+          '@page{size:A4;margin:16mm 14mm}body{font-family:"宋体",SimSun,serif;font-size:12pt;line-height:1.9;color:#000}' +
+          '.paper-title{text-align:center;font-size:16pt;font-weight:bold;letter-spacing:2px;margin:6px 0}' +
+          '.paper-sub{text-align:center;font-size:10.5pt;color:#333;margin:4px 0 10px}' +
+          '.info-table{width:100%;border-collapse:collapse;margin:8px 0 14px}.info-table td{border:1px solid #000;padding:5px 8px;font-size:11pt;height:26px}' +
+          '.require{font-size:10.5pt;color:#333;margin:2px 0 10px}h3{font-size:12.5pt;font-weight:bold;margin:16px 0 6px;page-break-after:avoid}' +
+          '.q{margin:12px 0;page-break-inside:avoid}.opts{margin:3px 0 2px 24px;font-size:12pt;line-height:1.9}' +
+          '.judge-blank{display:inline-block;margin-left:16px}.fill-blank{display:inline-block;margin-left:14px;border-bottom:1.5px solid #000;width:120px;height:1.4em;vertical-align:bottom}' +
+          '.calc{margin:8px 0 6px 24px;font-size:12pt;line-height:1.6}.cline{display:block;border-bottom:1px solid #000;height:1.5em;margin:6px 0 2px 2em}' +
+          '.ans{margin-top:4px;color:#222;font-size:10.5pt;border-top:1px dashed #aaa;padding-top:3px}.ans b{color:#c00}' +
+          '.footer{margin-top:26px;text-align:center;font-size:10.5pt;color:#555}</style></head><body>' +
+          '<div class="paper-title">' + esc(S.paperTitle || '') + '</div>' +
+          '<div class="paper-sub">' + (unit ? esc(unit) + '　' : '') + esc(gameName) + '　共 ' + S.paperTotal + ' 题' + (P.includeAnswer ? '　（含参考答案）' : '') + '</div>' +
+          '<table class="info-table"><tr><td style="width:14%">姓　名：</td><td style="width:36%">&nbsp;</td><td style="width:14%">班　级：</td><td style="width:36%">&nbsp;</td></tr>' +
+          '<tr><td>学　号：</td><td>&nbsp;</td><td>得　分：</td><td>&nbsp;</td></tr></table>' +
+          '<p class="require">答题要求：请认真审题，书写工整，答完后检查。</p>' + body +
+          '<div class="footer">—— ' + esc(gameName) + ' · ' + esc(unit || '') + ' ——</div>' +
+          '</body></html>');
+        w.document.close();
+        setTimeout(() => { try { w.focus(); w.print(); } catch (e) { toast('请在新窗口中选择“打印→另存为PDF”'); } }, 400);
       };
     }
   };
