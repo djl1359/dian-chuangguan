@@ -1361,29 +1361,66 @@ async function loadChapterAnalysis(ch) {
 
   const UIM = {
     showScreen, renderMenu, renderMap, renderChapter, onLevelResult, toast, buildMatchUI,
-    /* V1.5.3.0：图片/电路图点击放大预览（lightbox） */
+    /* V1.5.3.0：图片/电路图点击放大预览（lightbox，支持滚轮缩放 + 拖动查看） */
     zoomView(el) {
       if (!el) return;
       const z = document.createElement('div');
       z.style.cssText = 'position:fixed;inset:0;background:rgba(2,6,20,.92);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;overflow:auto';
       const box = document.createElement('div');
-      box.style.cssText = 'max-width:94vw;max-height:94vh;background:#fff;border-radius:10px;padding:10px;overflow:auto';
+      box.style.cssText = 'max-width:94vw;max-height:94vh;background:#fff;border-radius:10px;padding:10px;overflow:hidden;position:relative';
+      const inner = document.createElement('div');
+      inner.style.cssText = 'transform-origin:center center;transition:transform .12s ease;cursor:grab;display:flex;align-items:center;justify-content:center';
       const clone = el.cloneNode(true);
-      clone.removeAttribute('onclick'); clone.style.cssText = '';
+      clone.removeAttribute('onclick');
       if (clone.tagName === 'IMG') {
-        clone.style.cssText = 'max-width:90vw;max-height:88vh;object-fit:contain;display:block;margin:auto';
+        clone.style.cssText = 'max-width:88vw;max-height:86vh;object-fit:contain;display:block;margin:auto;user-select:none;-webkit-user-drag:none';
       } else {
         const sv = clone.querySelector('svg');
         if (sv) { sv.removeAttribute('style'); sv.setAttribute('style', 'width:100%;height:auto;display:block'); }
+        clone.style.cssText = 'max-width:88vw;max-height:86vh;overflow:auto';
       }
-      box.appendChild(clone);
+      inner.appendChild(clone);
+      box.appendChild(inner);
       const cap = document.createElement('div');
-      cap.textContent = '点击任意处关闭';
+      cap.textContent = '🖱 滚轮缩放 · 拖动查看 · 点击空白处关闭';
       cap.style.cssText = 'text-align:center;font-size:12px;color:#888;padding:6px 0 0';
       box.appendChild(cap);
       z.appendChild(box);
-      z.onclick = () => document.body.removeChild(z);
+      let scale = 1, tx = 0, ty = 0;
+      const apply = () => { inner.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')'; };
+      const clampScale = (s) => Math.min(8, Math.max(0.5, s));
+      /* 滚轮缩放：以鼠标位置为中心 */
+      box.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = box.getBoundingClientRect();
+        const mx = e.clientX - rect.left - rect.width / 2;
+        const my = e.clientY - rect.top - rect.height / 2;
+        const k = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+        const ns = clampScale(scale * k);
+        const f = ns / scale;
+        tx = mx - (mx - tx) * f;
+        ty = my - (my - ty) * f;
+        scale = ns;
+        apply();
+      }, { passive: false });
+      /* 拖动平移查看 */
+      let drag = null;
+      inner.addEventListener('mousedown', (e) => {
+        if (e.target.tagName !== 'IMG' && !e.target.closest('svg')) return;
+        drag = { x: e.clientX - tx, y: e.clientY - ty };
+        inner.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+      const move = (e) => { if (drag) { tx = e.clientX - drag.x; ty = e.clientY - drag.y; apply(); } };
+      const up = () => { if (drag) { drag = null; inner.style.cursor = 'grab'; } };
+      window.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', up);
+      /* 点空白处关闭（图片/电路图区域不关闭，便于拖动） */
+      z.addEventListener('click', (e) => { if (e.target === z || e.target === box) document.body.removeChild(z); });
+      const remove = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+      z.addEventListener('click', (e) => { if (e.target === z || e.target === box) remove(); }, true);
       document.body.appendChild(z);
+      apply();
     },
     /* 学生管理：查找/排序/等级筛选 */
     setStuKw(v) { PG.students.kw = v; PG.students.page = 1; loadStudents(); },
