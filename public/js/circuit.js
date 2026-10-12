@@ -575,6 +575,8 @@
   window.Circuit = {
     DEFS, GROUPS, cleanSvg, Editor, autoFromText, solve,
     openEditor(svg, onSave) {
+      const olds = document.querySelectorAll('.modal-mask');
+      olds.forEach(o => { if (o.parentNode) o.parentNode.removeChild(o); });
       const mask = document.createElement('div');
       mask.className = 'modal-mask';
       mask.style.zIndex = '9999';
