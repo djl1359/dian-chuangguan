@@ -18,7 +18,7 @@ const { execFile } = require('child_process');
 const acc = require('./access.js');
 
 const PORT = process.env.PORT || 8123;   // 双版端口统一 8123（V1.4.4.1 起）
-const VERSION = '1.5.2.0';
+const VERSION = '1.5.3.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -323,7 +323,7 @@ function pickQuestions(chapter, limit, userId, allowTypes) {
   for (const q of picked) {
     if (q.type === 'matching') {
       // 连线题：左右列原样下发（答案不下发，提交配对后由服务端判定）
-      list.push({ id: q.id, chapter: q.chapter, type: q.type, question: q.question, options: q.options || { left: [], right: [] }, explain: q.explain || '', image: q.image || '', imageAlign: q.imageAlign || 'center', imgSize: q.imgSize || 60, circuit: q.circuit || '', circuitSize: q.circuitSize || 60 });
+      list.push({ id: q.id, chapter: q.chapter, type: q.type, question: q.question, options: q.options || { left: [], right: [] }, explain: q.explain || '', image: q.image || '', imageAlign: q.imageAlign || 'center', imgSize: q.imgSize || 60, circuit: q.circuit || '', circuitSize: q.circuitSize || 60, showImg: q.showImg !== false });
       entries.push({ id: q.id, perm: null });
       continue;
     }
@@ -333,7 +333,7 @@ function pickQuestions(chapter, limit, userId, allowTypes) {
       question: q.question, options: sp.opts,
       explain: q.explain || '',
       image: q.image || '', imageAlign: q.imageAlign || 'center', imgSize: q.imgSize || 60,
-      circuit: q.circuit || '', circuitSize: q.circuitSize || 60
+      circuit: q.circuit || '', circuitSize: q.circuitSize || 60, showImg: q.showImg !== false
     });
     entries.push({ id: q.id, perm: q.type === 'fill' ? null : sp.perm });
   }
@@ -656,12 +656,12 @@ const server = http.createServer(async (req, res) => {
         const qq = questions.find(x => x.id === w.qid);
         if (!qq) continue;
         if (qq.type === 'matching') {
-          list.push({ id: qq.id, chapter: qq.chapter, type: qq.type, question: qq.question, options: qq.options || { left: [], right: [] }, explain: qq.explain || '', image: qq.image || '', imageAlign: qq.imageAlign || 'center', imgSize: qq.imgSize || 60, circuit: qq.circuit || '', circuitSize: qq.circuitSize || 60 });
+          list.push({ id: qq.id, chapter: qq.chapter, type: qq.type, question: qq.question, options: qq.options || { left: [], right: [] }, explain: qq.explain || '', image: qq.image || '', imageAlign: qq.imageAlign || 'center', imgSize: qq.imgSize || 60, circuit: qq.circuit || '', circuitSize: qq.circuitSize || 60, showImg: qq.showImg !== false });
           entries.push({ id: qq.id, perm: null });
           continue;
         }
         const sp = shuffleWithPerm(qq.options, rand);
-        list.push({ id: qq.id, chapter: qq.chapter, type: qq.type, question: qq.question, options: sp.opts, explain: qq.explain || '', image: qq.image || '', imageAlign: qq.imageAlign || 'center', imgSize: qq.imgSize || 60, circuit: qq.circuit || '', circuitSize: qq.circuitSize || 60 });
+        list.push({ id: qq.id, chapter: qq.chapter, type: qq.type, question: qq.question, options: sp.opts, explain: qq.explain || '', image: qq.image || '', imageAlign: qq.imageAlign || 'center', imgSize: qq.imgSize || 60, circuit: qq.circuit || '', circuitSize: qq.circuitSize || 60, showImg: qq.showImg !== false });
         entries.push({ id: qq.id, perm: qq.type === 'fill' ? null : sp.perm });
       }
       return sendJSON(res, 200, { list, pt: makePaper(a.user.id, entries) });
@@ -964,7 +964,7 @@ const server = http.createServer(async (req, res) => {
       const v = validateQuestion(body);
       if (v) return sendJSON(res, 400, { err: v });
       const maxId = questions.reduce((m, x) => Math.max(m, x.id), 0);
-      const nq = { id: maxId + 1, chapter: Number(body.chapter), section: Number(body.section) || 1, type: body.type, question: String(body.question).trim(), options: body.options, answer: String(body.answer).trim(), explain: String(body.explain || '').trim(), difficulty: clampDiff(body.difficulty), image: String(body.image || '').trim(), imageAlign: ['left', 'center', 'right'].includes(body.imageAlign) ? body.imageAlign : 'center', imgSize: clampImgSize(body.imgSize), circuit: String(body.circuit || '').trim(), circuitSize: clampImgSize(body.circuitSize) };
+      const nq = { id: maxId + 1, chapter: Number(body.chapter), section: Number(body.section) || 1, type: body.type, question: String(body.question).trim(), options: body.options, answer: String(body.answer).trim(), explain: String(body.explain || '').trim(), difficulty: clampDiff(body.difficulty), image: String(body.image || '').trim(), imageAlign: ['left', 'center', 'right'].includes(body.imageAlign) ? body.imageAlign : 'center', imgSize: clampImgSize(body.imgSize), circuit: String(body.circuit || '').trim(), circuitSize: clampImgSize(body.circuitSize), showImg: body.showImg === false || body.showImg === 0 || String(body.showImg) === 'false' ? false : true };
       questions.push(nq);
       await acc.insertQuestion(nq);
       db.logs.push({ t: Date.now(), op: '新增题目#' + nq.id, by: a.user.name });
@@ -982,7 +982,7 @@ const server = http.createServer(async (req, res) => {
       const v = validateQuestion(body);
       if (v) return sendJSON(res, 400, { err: v });
       qq.chapter = Number(body.chapter); qq.section = Number(body.section) || 1; qq.type = body.type; qq.question = String(body.question).trim();
-      qq.options = body.options; qq.answer = String(body.answer).trim(); qq.explain = String(body.explain || '').trim(); qq.difficulty = clampDiff(body.difficulty); qq.image = String(body.image || '').trim(); qq.imageAlign = ['left', 'center', 'right'].includes(body.imageAlign) ? body.imageAlign : 'center'; qq.imgSize = clampImgSize(body.imgSize); qq.circuit = String(body.circuit || '').trim(); qq.circuitSize = clampImgSize(body.circuitSize);
+      qq.options = body.options; qq.answer = String(body.answer).trim(); qq.explain = String(body.explain || '').trim(); qq.difficulty = clampDiff(body.difficulty); qq.image = String(body.image || '').trim(); qq.imageAlign = ['left', 'center', 'right'].includes(body.imageAlign) ? body.imageAlign : 'center'; qq.imgSize = clampImgSize(body.imgSize); qq.circuit = String(body.circuit || '').trim(); qq.circuitSize = clampImgSize(body.circuitSize); qq.showImg = body.showImg === false || body.showImg === 0 || String(body.showImg) === 'false' ? false : true;
       await acc.updateQuestion(qq);
       db.logs.push({ t: Date.now(), op: '修改题目#' + id, by: a.user.name });
       await acc.appendLog(db.logs[db.logs.length - 1]);
@@ -1210,7 +1210,7 @@ const server = http.createServer(async (req, res) => {
         const src = typeof x.id !== 'undefined' ? questions.find(qq => qq.id === Number(x.id)) : x;
         if (!src) return null;
         return { id: src.id, chapter: src.chapter, section: src.section || 1, type: src.type, question: src.question,
-          options: src.options, answer: src.answer, difficulty: src.difficulty || 3, image: src.image || '', imageAlign: src.imageAlign || 'center', imgSize: src.imgSize || 60, circuit: src.circuit || '', circuitSize: src.circuitSize || 60, score: Math.max(1, Number(x.score) || 1) };
+          options: src.options, answer: src.answer, difficulty: src.difficulty || 3, image: src.image || '', imageAlign: src.imageAlign || 'center', imgSize: src.imgSize || 60, circuit: src.circuit || '', circuitSize: src.circuitSize || 60, showImg: src.showImg !== false, score: Math.max(1, Number(x.score) || 1) };
       }).filter(Boolean);
       if (!list.length) return sendJSON(res, 400, { err: '题目无效或未找到' });
       const totalScore = list.reduce((s2, x) => s2 + x.score, 0);
@@ -1817,6 +1817,7 @@ function circBodyHtml(svg) {
 }
 function circDivHtml(q) {
   if (!q || !q.circuit) return '';
+  if (q.showImg === false) return '';
   return '<div style="text-align:center;margin:6px 0;background:#fff;border:1px solid #ccc;padding:4px;page-break-inside:avoid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + (q.circuitSize || 60) + '%;max-width:130mm;display:block;margin:0 auto">' + circBodyHtml(q.circuit) + '</svg></div>';
 }
 function paperToDoc(r, includeAnswer) {
@@ -1866,7 +1867,7 @@ function paperToDoc(r, includeAnswer) {
       no++;
       html += '<div class="q"><b>' + no + '.</b> ' + mdMath(q.question);
       const qimg = qimgDataUri(q.image);
-      if (qimg) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:6px 0"><img src="' + qimg + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:80mm;object-fit:contain"/></div>';
+      if (q.showImg !== false && qimg) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:6px 0"><img src="' + qimg + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:80mm;object-fit:contain"/></div>';
       html += circDivHtml(q);
       if (q.type === 'single' || q.type === 'multi') {
         html += '<div class="opts">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + mdMath(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('　　') : '') + '</div>';
@@ -1949,7 +1950,7 @@ function examToDoc(r, includeAnswer) {
       no++;
       html += '<div class="q"><span class="no">' + no + '.</span> ' + mdMath(q.question);
       const qimg2 = qimgDataUri(q.image);
-      if (qimg2) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:6px 0"><img src="' + qimg2 + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:80mm;object-fit:contain"/></div>';
+      if (q.showImg !== false && qimg2) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:6px 0"><img src="' + qimg2 + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:80mm;object-fit:contain"/></div>';
       html += circDivHtml(q);
       if (q.type === 'single' || q.type === 'multi') {
         html += '<div class="opts">' + (Array.isArray(q.options) ? q.options.map((o, i) => String.fromCharCode(65 + i) + '. ' + mdMath(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('　　') : '') + '</div>';
@@ -2047,7 +2048,7 @@ function cardToDoc(r) {
       subNo++;
       html += '<div class="sub-item"><div class="q"><b>' + subNo + '.</b> ' + mdMath(q.question) + '（' + q.score + ' 分）';
       const qimg3 = qimgDataUri(q.image);
-      if (qimg3) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + qimg3 + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:70mm;object-fit:contain"/></div>';
+      if (q.showImg !== false && qimg3) html += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + qimg3 + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:70mm;object-fit:contain"/></div>';
       html += circDivHtml(q);
       html += '</div>';
       if (q.type === 'fill') {
@@ -2070,7 +2071,7 @@ function cardToDoc(r) {
   return html;
 }
 function publicExam(e, withAnswer) {
-  const qs = (e.questions || []).map(q => withAnswer ? q : { id: q.id, chapter: q.chapter, section: q.section, type: q.type, question: q.question, options: q.options, difficulty: q.difficulty, score: q.score, image: q.image || '', imageAlign: q.imageAlign || 'center', imgSize: q.imgSize || 60, circuit: q.circuit || '', circuitSize: q.circuitSize || 60 });
+  const qs = (e.questions || []).map(q => withAnswer ? q : { id: q.id, chapter: q.chapter, section: q.section, type: q.type, question: q.question, options: q.options, difficulty: q.difficulty, score: q.score, image: q.image || '', imageAlign: q.imageAlign || 'center', imgSize: q.imgSize || 60, circuit: q.circuit || '', circuitSize: q.circuitSize || 60, showImg: q.showImg !== false });
   return { id: e.id, title: e.title, subject: e.subject, className: e.className, grade: e.grade,
     createdAt: e.createdAt, status: e.status, questions: qs, qcount: e.qcount, totalScore: e.totalScore,
     createdBy: e.createdBy, publishedAt: e.publishedAt, note: e.note || '' };
@@ -2086,6 +2087,7 @@ function validateQuestion(b) {
   if (b.imgSize !== undefined && !(Number(b.imgSize) >= 20 && Number(b.imgSize) <= 100)) return '图片大小需在 20~100（百分比）之间';
   if (b.circuit !== undefined && typeof b.circuit !== 'string') return '电路图格式无效';
   if (b.circuitSize !== undefined && !(Number(b.circuitSize) >= 20 && Number(b.circuitSize) <= 100)) return '电路图大小需在 20~100（百分比）之间';
+  if (b.showImg !== undefined && b.showImg !== true && b.showImg !== false && b.showImg !== 0 && b.showImg !== 1 && String(b.showImg) !== 'true' && String(b.showImg) !== 'false') return '是否展示图片参数无效';
   if (b.type === 'matching') {
     // 连线题：options 为 {left:[...], right:[...]}，answer 为配对 JSON 字符串 [[左下标,右下标],...]
     const o = b.options;

@@ -224,8 +224,8 @@
     $('q-type').textContent = TYPE_NAME[q.type];
     $('q-no').textContent = '第 ' + (state.qi + 1) + ' / ' + cfg.q + ' 题';
     $('q-combo').textContent = state.combo >= 2 ? '连击 ×' + state.combo : '';
-    const qImg = q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + '"><img src="' + q.image + '" class="q-quest-img" style="width:' + (q.imgSize || 60) + '%" alt="题干图片"></div>' : '';
-    const qCirc = q.circuit ? '<div style="text-align:center;margin:6px auto;background:#fff;border:1px solid rgba(120,160,255,.3);border-radius:8px;padding:4px;overflow:auto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + (q.circuitSize || 60) + '%;max-width:380px;display:block;margin:0 auto">' + ((window.UIM && window.UIM.circBody) ? window.UIM.circBody(q.circuit) : q.circuit) + '</svg></div>' : '';
+    const qImg = (q.showImg !== false && q.image) ? '<div style="text-align:' + (q.imageAlign || 'center') + '"><img src="' + q.image + '" class="q-quest-img" style="width:' + (q.imgSize || 60) + '%" alt="题干图片"></div>' : '';
+    const qCirc = (q.showImg !== false && q.circuit) ? '<div style="text-align:center;margin:6px auto;background:#fff;border:1px solid rgba(120,160,255,.3);border-radius:8px;padding:4px;overflow:auto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + (q.circuitSize || 60) + '%;max-width:380px;display:block;margin:0 auto">' + ((window.UIM && window.UIM.circBody) ? window.UIM.circBody(q.circuit) : q.circuit) + '</svg></div>' : '';
     $('q-text').innerHTML = mdMath(q.question) + qImg + qCirc;
     const hint = state.isBoss
       ? '答对电击BOSS（BOSS -1 血），答错 BOSS 回血！'

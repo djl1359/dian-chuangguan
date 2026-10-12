@@ -968,6 +968,8 @@ async function loadChapterAnalysis(ch) {
       '<div id="qf-circ-preview" style="margin-top:6px"></div>' +
       '<div class="form-row" id="qf-csize-row" style="display:none;margin-top:6px"><label style="font-size:12px;color:var(--dim)">电路图显示大小</label><select id="qf-csize" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' +
       '<option value="40">小（40%）</option><option value="60">中（60%）</option><option value="80">大（80%）</option><option value="100">原图（100%）</option></select></div></div>' +
+      '<div class="form-row" id="qf-showimg-row" style="margin-top:6px;border-top:1px dashed var(--line);padding-top:8px"><label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="qf-showimg" style="width:auto;height:auto;accent-color:var(--accent)"> 答题时展示题干图片与电路图（取消勾选后学生端不展示图片，题库/试卷管理仍可见）</label>' +
+      '<div style="font-size:11px;color:var(--dim);margin-top:2px">提示：点击上方图片或电路图预览可放大查看</div></div>' +
       '<div class="form-row" style="margin-top:4px;border-top:1px dashed var(--line);padding-top:6px">' +
       '<button type="button" class="btn small" id="qf-ocr-btn">✂️ 截图/图片识别填入</button>' +
       '<input type="file" id="qf-ocr-file" accept="image/*" style="display:none">' +
@@ -997,14 +999,17 @@ async function loadChapterAnalysis(ch) {
     S.qfImage = (q && q.image) || '';
     S.qfAlign = (q && ['left', 'center', 'right'].includes(q.imageAlign)) ? q.imageAlign : 'center';
     S.qfSize = (q && Number(q.imgSize) >= 20 && Number(q.imgSize) <= 100) ? Number(q.imgSize) : 60;
+    S.qfShowImg = !q || q.showImg !== false;
     const renderQfImg = () => {
       const box = $('qf-img-preview');
-      box.innerHTML = S.qfImage ? '<img src="' + S.qfImage + '" style="max-height:120px;border-radius:8px;border:1px solid var(--line)">' : '';
+      box.innerHTML = S.qfImage ? '<img src="' + S.qfImage + '" style="max-height:120px;border-radius:8px;border:1px solid var(--line);cursor:zoom-in" title="点击放大预览" onclick="UIM.zoomView(this)">' : '';
       $('qf-img-del').style.display = S.qfImage ? '' : 'none';
       $('qf-align-row').style.display = S.qfImage ? '' : 'none';
       $('qf-size-row').style.display = S.qfImage ? '' : 'none';
       if (S.qfImage) { $('qf-align').value = S.qfAlign; $('qf-size').value = String(S.qfSize); }
     };
+    const qfShowImgSync = () => { $('qf-showimg').checked = S.qfShowImg; };
+    $('qf-showimg').onchange = () => { S.qfShowImg = $('qf-showimg').checked; };
     $('qf-img-file').onchange = () => {
       const f = $('qf-img-file').files[0];
       if (!f) return;
@@ -1021,6 +1026,7 @@ async function loadChapterAnalysis(ch) {
       fr.readAsDataURL(f);
     };
     renderQfImg();
+    qfShowImgSync();
     /* 1.5.2.0：电路图（自动生成/手动编辑/自动解答） */
     S.qfCircuit = (q && q.circuit) || '';
     S.qfCircSize = (q && Number(q.circuitSize) >= 20 && Number(q.circuitSize) <= 100) ? Number(q.circuitSize) : 60;
@@ -1028,7 +1034,7 @@ async function loadChapterAnalysis(ch) {
       const box = $('qf-circ-preview');
       if (S.qfCircuit) {
         const cl = Circuit.cleanSvg(S.qfCircuit);
-        box.innerHTML = '<div style="max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + S.qfCircSize + '%;max-width:640px;display:block;margin:0 auto">' + (cl.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')) + '</svg></div>';
+        box.innerHTML = '<div style="max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px;cursor:zoom-in" title="点击放大预览" onclick="UIM.zoomView(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + S.qfCircSize + '%;max-width:640px;display:block;margin:0 auto">' + (cl.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')) + '</svg></div>';
       } else { box.innerHTML = '<span style="font-size:11px;color:var(--dim)">（暂无电路图）</span>'; }
       $('qf-circ-del').style.display = S.qfCircuit ? '' : 'none';
       $('qf-csize-row').style.display = S.qfCircuit ? '' : 'none';
@@ -1162,7 +1168,8 @@ async function loadChapterAnalysis(ch) {
       imageAlign: S.qfImage ? $('qf-align').value : 'center',
       imgSize: S.qfImage ? (parseInt($('qf-size').value, 10) || 60) : 60,
       circuit: S.qfCircuit || '',
-      circuitSize: S.qfCircuit ? (parseInt($('qf-csize').value, 10) || 60) : 60
+      circuitSize: S.qfCircuit ? (parseInt($('qf-csize').value, 10) || 60) : 60,
+      showImg: S.qfShowImg !== false
     };
     const msg = $('qf-msg');
     if (!data.question) { msg.textContent = '题干不能为空'; return; }
@@ -1354,6 +1361,30 @@ async function loadChapterAnalysis(ch) {
 
   const UIM = {
     showScreen, renderMenu, renderMap, renderChapter, onLevelResult, toast, buildMatchUI,
+    /* V1.5.3.0：图片/电路图点击放大预览（lightbox） */
+    zoomView(el) {
+      if (!el) return;
+      const z = document.createElement('div');
+      z.style.cssText = 'position:fixed;inset:0;background:rgba(2,6,20,.92);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;overflow:auto';
+      const box = document.createElement('div');
+      box.style.cssText = 'max-width:94vw;max-height:94vh;background:#fff;border-radius:10px;padding:10px;overflow:auto';
+      const clone = el.cloneNode(true);
+      clone.removeAttribute('onclick'); clone.style.cssText = '';
+      if (clone.tagName === 'IMG') {
+        clone.style.cssText = 'max-width:90vw;max-height:88vh;object-fit:contain;display:block;margin:auto';
+      } else {
+        const sv = clone.querySelector('svg');
+        if (sv) { sv.removeAttribute('style'); sv.setAttribute('style', 'width:100%;height:auto;display:block'); }
+      }
+      box.appendChild(clone);
+      const cap = document.createElement('div');
+      cap.textContent = '点击任意处关闭';
+      cap.style.cssText = 'text-align:center;font-size:12px;color:#888;padding:6px 0 0';
+      box.appendChild(cap);
+      z.appendChild(box);
+      z.onclick = () => document.body.removeChild(z);
+      document.body.appendChild(z);
+    },
     /* 学生管理：查找/排序/等级筛选 */
     setStuKw(v) { PG.students.kw = v; PG.students.page = 1; loadStudents(); },
     setStuSort(v) { PG.students.sort = v; PG.students.page = 1; loadStudents(); },
@@ -2068,8 +2099,8 @@ async function loadChapterAnalysis(ch) {
             r.groups.map(g => '<div style="margin:6px 0"><b>' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
               g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + mdMath(q.question) +
                 (q.type === 'matching' ? '<div style="display:flex;gap:8px;margin:4px 0 4px 22px"><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.left ? q.options.left.map((l, li) => (li + 1) + '. ' + mdMath(l)).join('<br>') : '') + '</div><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.right ? q.options.right.map((r2, ri) => String.fromCharCode(65 + ri) + '. ' + mdMath(r2)).join('<br>') : '') + '</div></div>' : '') +
-                (q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:180px;max-height:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff"></div>' : '') +
-                (q.circuit ? '<div style="text-align:center;margin:4px 0;background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px;overflow:auto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + (q.circuitSize || 60) + '%;max-width:420px;display:block;margin:0 auto">' + UIM.circBody(q.circuit) + '</svg></div>' : '') + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
+                (q.showImg !== false && q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:180px;max-height:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff"></div>' : '') +
+                (q.showImg !== false && q.circuit ? '<div style="text-align:center;margin:4px 0;background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px;overflow:auto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + (q.circuitSize || 60) + '%;max-width:420px;display:block;margin:0 auto">' + UIM.circBody(q.circuit) + '</svg></div>' : '') + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
             '<div style="margin-top:8px;color:var(--dim)">导出 Word 后可在 WPS/Word 中打开打印。</div>';
         } catch (e) { pv.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
       };
