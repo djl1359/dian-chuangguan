@@ -103,7 +103,7 @@
     constructor(container, initSvg) {
       this.root = container;
       this.W = 860; this.H = 500;
-      this.items = []; this.wires = []; this.sel = null; this.mode = 'select';
+      this.items = []; this.wires = []; this.notes = []; this.sel = null; this.mode = 'select';
       this.wireFrom = null; this.undoStack = []; this.redoStack = [];
       this._id = 0; this.pinR = 5;
       this._drag = null; this._touching = null;
@@ -123,17 +123,25 @@
         '<span class="circ-mode" style="font-weight:600">电路图编辑器</span>' +
         '<button type="button" class="btn small" data-tool="select">🖱 选择</button>' +
         '<button type="button" class="btn small" data-tool="wire">🔗 连线</button>' +
+        '<button type="button" class="btn small" data-tool="note">💡 电位标注</button>' +
         '<button type="button" class="btn small" data-act="rot">↻ 旋转(R)</button>' +
         '<button type="button" class="btn small" data-act="del">🗑 删除(Del)</button>' +
         '<button type="button" class="btn small" data-act="undo">↩ 撤销</button>' +
         '<button type="button" class="btn small" data-act="redo">↪ 重做</button>' +
-        '<button type="button" class="btn small ghost" data-act="clear">清空</button>' +
+        '<button type="button" class="btn small" data-act="clear">清空</button>' +
         '<span style="flex:1"></span>' +
-        '<span class="circ-hint" style="font-size:11px;color:var(--dim)">拖拽移动 · 双击改参数 · 连线模式点击两引脚画导线</span>';
+        '<span class="circ-hint" style="font-size:11px;color:var(--dim)">' +
+          '<button type="button" class="btn small" data-act="scale-dn" title="选中元件缩小 25%">🔍−</button>' +
+          '<button type="button" class="btn small" data-act="scale-up" title="选中元件放大 25%">🔍+</button>' +
+          '<button type="button" class="btn small" data-act="csize-dn" title="画布缩小">📐−</button>' +
+          '<span id="circ-size" style="font-size:11px;color:var(--dim)">' + this.W + '×' + this.H + '</span>' +
+          '<button type="button" class="btn small" data-act="csize-up" title="画布放大">📐+</button>' +
+        '</span>' +
+        '<span class="circ-hint" style="font-size:11px;color:var(--dim)">拖拽移动 · 双击改参数 · 连线模式点击两引脚画导线 · 💡模式点击画布空白处添加电位标注</span>';
       this.root.appendChild(bar);
       const wrap = document.createElement('div');
       wrap.className = 'circ-wrap';
-      wrap.innerHTML = '<div class="circ-palette"></div><div class="circ-canvas-box"><svg class="circ-canvas" width="' + this.W + '" height="' + this.H + '" viewBox="0 0 ' + this.W + ' ' + this.H + '"></svg><div class="circ-tip">' + (this.mode === 'wire' ? '连线模式：点击起始引脚 → 点击目标引脚' : '点击左侧元件添加到画布；选中后 R 旋转 / Del 删除 / 双击改参数') + '</div></div>';
+      wrap.innerHTML = '<div class="circ-palette"></div><div class="circ-canvas-box"><svg class="circ-canvas" width="' + this.W + '" height="' + this.H + '" viewBox="0 0 ' + this.W + ' ' + this.H + '" style="width:' + this.W + 'px;height:' + this.H + 'px;max-width:none"></svg><div class="circ-tip">' + (this.mode === 'wire' ? '连线模式：点击起始引脚 → 点击目标引脚' : (this.mode === 'note' ? '电位标注模式：点击画布空白处添加电位标注（如 VA、+6V、0V），双击标注可修改文字' : '点击左侧元件添加到画布；选中后 R 旋转 / Del 删除 / 双击改参数 / 🔍+/− 缩放')) + '</div></div>';
       this.root.appendChild(wrap);
       this.svg = wrap.querySelector('.circ-canvas');
       this.palette = wrap.querySelector('.circ-palette');
@@ -157,11 +165,13 @@
         const tool = e.target.closest('[data-tool]');
         if (tool) { this.mode = tool.dataset.tool; this._syncMode(); return; }
         const act = e.target.closest('[data-act]');
-        if (act) { const a = act.dataset.act; if (a === 'rot') this.rotate(); else if (a === 'del') this.delSel(); else if (a === 'undo') this.undo(); else if (a === 'redo') this.redo(); else if (a === 'clear') this.clearAll(); return; }
+        if (act) { const a = act.dataset.act; if (a === 'rot') this.rotate(); else if (a === 'del') this.delSel(); else if (a === 'undo') this.undo(); else if (a === 'redo') this.redo(); else if (a === 'clear') this.clearAll(); else if (a === 'scale-up') this._scaleSel(1.25); else if (a === 'scale-dn') this._scaleSel(0.8); else if (a === 'csize-up') this._resizeCanvas(40, 40); else if (a === 'csize-dn') this._resizeCanvas(-40, -40); return; }
       });
       root.addEventListener('dblclick', (e) => {
         const g = e.target.closest('[data-i]');
-        if (g) { const it = this.items.find(x => x.id === g.dataset.i); if (it) this._editParams(it); }
+        if (g) { const it = this.items.find(x => x.id === g.dataset.i); if (it) this._editParams(it); return; }
+        const n = e.target.closest('[data-n]');
+        if (n) { this._editNote(n.dataset.n); }
       });
       // 画布鼠标交互（mousedown 在 svg 上捕获 target 元素）
       this.svg.addEventListener('mousedown', (e) => this._onDown(e));
@@ -178,10 +188,45 @@
       });
     }
     _syncMode() {
-      this.tip.textContent = this.mode === 'wire' ? '连线模式：点击起始引脚 → 点击目标引脚' : '点击左侧元件添加到画布；选中后 R 旋转 / Del 删除 / 双击改参数';
+      this.tip.textContent = this.mode === 'wire' ? '连线模式：点击起始引脚 → 点击目标引脚' : (this.mode === 'note' ? '电位标注模式：点击画布空白处添加电位标注（如 VA、+6V、0V），双击标注可修改文字' : '点击左侧元件添加到画布；选中后 R 旋转 / Del 删除 / 双击改参数 / 🔍+/− 缩放');
       const btns = this.root.querySelectorAll('[data-tool]');
       btns.forEach(b => b.classList.toggle('active', b.dataset.tool === this.mode));
       this.svg.classList.toggle('wire-mode', this.mode === 'wire');
+    }
+    /* V1.5.6.0：画布尺寸调整（+ 滚动条控制显示区域） */
+    _resizeCanvas(dw, dh) {
+      this.W = Math.max(400, Math.min(2000, this.W + dw));
+      this.H = Math.max(300, Math.min(1500, this.H + dh));
+      this.svg.setAttribute('width', this.W);
+      this.svg.setAttribute('height', this.H);
+      this.svg.setAttribute('viewBox', '0 0 ' + this.W + ' ' + this.H);
+      this.svg.style.width = this.W + 'px';
+      this.svg.style.height = this.H + 'px';
+      const sz = this.root.querySelector('#circ-size');
+      if (sz) sz.textContent = this.W + '×' + this.H;
+      this._draw();
+    }
+    /* V1.5.6.0：选中元件缩放（🔍+/−） */
+    _scaleSel(k) {
+      if (!this.sel || !this.sel.type || !DEFS[this.sel.type]) return;
+      this._push();
+      this.sel.s = Math.max(0.4, Math.min(3, Math.round(((this.sel.s || 1) * k) * 100) / 100));
+      this._draw();
+    }
+    /* V1.5.6.0：电位标注（两端点电位/节点电位文字） */
+    _addNoteAt(x, y) {
+      this._push();
+      this.notes.push({ id: 'n' + (++this._id), x: Math.round(x / 10) * 10, y: Math.round(y / 10) * 10, text: 'VA' });
+      this._draw();
+    }
+    _editNote(id) {
+      const n = this.notes.find(x => x.id === id);
+      if (!n) return;
+      const v = prompt('电位标注文字（如 VA、VB、+6V、0V、VAB）：', n.text);
+      if (v === null) return;
+      this._push();
+      n.text = v.trim() || 'VA';
+      this._draw();
     }
     _svgPos(e) {
       const r = this.svg.getBoundingClientRect();
@@ -190,19 +235,20 @@
     }
     _add(type) {
       const d = DEFS[type];
-      const it = { id: this._newId(), type, x: 380, y: 220, rot: 0, params: Object.assign({}, d.params) };
+      const it = { id: this._newId(), type, x: 380, y: 220, rot: 0, s: 1, params: Object.assign({}, d.params) };
       this.items.push(it); this.sel = it; this._snap(); this._draw();
     }
     _snap() { if (this.sel) { this.sel.x = Math.round(this.sel.x / 10) * 10; this.sel.y = Math.round(this.sel.y / 10) * 10; } }
     _pinPos(it, pin) {
       const d = DEFS[it.type];
+      const s = it.s || 1;
       let px, py;
-      if (pin === 'l') { px = 0; py = d.h / 2; }
-      else if (pin === 'r') { px = d.w; py = d.h / 2; }
-      else if (pin === 't') { px = d.w / 2; py = 0; }
-      else { px = d.w / 2; py = d.h; }
+      if (pin === 'l') { px = 0; py = (d.h / 2) * s; }
+      else if (pin === 'r') { px = d.w * s; py = (d.h / 2) * s; }
+      else if (pin === 't') { px = (d.w / 2) * s; py = 0; }
+      else { px = (d.w / 2) * s; py = d.h * s; }
       const rad = (it.rot * Math.PI) / 180;
-      const cx = d.w / 2, cy = d.h / 2;
+      const cx = (d.w / 2) * s, cy = (d.h / 2) * s;
       const dx = px - cx, dy = py - cy;
       const rx = dx * Math.cos(rad) - dy * Math.sin(rad);
       const ry = dx * Math.sin(rad) + dy * Math.cos(rad);
@@ -233,6 +279,18 @@
           return;
         }
         this.wireFrom = null; this._draw(); return;
+      }
+      /* V1.5.6.0：电位标注模式 —— 点击画布空白处添加电位标注 */
+      if (this.mode === 'note') {
+        const hp = t.closest('[data-wp]');
+        const wl = t.closest('[data-w]');
+        const g = t.closest('[data-i]');
+        const np = t.closest('[data-n]');
+        if (np) { this.sel = { id: np.dataset.n, type: 'note' }; this._draw(); return; }
+        if (hp || wl || g) { this.sel = null; this._draw(); return; }
+        const p = this._svgPos(e);
+        this._addNoteAt(p.x, p.y);
+        return;
       }
       /* V1.5.5.0：导线拐点拖动（手动调节连线） */
       const hp = t.closest('[data-wp]');
@@ -287,29 +345,33 @@
     }
     _onUp() { this._drag = null; this._dragWp = null; }
     _push() {
-      this.undoStack.push(JSON.stringify({ items: this.items, wires: this.wires }));
+      this.undoStack.push(JSON.stringify({ items: this.items, wires: this.wires, notes: this.notes }));
       if (this.undoStack.length > 60) this.undoStack.shift();
       this.redoStack = [];
     }
     undo() {
       if (!this.undoStack.length) return;
-      this.redoStack.push(JSON.stringify({ items: this.items, wires: this.wires }));
+      this.redoStack.push(JSON.stringify({ items: this.items, wires: this.wires, notes: this.notes }));
       const s = JSON.parse(this.undoStack.pop());
-      this.items = s.items; this.wires = s.wires; this.sel = null; this._draw();
+      this.items = s.items; this.wires = s.wires; this.notes = s.notes || []; this.sel = null; this._draw();
     }
     redo() {
       if (!this.redoStack.length) return;
-      this.undoStack.push(JSON.stringify({ items: this.items, wires: this.wires }));
+      this.undoStack.push(JSON.stringify({ items: this.items, wires: this.wires, notes: this.notes }));
       const s = JSON.parse(this.redoStack.pop());
-      this.items = s.items; this.wires = s.wires; this.sel = null; this._draw();
+      this.items = s.items; this.wires = s.wires; this.notes = s.notes || []; this.sel = null; this._draw();
     }
     rotate() { if (!this.sel) return; this._push(); this.sel.rot = (this.sel.rot + 90) % 360; this._draw(); }
     delSel() {
       if (!this.sel) return;
       this._push();
-      if (this.sel.id && String(this.sel.id).indexOf('w') === 0) {
+      const sid = String(this.sel.id || '');
+      if (sid.indexOf('w') === 0) {
         /* V1.5.5.0：删除选中导线 */
         this.wires = this.wires.filter(w => w.id !== this.sel.id);
+      } else if (sid.indexOf('n') === 0) {
+        /* V1.5.6.0：删除电位标注 */
+        this.notes = this.notes.filter(x => x.id !== this.sel.id);
       } else {
         const id = this.sel.id;
         this.items = this.items.filter(x => x.id !== id);
@@ -317,7 +379,7 @@
       }
       this.sel = null; this._draw();
     }
-    clearAll() { if (!this.items.length) return; this._push(); this.items = []; this.wires = []; this.sel = null; this.wireFrom = null; this._draw(); }
+    clearAll() { if (!this.items.length && !this.notes.length) return; this._push(); this.items = []; this.wires = []; this.notes = []; this.sel = null; this.wireFrom = null; this._draw(); }
     _editParams(it) {
       const d = DEFS[it.type];
       const keys = Object.keys(d.params || {});
@@ -373,21 +435,25 @@
         const it = this.items.find(x => x.id === this.wireFrom.item);
         if (it) { const p = this._pinPos(it, this.wireFrom.pin); s += '<circle cx="' + p.x + '" cy="' + p.y + '" r="7" fill="rgba(255,180,60,.5)"/>'; }
       }
-      // 元件
+      // 元件（V1.5.6.0：支持元件缩放 scale(s)，引脚置于缩放外层）
       this.items.forEach(it => {
         const d = DEFS[it.type];
         const sel = this.sel && this.sel.id === it.id;
-        let inner = d.svg(it.params);
-        // 引脚（可连线目标）
+        const sc = it.s || 1;
+        s += '<g data-i="' + it.id + '" data-t="' + it.type + '" data-s="' + sc + '" transform="translate(' + it.x + ',' + it.y + ') scale(' + sc + ')" class="' + (sel ? 'circ-sel' : '') + '" style="cursor:move"><g transform="rotate(' + it.rot + ' ' + d.w / 2 + ' ' + d.h / 2 + ')">' + d.svg(it.params) + '</g></g>';
+        // 引脚（可连线目标，坐标已含缩放）
         const pins = this._pins(it);
-        inner += pins.map(p => '<circle class="circ-pin" data-i="' + it.id + '" data-pin="' + p.n + '" cx="' + p.pos.x + '" cy="' + p.pos.y + '" r="' + this.pinR + '" fill="' + (this.mode === 'wire' ? '#ffb43c' : '#1a3a66') + '" stroke="#0af" stroke-width="1"/>').join('');
-        // 参数标签（含 text 的元件模板自带）
-        s += '<g data-i="' + it.id + '" data-t="' + it.type + '" transform="translate(' + it.x + ',' + it.y + ') rotate(' + it.rot + ' ' + d.w / 2 + ' ' + d.h / 2 + ')" class="' + (sel ? 'circ-sel' : '') + '" style="cursor:move">' + inner + '</g>';
+        s += pins.map(p => '<circle class="circ-pin" data-i="' + it.id + '" data-pin="' + p.n + '" cx="' + p.pos.x + '" cy="' + p.pos.y + '" r="' + this.pinR + '" fill="' + (this.mode === 'wire' ? '#ffb43c' : '#1a3a66') + '" stroke="#0af" stroke-width="1"/>').join('');
+      });
+      // 电位标注（V1.5.6.0：两端点电位 / 节点电位文字）
+      this.notes.forEach(n => {
+        s += '<g data-n="' + n.id + '" transform="translate(' + n.x + ',' + n.y + ')" style="cursor:pointer"><circle cx="0" cy="0" r="3.5" fill="#f80"/><text x="8" y="4" font-size="15" fill="#f80" font-weight="700" style="paint-order:stroke;stroke:#fff;stroke-width:3px">' + escT(n.text) + '</text></g>';
       });
       // 选中框（元件；导线用拐点手柄表示）
       if (this.sel && this.sel.type && DEFS[this.sel.type]) {
         const d = DEFS[this.sel.type];
-        s += '<rect x="' + (this.sel.x - 8) + '" y="' + (this.sel.y - 8) + '" width="' + (d.w + 16) + '" height="' + (d.h + 16) + '" fill="none" stroke="#ffb43c" stroke-width="1.5" stroke-dasharray="4 3" pointer-events="none"/>';
+        const sc = this.sel.s || 1;
+        s += '<rect x="' + (this.sel.x - 8) + '" y="' + (this.sel.y - 8) + '" width="' + (d.w * sc + 16) + '" height="' + (d.h * sc + 16) + '" fill="none" stroke="#ffb43c" stroke-width="1.5" stroke-dasharray="4 3" pointer-events="none"/>';
       }
       this.svg.innerHTML = s;
     }
@@ -412,7 +478,12 @@
       });
       this.items.forEach(it => {
         const d = DEFS[it.type];
-        body += '<g data-i="' + it.id + '" data-t="' + it.type + '" data-p="' + escT(JSON.stringify(it.params)) + '" transform="translate(' + it.x + ',' + it.y + ') rotate(' + it.rot + ' ' + d.w / 2 + ' ' + d.h / 2 + ')">' + d.svg(it.params) + '</g>';
+        const sc = it.s || 1;
+        body += '<g data-i="' + it.id + '" data-t="' + it.type + '" data-s="' + sc + '" data-p="' + escT(JSON.stringify(it.params)) + '" transform="translate(' + it.x + ',' + it.y + ') scale(' + sc + ')"><g transform="rotate(' + it.rot + ' ' + d.w / 2 + ' ' + d.h / 2 + ')">' + d.svg(it.params) + '</g></g>';
+      });
+      // 电位标注（V1.5.6.0）
+      this.notes.forEach(n => {
+        body += '<g data-n="' + n.id + '" transform="translate(' + n.x + ',' + n.y + ')"><circle cx="0" cy="0" r="3.5" fill="#f80"/><text x="8" y="4" font-size="15" fill="#f80" font-weight="700">' + escT(n.text) + '</text></g>';
       });
       return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + this.W + ' ' + this.H + '" width="' + this.W + '" height="' + this.H + '" class="circ-svg">' + body + '</svg>';
     }
@@ -420,19 +491,49 @@
       try {
         const doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
         this.items = []; this.wires = [];
+        /* V1.5.6.0：从 SVG viewBox 恢复画布尺寸 */
+        const vb = (doc.documentElement.getAttribute('viewBox') || '').split(/[\s,]+/).map(Number);
+        if (vb.length === 4 && vb[2] > 0 && vb[3] > 0) { this.W = vb[2]; this.H = vb[3]; }
+        this.svg.setAttribute('width', this.W);
+        this.svg.setAttribute('height', this.H);
+        this.svg.setAttribute('viewBox', '0 0 ' + this.W + ' ' + this.H);
+        this.svg.style.width = this.W + 'px';
+        this.svg.style.height = this.H + 'px';
+        const szEl = this.root.querySelector('#circ-size');
+        if (szEl) szEl.textContent = this.W + '×' + this.H;
         const groups = doc.getElementsByTagName('g');
         for (const g of Array.from(groups)) {
           const t = g.getAttribute('data-t');
           if (!t || !DEFS[t]) continue;
           const tr = g.getAttribute('transform') || '';
-          let tx = 0, ty = 0, rot = 0;
+          let tx = 0, ty = 0, rot = 0, sc = 1;
           const m = tr.match(/translate\(([-\d.]+)[ ,]([-\d.]+)\)/);
           if (m) { tx = parseFloat(m[1]); ty = parseFloat(m[2]); }
-          const mr = tr.match(/rotate\(([-\d.]+)/);
-          if (mr) rot = parseFloat(mr[1]);
+          const ms = tr.match(/scale\(([-\d.]+)/);
+          if (ms) sc = parseFloat(ms[1]);
+          // V1.5.6.0：旋转在缩放内层 g（兼容旧版无内层 g 时从外层解析）
+          const innerG = g.querySelector('g');
+          if (innerG) {
+            const mr2 = (innerG.getAttribute('transform') || '').match(/rotate\(([-\d.]+)/);
+            if (mr2) rot = parseFloat(mr2[1]);
+          } else {
+            const mr = tr.match(/rotate\(([-\d.]+)/);
+            if (mr) rot = parseFloat(mr[1]);
+          }
           let params = {};
           try { params = JSON.parse(g.getAttribute('data-p') || '{}'); } catch (e) {}
-          this.items.push({ id: g.getAttribute('data-i') || this._newId(), type: t, x: tx, y: ty, rot: rot || 0, params });
+          this.items.push({ id: g.getAttribute('data-i') || this._newId(), type: t, x: tx, y: ty, rot: rot || 0, s: sc || 1, params });
+        }
+        // 电位标注（V1.5.6.0）
+        this.notes = [];
+        for (const g of Array.from(groups)) {
+          const nid = g.getAttribute('data-n');
+          if (!nid) continue;
+          const tr = g.getAttribute('transform') || '';
+          const m = tr.match(/translate\(([-\d.]+)[ ,]([-\d.]+)\)/);
+          if (!m) continue;
+          const txt = g.querySelector('text');
+          this.notes.push({ id: nid, x: parseFloat(m[1]), y: parseFloat(m[2]), text: txt ? txt.textContent : 'VA' });
         }
         const paths = doc.getElementsByTagName('path');
         // 导线：恢复手动调节的折线（data-w 带 path）或旧 H-V-H 格式
