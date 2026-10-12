@@ -14,20 +14,20 @@
 
   /* ---------- 元件定义库（完整） ---------- */
   const DEFS = {
-    battery: { cn: '电池', w: 70, h: 36, params: { V: '3V' }, svg: (p) => '<line x1="0" y1="18" x2="20" y2="18" stroke="#0af" stroke-width="2"/><line x1="28" y1="10" x2="28" y2="26" stroke="#0af" stroke-width="2"/><line x1="30" y1="18" x2="48" y2="18" stroke="#0af" stroke-width="2"/><line x1="48" y1="10" x2="48" y2="26" stroke="#0af" stroke-width="2"/><line x1="50" y1="18" x2="70" y2="18" stroke="#0af" stroke-width="2"/><text x="60" y="34" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.V) + '</text>' },
-    dc: { cn: '直流电源', w: 70, h: 36, params: { V: '12V' }, svg: (p) => '<line x1="0" y1="18" x2="14" y2="18" stroke="#0af" stroke-width="2"/><circle cx="26" cy="18" r="12" fill="none" stroke="#0af" stroke-width="2"/><line x1="20" y1="18" x2="24" y2="18" stroke="#0af" stroke-width="2"/><line x1="28" y1="18" x2="32" y2="18" stroke="#0af" stroke-width="2"/><text x="17" y="12" font-size="9" fill="#8cf" text-anchor="middle">+</text><text x="34" y="12" font-size="9" fill="#8cf" text-anchor="middle">−</text><line x1="38" y1="18" x2="52" y2="18" stroke="#0af" stroke-width="2"/><text x="61" y="34" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.V) + '</text>' },
-    ac: { cn: '交流电源', w: 70, h: 36, params: { V: '220V' }, svg: (p) => '<line x1="0" y1="18" x2="12" y2="18" stroke="#0af" stroke-width="2"/><path d="M14 18 q5 -8 10 0 q5 8 10 0 q5 -8 10 0" fill="none" stroke="#0af" stroke-width="2"/><line x1="46" y1="18" x2="58" y2="18" stroke="#0af" stroke-width="2"/><text x="64" y="34" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.V) + '</text>' },
-    res: { cn: '电阻', w: 70, h: 30, params: { R: '10Ω' }, svg: (p) => '<line x1="0" y1="15" x2="10" y2="15" stroke="#0af" stroke-width="2"/><path d="M10 15 h8 l4 -7 l8 14 l8 -14 l8 14 l4 -7 h8" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="15" x2="70" y2="15" stroke="#0af" stroke-width="2"/><text x="35" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.R) + '</text>' },
-    rvar: { cn: '可变电阻', w: 70, h: 30, params: { R: '50Ω' }, svg: (p) => '<line x1="0" y1="15" x2="10" y2="15" stroke="#0af" stroke-width="2"/><path d="M10 15 h8 l4 -7 l8 14 l8 -14 l8 14 l4 -7 h8" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="15" x2="70" y2="15" stroke="#0af" stroke-width="2"/><line x1="35" y1="8" x2="52" y2="24" stroke="#0af" stroke-width="1.5"/><text x="35" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.R) + '</text>' },
-    pot: { cn: '电位器', w: 70, h: 36, params: { R: '10kΩ' }, svg: (p) => '<line x1="0" y1="18" x2="10" y2="18" stroke="#0af" stroke-width="2"/><path d="M10 18 h8 l4 -7 l8 14 l8 -14 l8 14 l4 -7 h8" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="18" x2="70" y2="18" stroke="#0af" stroke-width="2"/><line x1="40" y1="12" x2="48" y2="32" stroke="#0af" stroke-width="1.5"/><text x="35" y="35" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.R) + '</text>' },
+    battery: { cn: '电池', w: 70, h: 36, params: { V: '3V' }, svg: (p) => '<line x1="0" y1="18" x2="20" y2="18" stroke="#0af" stroke-width="2"/><line x1="28" y1="10" x2="28" y2="26" stroke="#0af" stroke-width="2"/><line x1="30" y1="18" x2="48" y2="18" stroke="#0af" stroke-width="2"/><line x1="48" y1="10" x2="48" y2="26" stroke="#0af" stroke-width="2"/><line x1="50" y1="18" x2="70" y2="18" stroke="#0af" stroke-width="2"/><text x="60" y="34" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.V)) + '</text>' },
+    dc: { cn: '直流电源', w: 70, h: 36, params: { V: '12V' }, svg: (p) => '<line x1="0" y1="18" x2="14" y2="18" stroke="#0af" stroke-width="2"/><circle cx="26" cy="18" r="12" fill="none" stroke="#0af" stroke-width="2"/><line x1="20" y1="18" x2="24" y2="18" stroke="#0af" stroke-width="2"/><line x1="28" y1="18" x2="32" y2="18" stroke="#0af" stroke-width="2"/><text x="17" y="12" font-size="9" fill="#8cf" text-anchor="middle">+</text><text x="34" y="12" font-size="9" fill="#8cf" text-anchor="middle">−</text><line x1="38" y1="18" x2="52" y2="18" stroke="#0af" stroke-width="2"/><text x="61" y="34" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.V)) + '</text>' },
+    ac: { cn: '交流电源', w: 70, h: 36, params: { V: '220V' }, svg: (p) => '<line x1="0" y1="18" x2="12" y2="18" stroke="#0af" stroke-width="2"/><path d="M14 18 q5 -8 10 0 q5 8 10 0 q5 -8 10 0" fill="none" stroke="#0af" stroke-width="2"/><line x1="46" y1="18" x2="58" y2="18" stroke="#0af" stroke-width="2"/><text x="64" y="34" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.V)) + '</text>' },
+    res: { cn: '电阻', w: 70, h: 30, params: { R: '10Ω' }, svg: (p) => '<line x1="0" y1="15" x2="10" y2="15" stroke="#0af" stroke-width="2"/><rect x="10" y="6" width="52" height="18" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="15" x2="70" y2="15" stroke="#0af" stroke-width="2"/><text x="35" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.R)) + '</text>' },
+    rvar: { cn: '可变电阻', w: 70, h: 30, params: { R: '50Ω' }, svg: (p) => '<line x1="0" y1="15" x2="10" y2="15" stroke="#0af" stroke-width="2"/><rect x="10" y="6" width="52" height="18" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="15" x2="70" y2="15" stroke="#0af" stroke-width="2"/><line x1="36" y1="6" x2="52" y2="24" stroke="#0af" stroke-width="1.5"/><text x="35" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.R)) + '</text>' },
+    pot: { cn: '电位器', w: 70, h: 36, params: { R: '10kΩ' }, svg: (p) => '<line x1="0" y1="18" x2="10" y2="18" stroke="#0af" stroke-width="2"/><rect x="10" y="9" width="52" height="18" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="18" x2="70" y2="18" stroke="#0af" stroke-width="2"/><line x1="36" y1="27" x2="44" y2="33" stroke="#0af" stroke-width="1.5"/><path d="M40 33 l-6 -1 M40 33 l3 -5" stroke="#0af" stroke-width="1.5" fill="none"/><text x="35" y="35" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.R)) + '</text>' },
     lamp: { cn: '灯泡', w: 70, h: 36, params: {}, svg: () => '<line x1="0" y1="18" x2="14" y2="18" stroke="#0af" stroke-width="2"/><circle cx="30" cy="18" r="14" fill="none" stroke="#0af" stroke-width="2"/><line x1="24" y1="12" x2="36" y2="24" stroke="#0af" stroke-width="1.5"/><line x1="24" y1="24" x2="36" y2="12" stroke="#0af" stroke-width="1.5"/><line x1="44" y1="18" x2="58" y2="18" stroke="#0af" stroke-width="2"/><text x="30" y="36" font-size="9" fill="#8cf" text-anchor="middle">L</text>' },
-    sw: { cn: '开关', w: 70, h: 34, params: { closed: false }, svg: (p) => '<line x1="0" y1="17" x2="26" y2="17" stroke="#0af" stroke-width="2"/><circle cx="26" cy="17" r="2.5" fill="#0af"/><line x1="26" y1="17" x2="50" y2="8" stroke="#0af" stroke-width="2"/><circle cx="50" cy="8" r="2.5" fill="#0af"/><line x1="50" y1="8" x2="70" y2="8" stroke="#0af" stroke-width="2"/><text x="41" y="32" font-size="9" fill="#8cf" text-anchor="middle">S</text>' },
+    sw: { cn: '开关', w: 70, h: 34, params: { closed: false }, svg: (p) => '<line x1="0" y1="17" x2="26" y2="17" stroke="#0af" stroke-width="2"/><circle cx="26" cy="17" r="2.5" fill="#0af"/><line x1="50" y1="17" x2="70" y2="17" stroke="#0af" stroke-width="2"/><circle cx="50" cy="17" r="2.5" fill="#0af"/><line x1="26" y1="17" x2="47" y2="9" stroke="#0af" stroke-width="2"/><text x="41" y="32" font-size="9" fill="#8cf" text-anchor="middle">S</text>' },
     sw2: { cn: '单刀双掷', w: 84, h: 40, params: {}, svg: () => '<line x1="0" y1="20" x2="26" y2="20" stroke="#0af" stroke-width="2"/><circle cx="26" cy="20" r="2.5" fill="#0af"/><line x1="26" y1="20" x2="52" y2="6" stroke="#0af" stroke-width="2"/><line x1="52" y1="6" x2="84" y2="6" stroke="#0af" stroke-width="2"/><circle cx="52" cy="6" r="2.5" fill="#0af"/><line x1="52" y1="20" x2="52" y2="34" stroke="#0af" stroke-width="2"/><circle cx="52" cy="34" r="2.5" fill="#0af"/><line x1="52" y1="34" x2="84" y2="34" stroke="#0af" stroke-width="2"/><text x="42" y="38" font-size="9" fill="#8cf" text-anchor="middle">S</text>' },
-    btn: { cn: '按钮', w: 70, h: 34, params: {}, svg: () => '<line x1="0" y1="17" x2="26" y2="17" stroke="#0af" stroke-width="2"/><circle cx="26" cy="17" r="2.5" fill="#0af"/><line x1="26" y1="17" x2="48" y2="24" stroke="#0af" stroke-width="2"/><line x1="44" y1="17" x2="48" y2="17" stroke="#0af" stroke-width="2"/><circle cx="48" cy="17" r="2.5" fill="#0af"/><line x1="48" y1="17" x2="70" y2="17" stroke="#0af" stroke-width="2"/><text x="37" y="33" font-size="9" fill="#8cf" text-anchor="middle">SB</text>' },
-    cap: { cn: '电容', w: 60, h: 30, params: { C: '100μF' }, svg: (p) => '<line x1="0" y1="15" x2="24" y2="15" stroke="#0af" stroke-width="2"/><line x1="24" y1="4" x2="24" y2="26" stroke="#0af" stroke-width="2"/><line x1="30" y1="4" x2="30" y2="26" stroke="#0af" stroke-width="2"/><line x1="36" y1="15" x2="60" y2="15" stroke="#0af" stroke-width="2"/><text x="45" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.C) + '</text>' },
-    capP: { cn: '电解电容', w: 60, h: 30, params: { C: '10μF' }, svg: (p) => '<line x1="0" y1="15" x2="24" y2="15" stroke="#0af" stroke-width="2"/><line x1="24" y1="4" x2="24" y2="26" stroke="#0af" stroke-width="2"/><line x1="30" y1="4" x2="30" y2="26" stroke="#0af" stroke-width="2"/><line x1="36" y1="15" x2="60" y2="15" stroke="#0af" stroke-width="2"/><text x="17" y="11" font-size="8" fill="#f66">+</text><text x="45" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.C) + '</text>' },
-    ind: { cn: '电感', w: 64, h: 30, params: { L: '0.5H' }, svg: (p) => '<line x1="0" y1="15" x2="10" y2="15" stroke="#0af" stroke-width="2"/><path d="M10 15 a6 6 0 0 1 12 0 a6 6 0 0 1 12 0 a6 6 0 0 1 12 0 a6 6 0 0 1 12 0" fill="none" stroke="#0af" stroke-width="2"/><line x1="58" y1="15" x2="64" y2="15" stroke="#0af" stroke-width="2"/><text x="35" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(p.L) + '</text>' },
-    trafo: { cn: '变压器', w: 80, h: 44, params: {}, svg: () => '<line x1="0" y1="10" x2="20" y2="10" stroke="#0af" stroke-width="2"/><path d="M20 10 a7 7 0 0 1 14 0 a7 7 0 0 1 14 0 a7 7 0 0 1 14 0" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="10" x2="80" y2="10" stroke="#0af" stroke-width="2"/><line x1="0" y1="36" x2="20" y2="36" stroke="#0af" stroke-width="2"/><path d="M20 36 a7 7 0 0 1 14 0 a7 7 0 0 1 14 0 a7 7 0 0 1 14 0" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="36" x2="80" y2="36" stroke="#0af" stroke-width="2"/><text x="40" y="24" font-size="9" fill="#8cf" text-anchor="middle">T</text>' },
+    btn: { cn: '按钮', w: 70, h: 34, params: {}, svg: () => '<line x1="0" y1="17" x2="26" y2="17" stroke="#0af" stroke-width="2"/><circle cx="26" cy="17" r="2.5" fill="#0af"/><line x1="50" y1="17" x2="70" y2="17" stroke="#0af" stroke-width="2"/><circle cx="50" cy="17" r="2.5" fill="#0af"/><line x1="26" y1="17" x2="47" y2="9" stroke="#0af" stroke-width="2"/><line x1="47" y1="9" x2="47" y2="0" stroke="#0af" stroke-width="2"/><circle cx="47" cy="0" r="2.2" fill="none" stroke="#0af" stroke-width="2"/><text x="37" y="33" font-size="9" fill="#8cf" text-anchor="middle">SB</text>' },
+    cap: { cn: '电容', w: 60, h: 30, params: { C: '100μF' }, svg: (p) => '<line x1="0" y1="15" x2="24" y2="15" stroke="#0af" stroke-width="2"/><line x1="24" y1="4" x2="24" y2="26" stroke="#0af" stroke-width="2"/><line x1="30" y1="4" x2="30" y2="26" stroke="#0af" stroke-width="2"/><line x1="36" y1="15" x2="60" y2="15" stroke="#0af" stroke-width="2"/><text x="45" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.C)) + '</text>' },
+    capP: { cn: '电解电容', w: 60, h: 30, params: { C: '10μF' }, svg: (p) => '<line x1="0" y1="15" x2="24" y2="15" stroke="#0af" stroke-width="2"/><line x1="24" y1="4" x2="24" y2="26" stroke="#0af" stroke-width="2"/><line x1="30" y1="4" x2="30" y2="26" stroke="#0af" stroke-width="2"/><line x1="36" y1="15" x2="60" y2="15" stroke="#0af" stroke-width="2"/><text x="17" y="11" font-size="8" fill="#f66">+</text><text x="45" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.C)) + '</text>' },
+    ind: { cn: '电感', w: 64, h: 30, params: { L: '0.5H' }, svg: (p) => '<line x1="0" y1="15" x2="10" y2="15" stroke="#0af" stroke-width="2"/><path d="M10 15 a6 6 0 0 1 12 0 a6 6 0 0 1 12 0 a6 6 0 0 1 12 0 a6 6 0 0 1 12 0" fill="none" stroke="#0af" stroke-width="2"/><line x1="58" y1="15" x2="64" y2="15" stroke="#0af" stroke-width="2"/><text x="35" y="28" font-size="9" fill="#8cf" text-anchor="middle">' + escT(fmtL(p.L)) + '</text>' },
+    trafo: { cn: '变压器', w: 80, h: 44, params: {}, svg: () => '<line x1="0" y1="10" x2="20" y2="10" stroke="#0af" stroke-width="2"/><path d="M20 10 a7 7 0 0 1 14 0 a7 7 0 0 1 14 0 a7 7 0 0 1 14 0" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="10" x2="80" y2="10" stroke="#0af" stroke-width="2"/><line x1="0" y1="36" x2="20" y2="36" stroke="#0af" stroke-width="2"/><path d="M20 36 a7 7 0 0 1 14 0 a7 7 0 0 1 14 0 a7 7 0 0 1 14 0" fill="none" stroke="#0af" stroke-width="2"/><line x1="62" y1="36" x2="80" y2="36" stroke="#0af" stroke-width="2"/><line x1="40" y1="19" x2="40" y2="27" stroke="#0af" stroke-width="2"/><text x="40" y="24" font-size="9" fill="#8cf" text-anchor="middle">T</text>' },
     di: { cn: '二极管', w: 64, h: 30, params: {}, svg: () => '<line x1="0" y1="15" x2="20" y2="15" stroke="#0af" stroke-width="2"/><polygon points="20,4 36,15 20,26" fill="#0af"/><line x1="36" y1="4" x2="36" y2="26" stroke="#0af" stroke-width="2"/><line x1="36" y1="15" x2="64" y2="15" stroke="#0af" stroke-width="2"/><text x="22" y="11" font-size="8" fill="#8cf">D</text>' },
     led: { cn: 'LED', w: 70, h: 34, params: {}, svg: () => '<line x1="0" y1="17" x2="20" y2="17" stroke="#0af" stroke-width="2"/><polygon points="20,6 36,17 20,28" fill="#0af"/><line x1="36" y1="6" x2="36" y2="28" stroke="#0af" stroke-width="2"/><line x1="36" y1="17" x2="44" y2="17" stroke="#0af" stroke-width="2"/><path d="M48 8 l5 5 M53 8 l-5 5 M56 20 l6 6 M62 20 l-6 6" stroke="#ffd54a" stroke-width="1.5" fill="none"/><text x="20" y="13" font-size="8" fill="#8cf">D</text>' },
     zd: { cn: '稳压管', w: 64, h: 32, params: {}, svg: () => '<line x1="0" y1="16" x2="20" y2="16" stroke="#0af" stroke-width="2"/><polygon points="20,5 36,16 20,27" fill="#0af"/><line x1="36" y1="5" x2="36" y2="27" stroke="#0af" stroke-width="2"/><line x1="36" y1="16" x2="64" y2="16" stroke="#0af" stroke-width="2"/><line x1="36" y1="27" x2="28" y2="27" stroke="#0af" stroke-width="2"/><text x="22" y="12" font-size="8" fill="#8cf">D</text>' },
@@ -53,6 +53,11 @@
   ];
 
   function escT(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  /* V1.5.5.0：数字转 Unicode 下标（R1 → R₁，支持 R12 → R₁₂） */
+  const SUB = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
+  function subNum(s) { return String(s).replace(/[0-9]/g, (c) => SUB[+c]); }
+  /* 元件标注：把 "R1=6Ω" 渲染为 "R₁=6Ω"（字母后数字下标化） */
+  function fmtL(s) { return String(s == null ? '' : s).replace(/([A-Za-z])(\d+)/g, (m, a, b) => a + subNum(b)); }
 
   /* ---------- SVG 白名单清洗（防 XSS，前端版本） ---------- */
   const SVG_TAGS = ['svg', 'g', 'path', 'rect', 'circle', 'line', 'polyline', 'polygon', 'text', 'tspan', 'ellipse', 'defs', 'marker', 'use', 'title', 'desc'];
@@ -220,7 +225,7 @@
             else {
               const f = this.items.find(x => x.id === this.wireFrom.item);
               if (f && f !== it && this.wireFrom.pin !== pin.dataset.pin) {
-                this._push(); this.wires.push({ id: 'w' + (++this._id), a: { item: this.wireFrom.item, pin: this.wireFrom.pin }, b: { item: it.id, pin: pin.dataset.pin } });
+                this._push(); this.wires.push({ id: 'w' + (++this._id), a: { item: this.wireFrom.item, pin: this.wireFrom.pin }, b: { item: it.id, pin: pin.dataset.pin }, path: null });
               }
               this.wireFrom = null; this._draw();
             }
@@ -228,6 +233,25 @@
           return;
         }
         this.wireFrom = null; this._draw(); return;
+      }
+      /* V1.5.5.0：导线拐点拖动（手动调节连线） */
+      const hp = t.closest('[data-wp]');
+      if (hp) {
+        const w = this.wires.find(x => x.id === hp.dataset.w);
+        if (w) {
+          this._push();
+          this.sel = w; this._drag = null;
+          if (!w.path) { const a = this._pinPos(this.items.find(x => x.id === w.a.item), w.a.pin); const b = this._pinPos(this.items.find(x => x.id === w.b.item), w.b.pin); if (a && b) w.path = this._autoPts(a, b); }
+          this._dragWp = { wid: w.id, idx: +hp.dataset.wp };
+          this._draw();
+        }
+        return;
+      }
+      const wl = t.closest('[data-w]');
+      if (wl) {
+        const w = this.wires.find(x => x.id === wl.dataset.w);
+        if (w) { this.sel = w; this._drag = null; this._draw(); }
+        return;
       }
       const g = t.closest('[data-i]');
       if (g) {
@@ -241,7 +265,19 @@
         this.sel = null; this.wireFrom = null; this._draw();
       }
     }
+    _autoPts(a, b) {
+      return [[a.x, a.y], [Math.round((a.x + b.x) / 20) * 10, b.y], [b.x, b.y]];
+    }
     _onMove(e) {
+      if (this._dragWp) {
+        const w = this.wires.find(x => x.id === this._dragWp.wid);
+        if (w && w.path) {
+          const p = this._svgPos(e);
+          w.path[this._dragWp.idx] = [Math.round(p.x / 10) * 10, Math.round(p.y / 10) * 10];
+          this._draw();
+        }
+        return;
+      }
       if (!this._drag) return;
       const it = this.items.find(x => x.id === this._drag.id);
       if (!it) return;
@@ -249,7 +285,7 @@
       it.x = p.x - this._drag.dx; it.y = p.y - this._drag.dy;
       this._draw();
     }
-    _onUp() { this._drag = null; }
+    _onUp() { this._drag = null; this._dragWp = null; }
     _push() {
       this.undoStack.push(JSON.stringify({ items: this.items, wires: this.wires }));
       if (this.undoStack.length > 60) this.undoStack.shift();
@@ -268,7 +304,19 @@
       this.items = s.items; this.wires = s.wires; this.sel = null; this._draw();
     }
     rotate() { if (!this.sel) return; this._push(); this.sel.rot = (this.sel.rot + 90) % 360; this._draw(); }
-    delSel() { if (!this.sel) return; this._push(); const id = this.sel.id; this.items = this.items.filter(x => x.id !== id); this.wires = this.wires.filter(w => w.a.item !== id && w.b.item !== id); this.sel = null; this._draw(); }
+    delSel() {
+      if (!this.sel) return;
+      this._push();
+      if (this.sel.id && String(this.sel.id).indexOf('w') === 0) {
+        /* V1.5.5.0：删除选中导线 */
+        this.wires = this.wires.filter(w => w.id !== this.sel.id);
+      } else {
+        const id = this.sel.id;
+        this.items = this.items.filter(x => x.id !== id);
+        this.wires = this.wires.filter(w => w.a.item !== id && w.b.item !== id);
+      }
+      this.sel = null; this._draw();
+    }
     clearAll() { if (!this.items.length) return; this._push(); this.items = []; this.wires = []; this.sel = null; this.wireFrom = null; this._draw(); }
     _editParams(it) {
       const d = DEFS[it.type];
@@ -297,13 +345,28 @@
       // 网格
       s += '<defs><pattern id="circgrid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="rgba(120,160,255,.08)" stroke-width="1"/></pattern></defs>';
       s += '<rect width="' + this.W + '" height="' + this.H + '" fill="url(#circgrid)"/>';
-      // 导线
+      // 导线（V1.5.5.0：支持手动调节折线拐点）
       this.wires.forEach(w => {
         const a = this._pinPos(this.items.find(x => x.id === w.a.item), w.a.pin);
         const b = this._pinPos(this.items.find(x => x.id === w.b.item), w.b.pin);
         if (!a || !b) return;
-        const mx = (a.x + b.x) / 2;
-        s += '<path d="M' + a.x + ' ' + a.y + ' H' + mx + ' V' + b.y + ' H' + b.x + '" fill="none" stroke="#0af" stroke-width="2" data-w="' + w.id + '"/>';
+        if (w.path) { w.path[0] = [a.x, a.y]; w.path[w.path.length - 1] = [b.x, b.y]; }
+        const sel = this.sel && this.sel.id === w.id;
+        let d;
+        if (w.path) {
+          d = 'M' + w.path[0][0] + ' ' + w.path[0][1];
+          for (let i = 1; i < w.path.length; i++) d += ' L' + w.path[i][0] + ' ' + w.path[i][1];
+        } else {
+          const mx = (a.x + b.x) / 2;
+          d = 'M' + a.x + ' ' + a.y + ' H' + mx + ' V' + b.y + ' H' + b.x;
+        }
+        s += '<path d="' + d + '" fill="none" stroke="#0af" stroke-width="' + (sel ? 3.2 : 2) + '" data-w="' + w.id + '" style="cursor:pointer"/>';
+        if (sel) {
+          const pts = w.path || this._autoPts(a, b);
+          for (let i = 1; i < pts.length - 1; i++) {
+            s += '<circle class="circ-wp" data-w="' + w.id + '" data-wp="' + i + '" cx="' + pts[i][0] + '" cy="' + pts[i][1] + '" r="5" fill="#ffb43c" stroke="#fff" stroke-width="1.5" style="cursor:move"/>';
+          }
+        }
       });
       // 连线起点高亮
       if (this.wireFrom) {
@@ -321,8 +384,8 @@
         // 参数标签（含 text 的元件模板自带）
         s += '<g data-i="' + it.id + '" data-t="' + it.type + '" transform="translate(' + it.x + ',' + it.y + ') rotate(' + it.rot + ' ' + d.w / 2 + ' ' + d.h / 2 + ')" class="' + (sel ? 'circ-sel' : '') + '" style="cursor:move">' + inner + '</g>';
       });
-      // 选中框
-      if (this.sel) {
+      // 选中框（元件；导线用拐点手柄表示）
+      if (this.sel && this.sel.type && DEFS[this.sel.type]) {
         const d = DEFS[this.sel.type];
         s += '<rect x="' + (this.sel.x - 8) + '" y="' + (this.sel.y - 8) + '" width="' + (d.w + 16) + '" height="' + (d.h + 16) + '" fill="none" stroke="#ffb43c" stroke-width="1.5" stroke-dasharray="4 3" pointer-events="none"/>';
       }
@@ -331,13 +394,21 @@
     export() {
       // 导出完整 SVG（供渲染与存储）
       let body = '';
-      // 导线
+      // 导线（含手动调节的折线拐点）
       this.wires.forEach(w => {
         const a = this._pinPos(this.items.find(x => x.id === w.a.item), w.a.pin);
         const b = this._pinPos(this.items.find(x => x.id === w.b.item), w.b.pin);
         if (!a || !b) return;
-        const mx = (a.x + b.x) / 2;
-        body += '<path d="M' + a.x + ' ' + a.y + ' H' + mx + ' V' + b.y + ' H' + b.x + '" fill="none" stroke="#0af" stroke-width="2"/>';
+        let d;
+        if (w.path) {
+          const pts = w.path.map(p => p.slice());
+          pts[0] = [a.x, a.y]; pts[pts.length - 1] = [b.x, b.y];
+          d = 'M' + pts.map(p => p.join(' ')).join(' L');
+        } else {
+          const mx = (a.x + b.x) / 2;
+          d = 'M' + a.x + ' ' + a.y + ' H' + mx + ' V' + b.y + ' H' + b.x;
+        }
+        body += '<path d="' + d + '" fill="none" stroke="#0af" stroke-width="2" data-w="' + w.id + '"/>';
       });
       this.items.forEach(it => {
         const d = DEFS[it.type];
@@ -364,16 +435,29 @@
           this.items.push({ id: g.getAttribute('data-i') || this._newId(), type: t, x: tx, y: ty, rot: rot || 0, params });
         }
         const paths = doc.getElementsByTagName('path');
-        // 导线：导出时无 data-w，简单跳过恢复；保留用户手工导线（不在元件 group 内的 path）
+        // 导线：恢复手动调节的折线（data-w 带 path）或旧 H-V-H 格式
         for (const p of Array.from(paths)) {
           if (p.parentElement && p.parentElement.tagName === 'g') continue;
           const d = p.getAttribute('d') || '';
-          const mm = d.match(/^M([-\d.]+) ([-\d.]+) H([-\d.]+) V([-\d.]+) H([-\d.]+)/);
-          if (mm) {
-            // 尝试匹配两端引脚所在元件
-            const a = this._findItemAt(parseFloat(mm[1]), parseFloat(mm[2]));
-            const b = this._findItemAt(parseFloat(mm[5]), parseFloat(mm[4]));
-            if (a && b) this.wires.push({ id: 'w' + (++this._id), a: { item: a.id, pin: 'r' }, b: { item: b.id, pin: 'l' } });
+          let pts = [];
+          const mm = d.match(/M([-\d.]+) ([-\d.]+)/);
+          if (mm) pts.push([parseFloat(mm[1]), parseFloat(mm[2])]);
+          const ls = d.matchAll(/L([-\d.]+) ([-\d.]+)/g);
+          for (const l of Array.from(ls)) pts.push([parseFloat(l[1]), parseFloat(l[2])]);
+          if (pts.length >= 2) {
+            const a = this._findPinAt(pts[0][0], pts[0][1]);
+            const b = this._findPinAt(pts[pts.length - 1][0], pts[pts.length - 1][1]);
+            if (a && b) {
+              const wid = p.getAttribute('data-w') || ('w' + (++this._id));
+              this.wires.push({ id: wid, a: { item: a.item, pin: a.pin }, b: { item: b.item, pin: b.pin }, path: pts });
+            }
+          } else {
+            const mm2 = d.match(/^M([-\d.]+) ([-\d.]+) H([-\d.]+) V([-\d.]+) H([-\d.]+)/);
+            if (mm2) {
+              const a = this._findPinAt(parseFloat(mm2[1]), parseFloat(mm2[2]));
+              const b = this._findPinAt(parseFloat(mm2[5]), parseFloat(mm2[4]));
+              if (a && b) this.wires.push({ id: 'w' + (++this._id), a: { item: a.item, pin: a.pin }, b: { item: b.item, pin: b.pin }, path: null });
+            }
           }
         }
         this._draw();
@@ -387,6 +471,17 @@
         if (dx * dx + dy * dy < 900) return it;
       }
       return null;
+    }
+    /* V1.5.5.0：按引脚精确匹配导线端点（恢复导入用） */
+    _findPinAt(x, y) {
+      let best = null, bd = 1e9;
+      for (const it of this.items) {
+        for (const p of this._pins(it)) {
+          const dx = x - p.pos.x, dy = y - p.pos.y, dd = dx * dx + dy * dy;
+          if (dd < bd) { bd = dd; best = { item: it.id, pin: p.n }; }
+        }
+      }
+      return bd < 625 ? best : null; // 半径 25px 内
     }
     svgEl() { return this.svg; }
   }
@@ -420,9 +515,9 @@
     const wire = (a, ap, b, bp) => wires.push({ id: 'w' + (++idn), a: { item: a.id, pin: ap }, b: { item: b.id, pin: bp } });
     let E1, R1, R2, R3, L1;
     if (hasMixed && res.length >= 3) {
-      R1 = addIt('res', 180, 150, { R: fmtV(res[0].v) + res[0].u });
-      R2 = addIt('res', 480, 80, { R: fmtV(res[1].v) + res[1].u });
-      R3 = addIt('res', 480, 220, { R: fmtV(res[2].v) + res[2].u });
+      R1 = addIt('res', 180, 150, { R: 'R' + (res[0].n || '1') + '=' + fmtV(res[0].v) + res[0].u });
+      R2 = addIt('res', 480, 80, { R: 'R' + (res[1].n || '2') + '=' + fmtV(res[1].v) + res[1].u });
+      R3 = addIt('res', 480, 220, { R: 'R' + (res[2].n || '3') + '=' + fmtV(res[2].v) + res[2].u });
       const vSrc = lit[0] || { v: 12, u: 'V' };
       E1 = addIt('dc', 600, 350, { V: fmtV(vSrc.v) + (vSrc.u || 'V') });
       addIt('gnd', 660, 420, {});
@@ -435,8 +530,8 @@
       wire(R1, 'l', E1, 'r');
       const g2 = addIt('gnd', 640, 430, {}); items.pop();
     } else if (hasParallel && res.length >= 2) {
-      R1 = addIt('res', 200, 140, { R: fmtV(res[0].v) + res[0].u });
-      R2 = addIt('res', 200, 280, { R: fmtV(res[1].v) + res[1].u });
+      R1 = addIt('res', 200, 140, { R: 'R' + (res[0].n || '1') + '=' + fmtV(res[0].v) + res[0].u });
+      R2 = addIt('res', 200, 280, { R: 'R' + (res[1].n || '2') + '=' + fmtV(res[1].v) + res[1].u });
       const vSrc = lit[0] || { v: 12, u: 'V' };
       E1 = addIt('dc', 600, 210, { V: fmtV(vSrc.v) + (vSrc.u || 'V') });
       addIt('gnd', 660, 290, {});
@@ -445,8 +540,8 @@
       wire(R1, 'r', E1, 'r');
       wire(R2, 'r', E1, 'r');
     } else if (hasSeries && res.length >= 2) {
-      R1 = addIt('res', 180, 200, { R: fmtV(res[0].v) + res[0].u });
-      R2 = addIt('res', 420, 200, { R: fmtV(res[1].v) + res[1].u });
+      R1 = addIt('res', 180, 200, { R: 'R' + (res[0].n || '1') + '=' + fmtV(res[0].v) + res[0].u });
+      R2 = addIt('res', 420, 200, { R: 'R' + (res[1].n || '2') + '=' + fmtV(res[1].v) + res[1].u });
       const vSrc = lit[0] || { v: 12, u: 'V' };
       E1 = addIt('dc', 660, 200, { V: fmtV(vSrc.v) + (vSrc.u || 'V') });
       addIt('gnd', 720, 280, {});
@@ -454,7 +549,7 @@
       wire(R2, 'r', E1, 'l');
       wire(E1, 'r', R1, 'l');
     } else if (res.length === 1) {
-      R1 = addIt('res', 260, 200, { R: fmtV(res[0].v) + res[0].u });
+      R1 = addIt('res', 260, 200, { R: 'R' + (res[0].n || '1') + '=' + fmtV(res[0].v) + res[0].u });
       const vSrc = lit[0] || { v: 12, u: 'V' };
       E1 = addIt('dc', 560, 200, { V: fmtV(vSrc.v) + (vSrc.u || 'V') });
       addIt('gnd', 620, 280, {});
