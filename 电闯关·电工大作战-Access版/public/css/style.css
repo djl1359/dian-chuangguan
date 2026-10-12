@@ -283,3 +283,27 @@ body {
 /* 结算表扬/鼓励 */
 .result-praise{margin:10px 0 2px;font-size:15px;font-weight:700;color:var(--accent2);text-shadow:0 0 10px rgba(255,217,59,.25)}
 .result-praise.fail{color:var(--accent)}
+
+/* ===== 1.5.2.0 电路图编辑器 ===== */
+.circ-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;margin-bottom:8px}
+.circ-bar .btn.small.active{border-color:var(--accent);background:rgba(47,214,255,.18);color:var(--accent)}
+.circ-wrap{display:flex;gap:10px;align-items:flex-start}
+.circ-palette{width:150px;flex:0 0 150px;max-height:440px;overflow:auto;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px}
+.circ-gp{font-size:11px;color:var(--accent);font-weight:700;margin:6px 0 4px;padding-top:4px;border-top:1px dashed rgba(255,255,255,.12)}
+.circ-gp:first-child{border-top:none;padding-top:0}
+.circ-pal-item{display:flex;align-items:center;gap:4px;padding:4px 6px;margin:2px 0;border-radius:8px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid transparent}
+.circ-pal-item:hover{border-color:var(--accent);background:rgba(47,214,255,.12)}
+.circ-pal-item span{font-size:11px;color:var(--text)}
+.circ-pal-item svg{background:#fff;border-radius:4px;flex:0 0 64px}
+.circ-canvas-box{flex:1;min-width:0}
+.circ-canvas{width:100%;height:auto;background:#fff;border:1px solid rgba(255,255,255,.18);border-radius:10px;cursor:default;touch-action:none}
+.circ-canvas.wire-mode{cursor:crosshair}
+.circ-canvas .circ-pin{cursor:crosshair}
+.circ-canvas .circ-sel{opacity:.92}
+.circ-tip{font-size:11px;color:var(--dim);margin-top:6px}
+@media (max-width:640px){
+  .circ-wrap{flex-direction:column}
+  .circ-palette{width:100%;flex:auto;max-height:130px;display:flex;flex-wrap:wrap;align-content:flex-start}
+  .circ-gp{width:100%}
+  .circ-pal-item{width:auto}
+}

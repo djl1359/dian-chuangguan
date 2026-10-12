@@ -527,7 +527,7 @@
         pagerHtml(list.length, PG.questions, 'UIM.gotoQuestions') +
         '<table class="data-table"><tr><th style="width:28px"><input type="checkbox" id="qsel-all" onclick="UIM.qSelAll(this)"></th><th>ID</th><th>章</th><th>节</th><th>题型</th><th>题干</th><th>难度</th><th>答案</th><th>操作</th></tr>' +
         pp.rows.map(q =>
-          '<tr><td style="width:28px"><input type="checkbox" data-qid="' + q.id + '"' + (S.qSel[q.id] ? ' checked' : '') + ' onchange="UIM.qSelOne(' + q.id + ',this)"></td><td>' + q.id + '</td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + TYPE_NAME[q.type] + '</td><td style="max-width:200px">' + (q.image ? '<span class="qimg-tag" title="含题干图片">🖼</span> ' : '') + mdMath(q.question) + '</td><td>' + UIM.diffStar(q.difficulty) + '</td><td>' + (q.type === 'matching' ? '配对' : mdMath(String(q.answer))) + '</td>' +
+          '<tr><td style="width:28px"><input type="checkbox" data-qid="' + q.id + '"' + (S.qSel[q.id] ? ' checked' : '') + ' onchange="UIM.qSelOne(' + q.id + ',this)"></td><td>' + q.id + '</td><td>' + q.chapter + '</td><td>' + (q.section || 1) + '</td><td>' + TYPE_NAME[q.type] + '</td><td style="max-width:200px">' + (q.image ? '<span class="qimg-tag" title="含题干图片">🖼</span> ' : '') + (q.circuit ? '<span class="qimg-tag" title="含电路图">🔌</span> ' : '') + mdMath(q.question) + '</td><td>' + UIM.diffStar(q.difficulty) + '</td><td>' + (q.type === 'matching' ? '配对' : mdMath(String(q.answer))) + '</td>' +
           '<td><div class="actions-row"><button class="btn small" onclick="UIM.editQ(' + q.id + ')">编辑</button><button class="btn small danger" onclick="UIM.delQ(' + q.id + ')">删除</button></div></td></tr>').join('') + '</table>';
     } catch (e) { p.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
   }
@@ -958,6 +958,16 @@ async function loadChapterAnalysis(ch) {
       '<option value="center">居中</option><option value="left">左对齐</option><option value="right">右对齐</option></select></div>' +
       '<div class="form-row" id="qf-size-row" style="display:none;margin-top:6px"><label style="font-size:12px;color:var(--dim)">图片大小（显示宽度，闯关/试卷/答题卡通用）</label><select id="qf-size" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' +
       '<option value="40">小（40%）</option><option value="60">中（60%）</option><option value="80">大（80%）</option><option value="100">原图（100%）</option></select></div></div>' +
+      '<div class="form-row" style="margin-top:6px;border-top:1px dashed var(--line);padding-top:6px"><label style="font-size:12px;color:var(--dim)">电路图（可「按题干自动生成」或手动编辑，随题干显示在闯关/试卷/答题卡）</label>' +
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">' +
+      '<button type="button" class="btn small" id="qf-circ-edit">🧾 编辑电路图</button>' +
+      '<button type="button" class="btn small" id="qf-circ-auto">✨ 按题干自动生成</button>' +
+      '<button type="button" class="btn small" id="qf-circ-solve">⚡ 自动解答填入</button>' +
+      '<button type="button" class="btn small danger" id="qf-circ-del" style="display:none">🗑 移除电路图</button>' +
+      '</div>' +
+      '<div id="qf-circ-preview" style="margin-top:6px"></div>' +
+      '<div class="form-row" id="qf-csize-row" style="display:none;margin-top:6px"><label style="font-size:12px;color:var(--dim)">电路图显示大小</label><select id="qf-csize" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.8);color:var(--text)">' +
+      '<option value="40">小（40%）</option><option value="60">中（60%）</option><option value="80">大（80%）</option><option value="100">原图（100%）</option></select></div></div>' +
       '<div class="form-row" style="margin-top:4px;border-top:1px dashed var(--line);padding-top:6px">' +
       '<button type="button" class="btn small" id="qf-ocr-btn">✂️ 截图/图片识别填入</button>' +
       '<input type="file" id="qf-ocr-file" accept="image/*" style="display:none">' +
@@ -1011,6 +1021,46 @@ async function loadChapterAnalysis(ch) {
       fr.readAsDataURL(f);
     };
     renderQfImg();
+    /* 1.5.2.0：电路图（自动生成/手动编辑/自动解答） */
+    S.qfCircuit = (q && q.circuit) || '';
+    S.qfCircSize = (q && Number(q.circuitSize) >= 20 && Number(q.circuitSize) <= 100) ? Number(q.circuitSize) : 60;
+    const renderQfCirc = () => {
+      const box = $('qf-circ-preview');
+      if (S.qfCircuit) {
+        const cl = Circuit.cleanSvg(S.qfCircuit);
+        box.innerHTML = '<div style="max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + S.qfCircSize + '%;max-width:640px;display:block;margin:0 auto">' + (cl.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')) + '</svg></div>';
+      } else { box.innerHTML = '<span style="font-size:11px;color:var(--dim)">（暂无电路图）</span>'; }
+      $('qf-circ-del').style.display = S.qfCircuit ? '' : 'none';
+      $('qf-csize-row').style.display = S.qfCircuit ? '' : 'none';
+      if (S.qfCircuit) $('qf-csize').value = String(S.qfCircSize);
+    };
+    $('qf-circ-edit').onclick = () => {
+      Circuit.openEditor(S.qfCircuit || '', (svg) => { S.qfCircuit = svg; renderQfCirc(); toast('电路图已更新'); });
+    };
+    $('qf-circ-auto').onclick = () => {
+      const qtext = $('qf-question').value.trim();
+      if (!qtext) { $('qf-msg').textContent = '请先填写题干，再自动生成电路图'; return; }
+      try {
+        const svg = Circuit.autoFromText(qtext);
+        if (!svg) { $('qf-msg').textContent = '未能从题干识别元件，请手动编辑电路图'; return; }
+        S.qfCircuit = svg;
+        renderQfCirc();
+        $('qf-msg').textContent = '已按题干自动生成电路图（可点击「编辑电路图」微调）';
+      } catch (e) { $('qf-msg').textContent = '生成失败：' + e.message; }
+    };
+    $('qf-circ-solve').onclick = () => {
+      const qtext = $('qf-question').value.trim();
+      if (!qtext) { $('qf-msg').textContent = '请先填写题干，再自动生成解答'; return; }
+      try {
+        const r = Circuit.solve(qtext, S.qfCircuit || '');
+        if (!r.ok) { $('qf-msg').textContent = '暂不能自动解答：需要题干含 电源电压 U/E、电阻 R 值（如 R1=10Ω），并说明串联/并联/混联'; return; }
+        $('qf-explain').value = r.text;
+        if (r.answer && $('qf-type').value === 'calc') $('qf-answer').value = r.answer;
+        $('qf-msg').textContent = '已按题干自动生成解答（已知/求/解/答）填入解析，请核对后保存';
+      } catch (e) { $('qf-msg').textContent = '生成失败：' + e.message; }
+    };
+    $('qf-circ-del').onclick = () => { S.qfCircuit = ''; renderQfCirc(); };
+    renderQfCirc();
     /* 1.4.3.0：截图/图片识别自动填入表单 */
     let qfOcrB64 = '';
     const qfOcrShow = (b64) => {
@@ -1110,7 +1160,9 @@ async function loadChapterAnalysis(ch) {
       difficulty: parseInt($('qf-diff').value, 10) || 3,
       image: S.qfImage || '',
       imageAlign: S.qfImage ? $('qf-align').value : 'center',
-      imgSize: S.qfImage ? (parseInt($('qf-size').value, 10) || 60) : 60
+      imgSize: S.qfImage ? (parseInt($('qf-size').value, 10) || 60) : 60,
+      circuit: S.qfCircuit || '',
+      circuitSize: S.qfCircuit ? (parseInt($('qf-csize').value, 10) || 60) : 60
     };
     const msg = $('qf-msg');
     if (!data.question) { msg.textContent = '题干不能为空'; return; }
@@ -1592,6 +1644,13 @@ async function loadChapterAnalysis(ch) {
       zone.dataset.key = key;
     },
     openModal, closeModal, questionForm, saveQuestion,
+    /* 1.5.2.0：电路图 SVG 清洗取主体（渲染用，防 XSS） */
+    circBody(svg) {
+      try {
+        const cl = Circuit.cleanSvg(svg || '');
+        return cl.replace(/^<svg[^>]*>/i, '').replace(/<\/svg>\s*$/i, '');
+      } catch (e) { return ''; }
+    },
     scoreModal(id, name) {
       openModal('<h3 style="margin-bottom:12px">为「' + esc(name) + '」加减分</h3>' +
         '<div class="form-row"><input id="sm-delta" type="number" placeholder="积分变化，加分填正数，减分填负数，如 100 或 -50"></div>' +
@@ -2009,7 +2068,8 @@ async function loadChapterAnalysis(ch) {
             r.groups.map(g => '<div style="margin:6px 0"><b>' + esc(g.name) + '（' + g.questions.length + '题）</b><br>' +
               g.questions.map((q, i) => '&nbsp;&nbsp;' + (i + 1) + '. ' + mdMath(q.question) +
                 (q.type === 'matching' ? '<div style="display:flex;gap:8px;margin:4px 0 4px 22px"><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.left ? q.options.left.map((l, li) => (li + 1) + '. ' + mdMath(l)).join('<br>') : '') + '</div><div style="flex:1;min-width:0;white-space:normal">' + (q.options && q.options.right ? q.options.right.map((r2, ri) => String.fromCharCode(65 + ri) + '. ' + mdMath(r2)).join('<br>') : '') + '</div></div>' : '') +
-                (q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:180px;max-height:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff"></div>' : '') + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
+                (q.image ? '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:4px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:180px;max-height:120px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff"></div>' : '') +
+                (q.circuit ? '<div style="text-align:center;margin:4px 0;background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px;overflow:auto"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + (q.circuitSize || 60) + '%;max-width:420px;display:block;margin:0 auto">' + UIM.circBody(q.circuit) + '</svg></div>' : '') + '　<span style="color:#ff9f1a">' + UIM.diffStar(q.difficulty) + '</span>').join('<br>')).join('') +
             '<div style="margin-top:8px;color:var(--dim)">导出 Word 后可在 WPS/Word 中打开打印。</div>';
         } catch (e) { pv.innerHTML = '<div class="empty-tip">' + esc(e.message) + '</div>'; }
       };
@@ -2045,6 +2105,7 @@ async function loadChapterAnalysis(ch) {
               no++;
               let s = '<div class="q"><b>' + no + '.</b> ' + mdMath(q.question);
               if (q.image) s += '<div style="text-align:' + (q.imageAlign || 'center') + ';margin:6px 0"><img src="' + q.image + '" style="width:' + (q.imgSize || 60) + '%;max-width:140mm;max-height:80mm;object-fit:contain;border:1px solid #ccc;background:#fff"></div>';
+              if (q.circuit) s += '<div style="text-align:center;margin:6px 0;background:#fff;border:1px solid #ccc;padding:4px;page-break-inside:avoid"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" style="width:' + (q.circuitSize || 60) + '%;max-width:130mm;display:block;margin:0 auto">' + UIM.circBody(q.circuit) + '</svg></div>';
               if (q.type === 'single' || q.type === 'multi') s += '<div class="opts">' + (q.options || []).map((o, i) => String.fromCharCode(65 + i) + '. ' + mdMath(String(o).replace(/^[A-Za-z][.、．]\s*/, ''))).join('　　') + '</div>';
               else if (q.type === 'judge') s += '<span class="judge-blank">（　　　　　　）</span>';
               else if (q.type === 'fill') s += '<span class="fill-blank"></span>';

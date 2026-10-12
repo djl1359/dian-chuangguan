@@ -51,16 +51,17 @@ const state = {
 
 /* ---------------- worker 调用 ---------------- */
 let tmpSeq = 0;
-function callWorker(mode, sql, outFile, dbPath) {
+function callWorker(mode, sql, outFile, dbPath, _try) {
+  _try = _try || 0;
   return new Promise((resolve, reject) => {
     const payload = typeof sql === 'string' ? sql : JSON.stringify(sql);
     const db = dbPath || DB_FILE;
     // SQL 写入临时文件，避免命令行长度限制
     const sqlFile = path.join(DATA_DIR, '.acc_sql_' + process.pid + '_' + (++tmpSeq) + '.txt');
     fs.writeFileSync(sqlFile, payload, 'utf8');
-    execFile('powershell.exe',
+    const child = execFile('powershell.exe',
       ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', WORKER, '-Db', db, '-Mode', mode, '-SqlFile', sqlFile, '-Out', outFile],
-      { timeout: 120000, windowsHide: true, maxBuffer: 64 * 1024 * 1024 },
+      { timeout: 30000, windowsHide: true, maxBuffer: 64 * 1024 * 1024 },
       (err) => {
         try { fs.unlinkSync(sqlFile); } catch (e) { /* 忽略 */ }
         let res = null;
@@ -69,11 +70,12 @@ function callWorker(mode, sql, outFile, dbPath) {
         try { fs.unlinkSync(outFile); } catch (e) { /* 忽略 */ }
         if (res && res.ok) return resolve(res);
         const msg = (res && res.err) ? res.err : (err ? err.message : '未知错误');
-        // 1.0.0.4：数据库被短暂占用（如杀毒扫描/刚复制/重启过快）时自动重试
-        if (/已在使用中|已在使用中|already in use|in use/i.test(msg)) {
+        // 1.5.2.0：worker 偶发卡死/超时/被占用时，统一清理残留进程树后重试（最多 3 次）
+        if (_try < 3) {
+          try { require('child_process').execSync('taskkill /PID ' + child.pid + ' /T /F', { stdio: 'ignore', windowsHide: true }); } catch (e) { /* 忽略 */ }
           setTimeout(() => {
-            callWorker(mode, sql, outFile, dbPath).then(resolve, reject);
-          }, 800);
+            callWorker(mode, sql, outFile, dbPath, _try + 1).then(resolve, reject);
+          }, 600);
           return;
         }
         reject(new Error('Access操作失败: ' + msg));
@@ -90,13 +92,16 @@ function q(sql) {
   const f = tmpFile();
   return callWorker('query', sql, f).then(r => r.rows || []);
 }
-/* 批量执行（写链串行，防 Access 写锁冲突） */
+/* 批量执行（写链串行，防 Access 写锁冲突；1.5.2.0：任一环节失败后重置写链，避免永久阻塞后续写入） */
 let writeChain = Promise.resolve();
 function run(sqls) {
   const arr = Array.isArray(sqls) ? sqls : [sqls];
   if (!arr.length) return Promise.resolve();
   const f = tmpFile();
-  writeChain = writeChain.then(() => callWorker('exec', arr, f));
+  writeChain = writeChain.then(() => callWorker('exec', arr, f)).catch(e => {
+    writeChain = Promise.resolve();
+    throw e;
+  });
   return writeChain;
 }
 
@@ -109,7 +114,7 @@ const DDL = [
   "CREATE TABLE memoryBest (userId TEXT(32), best LONG)",
   "CREATE TABLE logs (id COUNTER, t TEXT(20), op TEXT(200), who TEXT(50), name TEXT(50), reason TEXT(200))",
   "CREATE TABLE answer_logs (id COUNTER, t TEXT(20), userId TEXT(32), name TEXT(50), qid LONG, chapter LONG, [section] LONG, correct LONG)",
-  "CREATE TABLE questions (id LONG, chapter LONG, [section] LONG, type TEXT(10), question MEMO, options MEMO, answer MEMO, explain MEMO, difficulty LONG, [image] TEXT(200), [imageAlign] TEXT(20), [imgSize] LONG)",
+  "CREATE TABLE questions (id LONG, chapter LONG, [section] LONG, type TEXT(10), question MEMO, options MEMO, answer MEMO, explain MEMO, difficulty LONG, [image] TEXT(200), [imageAlign] TEXT(20), [imgSize] LONG, [circuit] MEMO, [circuitSize] LONG)",
   "CREATE TABLE settings (id COUNTER, k TEXT(50), v MEMO)",
   "CREATE TABLE exams (id TEXT(32), title MEMO, subject MEMO, className TEXT(60), grade TEXT(30), createdAt TEXT(20), [status] TEXT(10), questions MEMO, qcount LONG, totalScore LONG, createdBy TEXT(50), publishedAt TEXT(20), [note] MEMO)",
   "CREATE TABLE exam_answers (id COUNTER, examId TEXT(32), userId TEXT(32), name TEXT(50), t TEXT(20), objective MEMO, subjective MEMO, total LONG, [status] TEXT(10), img MEMO)"
@@ -126,9 +131,9 @@ function buildTemplate() {
   });
 }
 function insertQuestionSQL(qq) {
-  return "INSERT INTO questions (id,chapter,[section],type,question,options,answer,explain,difficulty,[image],[imageAlign],[imgSize]) VALUES (" +
+  return "INSERT INTO questions (id,chapter,[section],type,question,options,answer,explain,difficulty,[image],[imageAlign],[imgSize],[circuit],[circuitSize]) VALUES (" +
     esc(qq.id) + ',' + esc(qq.chapter) + ',' + esc(qq.section || 1) + ',' + esc(qq.type) + ',' + esc(qq.question) + ',' +
-    esc(JSON.stringify(qq.options || [])) + ',' + esc(qq.answer) + ',' + esc(qq.explain || '') + ',' + esc(qq.difficulty || 3) + ',' + esc(qq.image || '') + ',' + esc(qq.imageAlign || 'center') + ',' + esc(qq.imgSize || 60) + ')';
+    esc(JSON.stringify(qq.options || [])) + ',' + esc(qq.answer) + ',' + esc(qq.explain || '') + ',' + esc(qq.difficulty || 3) + ',' + esc(qq.image || '') + ',' + esc(qq.imageAlign || 'center') + ',' + esc(qq.imgSize || 60) + ',' + esc(qq.circuit || '') + ',' + esc(qq.circuitSize || 60) + ')';
 }
 function insertTeacherSQL() {
   const s = uid();
@@ -172,6 +177,13 @@ async function ensureQuestionDiff() {
   } catch (e) { /* 列已存在等，忽略 */ }
   /* 1.4.0.0：旧库 questions 表无 image/imageAlign/imgSize 列时补列（image 为 ACE 保留字，需方括号；逐个独立尝试，已存在则跳过） */
   for (const sql of ['ALTER TABLE questions ADD COLUMN [image] TEXT(200)', 'ALTER TABLE questions ADD COLUMN [imageAlign] TEXT(20)', 'ALTER TABLE questions ADD COLUMN [imgSize] LONG']) {
+    try {
+      const f = tmpFile();
+      await callWorker('exec', [sql], f);
+    } catch (e) { /* 列已存在等，忽略 */ }
+  }
+  /* 1.5.2.0：旧库 questions 表无 circuit/circuitSize 列时补列 */
+  for (const sql of ['ALTER TABLE questions ADD COLUMN [circuit] MEMO', 'ALTER TABLE questions ADD COLUMN [circuitSize] LONG']) {
     try {
       const f = tmpFile();
       await callWorker('exec', [sql], f);
@@ -259,7 +271,7 @@ async function loadAll() {
   state.questions = questions.map(x => {
     let opts = [];
     try { opts = JSON.parse(x.options || '[]'); } catch (e) { opts = []; }
-    return { id: x.id, chapter: x.chapter, section: x.section || 1, type: x.type, question: x.question, options: opts, answer: x.answer, explain: x.explain || '', difficulty: x.difficulty == null ? 3 : x.difficulty, image: x.image || '', imageAlign: x.imageAlign || 'center', imgSize: x.imgSize || 60 };
+    return { id: x.id, chapter: x.chapter, section: x.section || 1, type: x.type, question: x.question, options: opts, answer: x.answer, explain: x.explain || '', difficulty: x.difficulty == null ? 3 : x.difficulty, image: x.image || '', imageAlign: x.imageAlign || 'center', imgSize: x.imgSize || 60, circuit: x.circuit || '', circuitSize: x.circuitSize || 60 };
   });
   state.exams = examsRows.map(x => {
     let qs = [];
@@ -335,7 +347,7 @@ function batchInsertQuestions(arr) {
 }
 function updateQuestion(qq) {
   return run(["UPDATE questions SET chapter=" + esc(qq.chapter) + ",[section]=" + esc(qq.section || 1) + ",type=" + esc(qq.type) + ",question=" + esc(qq.question) +
-    ",options=" + esc(JSON.stringify(qq.options || [])) + ",answer=" + esc(qq.answer) + ",difficulty=" + esc(qq.difficulty || 3) + ",explain=" + esc(qq.explain || '') + ",[image]=" + esc(qq.image || '') + ",[imageAlign]=" + esc(qq.imageAlign || 'center') + ",[imgSize]=" + esc(qq.imgSize || 60) + " WHERE id=" + esc(qq.id)]);
+    ",options=" + esc(JSON.stringify(qq.options || [])) + ",answer=" + esc(qq.answer) + ",difficulty=" + esc(qq.difficulty || 3) + ",explain=" + esc(qq.explain || '') + ",[image]=" + esc(qq.image || '') + ",[imageAlign]=" + esc(qq.imageAlign || 'center') + ",[imgSize]=" + esc(qq.imgSize || 60) + ",[circuit]=" + esc(qq.circuit || '') + ",[circuitSize]=" + esc(qq.circuitSize || 60) + " WHERE id=" + esc(qq.id)]);
 }
 function deleteQuestion(id) {
   return run(["DELETE FROM questions WHERE id=" + esc(id)]);
