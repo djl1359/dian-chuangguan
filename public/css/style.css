@@ -298,7 +298,7 @@ body {
 .circ-pal-item:hover{border-color:var(--accent);background:rgba(47,214,255,.12)}
 .circ-pal-item span{font-size:11px;color:var(--text)}
 .circ-pal-item svg{background:#fff;border-radius:4px;flex:0 0 64px}
-.circ-canvas-box{flex:1;min-width:0;overflow:auto;height:60vh;min-height:320px;max-height:640px;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:4px}
+.circ-canvas-box{flex:1;min-width:0;overflow:auto;height:auto;min-height:320px;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:4px}
 .circ-canvas-box::-webkit-scrollbar{width:10px;height:10px}
 .circ-canvas-box::-webkit-scrollbar-thumb{background:rgba(47,214,255,.4);border-radius:5px}
 .circ-canvas-box::-webkit-scrollbar-thumb:hover{background:rgba(47,214,255,.7)}
