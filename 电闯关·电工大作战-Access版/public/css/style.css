@@ -298,7 +298,11 @@ body {
 .circ-pal-item:hover{border-color:var(--accent);background:rgba(47,214,255,.12)}
 .circ-pal-item span{font-size:11px;color:var(--text)}
 .circ-pal-item svg{background:#fff;border-radius:4px;flex:0 0 64px}
-.circ-canvas-box{flex:1;min-width:0;overflow:auto;max-height:76vh;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:4px}
+.circ-canvas-box{flex:1;min-width:0;overflow:auto;height:60vh;min-height:320px;max-height:640px;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:4px}
+.circ-canvas-box::-webkit-scrollbar{width:10px;height:10px}
+.circ-canvas-box::-webkit-scrollbar-thumb{background:rgba(47,214,255,.4);border-radius:5px}
+.circ-canvas-box::-webkit-scrollbar-thumb:hover{background:rgba(47,214,255,.7)}
+.circ-canvas-box::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:5px}
 .circ-canvas{background:#fff;border:1px solid rgba(255,255,255,.18);border-radius:10px;cursor:default;touch-action:none;max-width:none;display:block}
 .circ-canvas.wire-mode{cursor:crosshair}
 .circ-canvas .circ-pin{cursor:crosshair}

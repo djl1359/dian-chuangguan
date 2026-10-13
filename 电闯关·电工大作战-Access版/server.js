@@ -18,7 +18,7 @@ const { execFile } = require('child_process');
 const acc = require('./access.js');
 
 const PORT = process.env.PORT || 8123;   // 双版端口统一 8123（V1.4.4.1 起）
-const VERSION='1.5.6.0';
+const VERSION='1.5.7.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -2157,4 +2157,5 @@ acc.init().then(async () => {
   console.error('数据库初始化失败: ' + e.message);
   process.exit(1);
 });
+
 

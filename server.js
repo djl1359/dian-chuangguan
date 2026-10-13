@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
  * 电闯关·电工大作战 — 服务端（零依赖 Node.js + JSON 数据库，1.0.0.5）
  * 《电工技术基础与技能（第4版）》周绍敏主编 动作闯关游戏
  * 运行：node server.js   (或双击 start.bat / 电闯关服务端.exe)
@@ -20,7 +20,7 @@ const { execFile } = require('child_process');
 const acc = require('./store.js');
 
 const PORT = process.env.PORT || 8123;
-const VERSION='1.5.6.0';
+const VERSION='1.5.7.0';
 const ROOT = acc.APP_DIR;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 /* 试卷令牌密钥（进程启动时随机生成，重启后旧令牌自然失效） */
@@ -2159,3 +2159,4 @@ acc.init().then(async () => {
   console.error('数据库初始化失败: ' + e.message);
   process.exit(1);
 });
+
