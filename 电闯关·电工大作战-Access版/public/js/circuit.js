@@ -142,11 +142,15 @@
       this.root.appendChild(bar);
       const wrap = document.createElement('div');
       wrap.className = 'circ-wrap';
-      wrap.innerHTML = '<div class="circ-palette"></div><div class="circ-canvas-box"><svg class="circ-canvas" width="' + this.W + '" height="' + this.H + '" viewBox="0 0 ' + this.W + ' ' + this.H + '" style="width:' + this.W + 'px;height:' + this.H + 'px;max-width:none"></svg></div><div class="circ-tip">' + (this.mode === 'wire' ? '连线模式：点击起始引脚 → 点击目标引脚' : (this.mode === 'note' ? '电位标注模式：点击画布空白处添加电位标注（如 VA、+6V、0V），双击标注可修改文字' : (this.mode === 'volt' ? '电压标注模式：点击第一个端点 → 点击第二个端点，生成 +/− 电压标注；双击中间文字改电压值' : '点击左侧元件添加到画布；选中后 R 旋转 / Del 删除 / 双击改参数 / 🔍+/− 缩放 / 按住 Shift 拖动锁定水平竖直'))) + '</div>';
+      wrap.innerHTML = '<div class="circ-palette"></div><div class="circ-canvas-box"><svg class="circ-canvas" width="' + this.W + '" height="' + this.H + '" viewBox="0 0 ' + this.W + ' ' + this.H + '" style="width:100%;height:auto;aspect-ratio:' + this.W + '/' + this.H + ';display:block;max-width:100%"></svg></div>';
       this.root.appendChild(wrap);
+      const tip = document.createElement('div');
+      tip.className = 'circ-tip';
+      this.root.appendChild(tip);
       this.svg = wrap.querySelector('.circ-canvas');
       this.palette = wrap.querySelector('.circ-palette');
-      this.tip = wrap.querySelector('.circ-tip');
+      this.tip = tip;
+      this.tip.textContent = this.mode === 'wire' ? '连线模式：点击起始引脚 → 点击目标引脚' : (this.mode === 'note' ? '电位标注模式：点击画布空白处添加电位标注（如 VA、+6V、0V），双击标注可修改文字' : (this.mode === 'volt' ? '电压标注模式：点击第一个端点 → 点击第二个端点，生成 +/− 电压标注；双击中间文字改电压值' : '点击左侧元件添加到画布；选中后 R 旋转 / Del 删除 / 双击改参数 / 🔍+/− 缩放 / 按住 Shift 拖动锁定水平竖直'));
       this._renderPalette();
       this._svgNS = 'http://www.w3.org/2000/svg';
     }
