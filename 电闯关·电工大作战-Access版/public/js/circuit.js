@@ -142,7 +142,7 @@
       this.root.appendChild(bar);
       const wrap = document.createElement('div');
       wrap.className = 'circ-wrap';
-      wrap.innerHTML = '<div class="circ-palette"></div><div class="circ-canvas-box"><svg class="circ-canvas" width="' + this.W + '" height="' + this.H + '" viewBox="0 0 ' + this.W + ' ' + this.H + '" style="width:100%;height:auto;aspect-ratio:' + this.W + '/' + this.H + ';display:block;max-width:100%"></svg></div>';
+      wrap.innerHTML = '<div class="circ-palette"></div><div class="circ-canvas-box"><svg class="circ-canvas" width="' + this.W + '" height="' + this.H + '" viewBox="0 0 ' + this.W + ' ' + this.H + '" style="width:' + this.W + 'px;height:' + this.H + 'px;max-width:none"></svg></div>';
       this.root.appendChild(wrap);
       const tip = document.createElement('div');
       tip.className = 'circ-tip';
