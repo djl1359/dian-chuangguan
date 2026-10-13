@@ -892,7 +892,7 @@
       const mask = document.createElement('div');
       mask.className = 'modal-mask';
       mask.style.zIndex = '9999';
-      mask.innerHTML = '<div class="modal" style="max-width:1000px;width:96%;max-height:92vh;overflow:auto"><div id="circ-host"></div><div class="result-btns" style="margin-top:10px"><button class="btn ghost" data-c="cancel">取消</button><button class="btn" data-c="clear">清空</button><button class="btn primary" data-c="ok">保存电路图</button></div></div>';
+      mask.innerHTML = '<div class="modal" style="max-width:1200px;width:96%;max-height:92vh;overflow:auto"><div id="circ-host"></div><div class="result-btns" style="margin-top:10px"><button class="btn ghost" data-c="cancel">取消</button><button class="btn" data-c="clear">清空</button><button class="btn primary" data-c="ok">保存电路图</button></div></div>';
       document.body.appendChild(mask);
       const host = mask.querySelector('#circ-host');
       const ed = new Editor(host, svg);
