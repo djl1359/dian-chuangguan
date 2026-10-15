@@ -61,7 +61,7 @@ function callWorker(mode, sql, outFile, dbPath, _try) {
     fs.writeFileSync(sqlFile, payload, 'utf8');
     const child = execFile('powershell.exe',
       ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', WORKER, '-Db', db, '-Mode', mode, '-SqlFile', sqlFile, '-Out', outFile],
-      { timeout: 30000, windowsHide: true, maxBuffer: 64 * 1024 * 1024 },
+      { timeout: 60000, windowsHide: true, maxBuffer: 64 * 1024 * 1024 },
       (err) => {
         try { fs.unlinkSync(sqlFile); } catch (e) { /* 忽略 */ }
         let res = null;
@@ -71,7 +71,7 @@ function callWorker(mode, sql, outFile, dbPath, _try) {
         if (res && res.ok) return resolve(res);
         const msg = (res && res.err) ? res.err : (err ? err.message : '未知错误');
         // 1.5.2.0：worker 偶发卡死/超时/被占用时，统一清理残留进程树后重试（最多 3 次）
-        if (_try < 3) {
+        if (_try < 5) {
           try { require('child_process').execSync('taskkill /PID ' + child.pid + ' /T /F', { stdio: 'ignore', windowsHide: true }); } catch (e) { /* 忽略 */ }
           setTimeout(() => {
             callWorker(mode, sql, outFile, dbPath, _try + 1).then(resolve, reject);

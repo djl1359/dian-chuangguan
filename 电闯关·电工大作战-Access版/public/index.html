@@ -219,6 +219,18 @@ if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').ca
       <table class="data-table" id="memory-table"></table>
     </div>
     <div class="panel-actions">
+      <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:8px;flex-wrap:wrap">
+        <label style="font-size:13px;color:var(--dim)">自测范围：</label>
+        <select id="memory-chapter" style="padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)">
+          <option value="all">全部章节（10 题）</option>
+          <option value="第2章 简单直流电路">第2章 简单直流电路（8 题）</option>
+          <option value="第4章 电容">第4章 电容（4 题）</option>
+          <option value="第5章 磁场和磁路">第5章 磁场和磁路（4 题）</option>
+          <option value="第6章 电磁感应">第6章 电磁感应（4 题）</option>
+          <option value="第7章 初识正弦交流电">第7章 初识正弦交流电（4 题）</option>
+          <option value="第8章 正弦交流电路">第8章 正弦交流电路（8 题）</option>
+        </select>
+      </div>
       <button class="btn primary big" id="btn-memory-quiz">开始识记自测（答对 +5 分）</button>
     </div>
     <div class="panel" id="memory-quiz" style="display:none"></div>
@@ -320,7 +332,7 @@ if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').ca
 
 <script src="js/api.js?v=__VERSION__&t=4"></script>
 <script src="js/circuit.js?v=__VERSION__&t=13"></script>
-<script src="js/ui.js?v=__VERSION__&t=4"></script>
+<script src="js/ui.js?v=__VERSION__&t=6"></script>
 <script src="js/game.js?v=__VERSION__&t=4"></script>
 <script src="js/exam.js?v=__VERSION__&t=4"></script>
 </body>

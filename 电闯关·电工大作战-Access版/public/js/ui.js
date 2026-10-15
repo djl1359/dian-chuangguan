@@ -374,37 +374,56 @@
     } else showPracticeQ();
   };
 
-  /* ---------- 物理量识记 ---------- */
+  /* ---------- 物理量识记（V1.5.8.6：按教材章节分组） ---------- */
   const MEMORY_DATA = [
-    ['电流', 'I', '安培 A', '1A=10³mA=10⁶μA'],
-    ['电压', 'U', '伏特 V', '1kV=10³V'],
-    ['电阻', 'R', '欧姆 Ω', '1MΩ=10³kΩ=10⁶Ω'],
-    ['电功率', 'P', '瓦特 W', 'P=UI=I²R=U²/R'],
-    ['电能', 'W', '焦耳 J', '1kW·h=3.6×10⁶J，W=Pt'],
-    ['电容', 'C', '法拉 F', '1F=10⁶μF=10¹²pF，C=Q/U'],
-    ['电感', 'L', '亨利 H', '1H=10³mH=10⁶μH'],
-    ['频率', 'f', '赫兹 Hz', '工频50Hz，f=1/T'],
-    ['周期', 'T', '秒 s', 'T=1/f=0.02s(工频)'],
-    ['角频率', 'ω', '弧度/秒 rad/s', 'ω=2πf≈314rad/s'],
-    ['磁感应强度', 'B', '特斯拉 T', '1T=1Wb/m²，F=BILsinθ'],
-    ['磁通', 'Φ', '韦伯 Wb', 'Φ=BS'],
-    ['感抗', 'XL', '欧姆 Ω', 'XL=2πfL'],
-    ['容抗', 'XC', '欧姆 Ω', 'XC=1/(2πfC)'],
-    ['有功功率', 'P', '瓦特 W', 'P=UIcosφ'],
-    ['无功功率', 'Q', '乏 var', 'Q=UIsinφ'],
-    ['视在功率', 'S', '伏安 VA', 'S=UI=√(P²+Q²)'],
-    ['功率因数', 'cosφ', '无量纲', 'cosφ=P/S，并联电容可提高']
+    ['电流', 'I', '安培 A', '1A=10³mA=10⁶μA', '第2章 简单直流电路'],
+    ['电压', 'U', '伏特 V', '1kV=10³V', '第2章 简单直流电路'],
+    ['电阻', 'R', '欧姆 Ω', '1MΩ=10³kΩ=10⁶Ω', '第2章 简单直流电路'],
+    ['电功率', 'P', '瓦特 W', 'P=UI=I²R=U²/R', '第2章 简单直流电路'],
+    ['电能', 'W', '焦耳 J', '1kW·h=3.6×10⁶J，W=Pt', '第2章 简单直流电路'],
+    ['电容', 'C', '法拉 F', '1F=10⁶μF=10¹²pF，C=Q/U', '第4章 电容'],
+    ['电感', 'L', '亨利 H', '1H=10³mH=10⁶μH', '第6章 电磁感应'],
+    ['磁感应强度', 'B', '特斯拉 T', '1T=1Wb/m²，F=BILsinθ', '第5章 磁场和磁路'],
+    ['磁通', 'Φ', '韦伯 Wb', 'Φ=BS', '第5章 磁场和磁路'],
+    ['频率', 'f', '赫兹 Hz', '工频50Hz，f=1/T', '第7章 初识正弦交流电'],
+    ['周期', 'T', '秒 s', 'T=1/f=0.02s(工频)', '第7章 初识正弦交流电'],
+    ['角频率', 'ω', '弧度/秒 rad/s', 'ω=2πf≈314rad/s', '第7章 初识正弦交流电'],
+    ['感抗', 'XL', '欧姆 Ω', 'XL=2πfL', '第8章 正弦交流电路'],
+    ['容抗', 'XC', '欧姆 Ω', 'XC=1/(2πfC)', '第8章 正弦交流电路'],
+    ['有功功率', 'P', '瓦特 W', 'P=UIcosφ', '第8章 正弦交流电路'],
+    ['无功功率', 'Q', '乏 var', 'Q=UIsinφ', '第8章 正弦交流电路'],
+    ['视在功率', 'S', '伏安 VA', 'S=UI=√(P²+Q²)', '第8章 正弦交流电路'],
+    ['功率因数', 'cosφ', '无量纲', 'cosφ=P/S，并联电容可提高', '第8章 正弦交流电路']
   ];
   function renderMemory() {
     showScreen('screen-memory');
-    $('memory-table').innerHTML = '<tr><th>物理量</th><th>符号</th><th>单位</th><th>关系 / 换算</th></tr>' +
-      MEMORY_DATA.map(r => '<tr><td>' + r[0] + '</td><td><b>' + r[1] + '</b></td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>').join('');
+    const groups = {};
+    MEMORY_DATA.forEach(r => { (groups[r[4]] = groups[r[4]] || []).push(r); });
+    let html = '<tr><th>物理量</th><th>符号</th><th>单位</th><th>关系 / 换算</th></tr>';
+    Object.keys(groups).forEach(g => {
+      html += '<tr><td colspan="4" style="background:rgba(255,255,255,.08);color:#ffd700;font-weight:700;padding:6px 10px">' + esc(g) + '</td></tr>' +
+        groups[g].map(r => '<tr><td>' + r[0] + '</td><td><b>' + r[1] + '</b></td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>').join('');
+    });
+    $('memory-table').innerHTML = html;
     API.memory().then(r => { $('memory-best').textContent = '最高 ' + (r.best || 0) + ' 分'; }).catch(() => {});
   }
   function startMemoryQuiz() {
     const box = $('memory-quiz');
     box.style.display = 'block';
-    const items = MEMORY_DATA.slice().sort(() => Math.random() - 0.5).slice(0, 8);
+    const sel = $('memory-chapter');
+    const ch = sel ? sel.value : 'all';
+    let pool = MEMORY_DATA.slice();
+    if (ch !== 'all') pool = pool.filter(r => r[4] === ch);
+    const limit = ch === 'all' ? 10 : 8;
+    let items = pool.slice().sort(() => Math.random() - 0.5);
+    /* 题量补齐：物理量不足 4 个的章节出 4 题（四种模式各覆盖一次）；≥4 个的章节补齐到 8 题，必要时轮换题型复用物理量 */
+    const target = pool.length < 4 ? 4 : limit;
+    if (items.length < target && items.length > 0) {
+      const base = items.slice();
+      let k = 0;
+      while (items.length < target) { items.push(base[k % base.length]); k++; }
+    }
+    items = items.slice(0, target);
     const qs = items.map((d, i) => {
       const mode = i % 4;
       if (mode === 0) return { t: '物理量「' + d[0] + '」的符号是？', a: d[1], info: d };
@@ -422,7 +441,7 @@
         return;
       }
       const q = qs[idx];
-      box.innerHTML = '<div class="memory-card"><div class="m-q">' + (idx + 1) + '/8　' + esc(q.t) + '</div>' +
+      box.innerHTML = '<div class="memory-card"><div class="m-q">' + (idx + 1) + '/' + qs.length + '　' + esc(q.t) + '</div>' +
         '<div style="margin-top:8px"><input id="mq-input" type="text" placeholder="输入答案（填空）" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);background:rgba(4,10,30,.7);color:var(--text)"></div>' +
         '<div style="margin-top:8px;display:flex;gap:8px"><button class="btn primary" id="mq-submit" style="flex:1">提交</button><button class="btn ghost" id="mq-skip">跳过</button></div>' +
         '<div class="msg" id="mq-msg"></div></div>';
