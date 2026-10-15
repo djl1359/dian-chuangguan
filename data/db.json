@@ -6,12 +6,12 @@
       "salt": "a286c53fa261838b",
       "pass": "c32fc8e73cfe4999871da9f54e5f31ee20bbbfaf147c3a9afdf44e0beba0c021",
       "role": "teacher",
-      "score": 5,
+      "score": 2489,
       "reg": 1790361073164,
-      "lastLogin": 1792030485497,
-      "loginCount": 181,
-      "correct": 0,
-      "total": 1,
+      "lastLogin": 1792034159461,
+      "loginCount": 183,
+      "correct": 13,
+      "total": 17,
       "progress": {}
     }
   ],
@@ -168,10 +168,42 @@
     "10e1041f1a3cf9ea118ad44f007d041b": "37443a200f06c56b",
     "4daffe4d3f42ab731a4e969cfe198388": "37443a200f06c56b",
     "8baa1d0ca8dba04ab5a30fd5bbe047b7": "37443a200f06c56b",
-    "b888d5e0617be0ebcf39339512000fad": "37443a200f06c56b"
+    "b888d5e0617be0ebcf39339512000fad": "37443a200f06c56b",
+    "d8fa97c735982b6a3b3383ff1e1b80b7": "37443a200f06c56b",
+    "fb8427f52d08f88ad2c9b213a94ed953": "37443a200f06c56b"
   },
-  "progress": {},
-  "wrongs": {},
+  "progress": {
+    "37443a200f06c56b": {
+      "12": {
+        "lv1": 2
+      }
+    }
+  },
+  "wrongs": {
+    "37443a200f06c56b": [
+      {
+        "qid": 2653,
+        "chapter": 12,
+        "count": 1,
+        "last": 1792033692955,
+        "good": 0
+      },
+      {
+        "qid": 2744,
+        "chapter": 12,
+        "count": 1,
+        "last": 1792033775254,
+        "good": 0
+      },
+      {
+        "qid": 2658,
+        "chapter": 12,
+        "count": 1,
+        "last": 1792033790114,
+        "good": 0
+      }
+    ]
+  },
   "memoryBest": {
     "37443a200f06c56b": 10
   },
@@ -253,7 +285,152 @@
       "by": "teacher"
     }
   ],
-  "answerLogs": [],
+  "answerLogs": [
+    {
+      "t": 1792033681820,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2665,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033685603,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2676,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033688871,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2668,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033692954,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2653,
+      "chapter": 12,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1792033698824,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2670,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033707592,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 321,
+      "chapter": 12,
+      "section": 1,
+      "correct": true
+    },
+    {
+      "t": 1792033715872,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2670,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033719759,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2680,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033754225,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2692,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033775252,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2744,
+      "chapter": 12,
+      "section": 2,
+      "correct": false
+    },
+    {
+      "t": 1792033786744,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2685,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033787895,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 327,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033789050,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2668,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033790112,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2658,
+      "chapter": 12,
+      "section": 1,
+      "correct": false
+    },
+    {
+      "t": 1792033791586,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 2661,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    },
+    {
+      "t": 1792033792714,
+      "userId": "37443a200f06c56b",
+      "name": "teacher",
+      "qid": 333,
+      "chapter": 12,
+      "section": 2,
+      "correct": true
+    }
+  ],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
     "version": "1.5.8.8",
