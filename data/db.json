@@ -6,10 +6,10 @@
       "salt": "a286c53fa261838b",
       "pass": "c32fc8e73cfe4999871da9f54e5f31ee20bbbfaf147c3a9afdf44e0beba0c021",
       "role": "teacher",
-      "score": 0,
+      "score": 5,
       "reg": 1790361073164,
-      "lastLogin": 1791881988781,
-      "loginCount": 179,
+      "lastLogin": 1792030485497,
+      "loginCount": 181,
       "correct": 0,
       "total": 1,
       "progress": {}
@@ -166,11 +166,15 @@
     "6c73edbab2b1000bcdf67c9c28f4e82b": "37443a200f06c56b",
     "04493893a18a34fd20cb389b6ef7aecf": "37443a200f06c56b",
     "10e1041f1a3cf9ea118ad44f007d041b": "37443a200f06c56b",
-    "4daffe4d3f42ab731a4e969cfe198388": "37443a200f06c56b"
+    "4daffe4d3f42ab731a4e969cfe198388": "37443a200f06c56b",
+    "8baa1d0ca8dba04ab5a30fd5bbe047b7": "37443a200f06c56b",
+    "b888d5e0617be0ebcf39339512000fad": "37443a200f06c56b"
   },
   "progress": {},
   "wrongs": {},
-  "memoryBest": {},
+  "memoryBest": {
+    "37443a200f06c56b": 10
+  },
   "logs": [
     {
       "t": 1791774259625,
@@ -252,7 +256,7 @@
   "answerLogs": [],
   "settings": {
     "unit": "河北省滦州市职业技术教育中心",
-    "version": "1.5.8.6",
+    "version": "1.5.8.8",
     "timeAdd": "5",
     "timeMatchAdd": "10",
     "levelQ": {
